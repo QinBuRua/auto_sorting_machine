@@ -1,0 +1,6 @@
+{
+  "train_files": {
+    "code": "utf-8",
+    "direction": "data/train/files"
+  }
+}
