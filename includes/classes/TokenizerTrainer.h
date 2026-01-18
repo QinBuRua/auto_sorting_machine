@@ -5,6 +5,7 @@
 #ifndef AUTO_SORTING_MACHINE_TOKENIZER_H
 #define AUTO_SORTING_MACHINE_TOKENIZER_H
 
+#include <map>
 #include "json.hpp"
 #include "CharTypeArray.h"
 
@@ -28,6 +29,8 @@ private:
    void f_read_files(const std::string& path, const std::string& code = "utf-8");
    void f_initialize();
    void f_preprocess();
+   void f_train_ISD();
+   void f_train_TP();
 
    class c_SinglePreprocessor {
    public:
@@ -46,8 +49,15 @@ private:
       wchar_t m_Char;
 
       wchar_t f_read_token_char();
-      wchar_t f_peek_char() const;
+      [[nodiscard]] wchar_t f_peek_char() const;
       void f_parse_word();
+   };
+
+   class c_ISDTrainer {
+   public:
+      c_ISDTrainer();
+
+   private:
    };
 };
 

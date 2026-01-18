@@ -79,7 +79,7 @@ void TokenizerTrainer::f_initialize() {
       throw std::runtime_error("Training config is MISSING!");
    }
    f_read_files(m_Config["direction"],
-      m_Config["code"].is_null() ? "utf-8" : m_Config["code"]);
+         m_Config["code"].is_null() ? "utf-8" : m_Config["code"]);
    if (m_Sentences.empty()) {
       throw runtime_error("No training sentences found!");
    }
@@ -91,9 +91,13 @@ void TokenizerTrainer::f_preprocess() {
       preprocessor.load(sentence);
       preprocessor.run();
       m_CharTypeArrays.push_back(
-         std::move(preprocessor.get_result_ref())
-      );
+            std::move(preprocessor.get_result_ref())
+            );
    }
+}
+
+void TokenizerTrainer::f_train_ISD() {
+
 }
 
 TokenizerTrainer::c_SinglePreprocessor::c_SinglePreprocessor() {
@@ -170,3 +174,4 @@ void TokenizerTrainer::c_SinglePreprocessor::f_parse_word() {
    } while (m_Index + 1 < m_Sentence->size() && !std::iswspace(f_peek_char()));
    m_CharTypes.set_back(CharType::END);
 }
+
