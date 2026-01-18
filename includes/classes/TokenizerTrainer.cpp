@@ -2,13 +2,14 @@
 // Created by QinBu_Rua on 2025/12/27.
 //
 
-#include <vector>
-#include <string>
-#include <fstream>
+#include <array>
 #include <filesystem>
-#include "TokenizerTrainer.h"
-
+#include <fstream>
 #include <iostream>
+#include <string>
+#include <vector>
+
+#include "TokenizerTrainer.h"
 
 using std::vector;
 using std::string;
@@ -39,6 +40,7 @@ void TokenizerTrainer::load_config(const nlohmann::json& configJson) {
 void TokenizerTrainer::run() {
    f_initialize();
    f_preprocess();
+   f_train_ISD();
 }
 
 void TokenizerTrainer::f_read_files(const string& path, const string& code) {
@@ -78,8 +80,10 @@ void TokenizerTrainer::f_initialize() {
    if (m_Config["direction"].is_null()) {
       throw std::runtime_error("Training config is MISSING!");
    }
-   f_read_files(m_Config["direction"],
-         m_Config["code"].is_null() ? "utf-8" : m_Config["code"]);
+   f_read_files(
+      m_Config["direction"],
+      m_Config["code"].is_null() ? "utf-8" : m_Config["code"]
+   );
    if (m_Sentences.empty()) {
       throw runtime_error("No training sentences found!");
    }
@@ -91,13 +95,20 @@ void TokenizerTrainer::f_preprocess() {
       preprocessor.load(sentence);
       preprocessor.run();
       m_CharTypeArrays.push_back(
-            std::move(preprocessor.get_result_ref())
-            );
+         std::move(preprocessor.get_result_ref())
+      );
    }
 }
 
 void TokenizerTrainer::f_train_ISD() {
-
+   std::array<unsigned int, 2> counts{0, 0};
+   for (auto& ct: m_CharTypeArrays) {
+      counts[static_cast<size_t>(ct.get_front())]++;
+   }
+   m_MarkovModel.set_ISDs(
+      counts[0],
+      counts[1]
+   );
 }
 
 TokenizerTrainer::c_SinglePreprocessor::c_SinglePreprocessor() {
@@ -174,4 +185,3 @@ void TokenizerTrainer::c_SinglePreprocessor::f_parse_word() {
    } while (m_Index + 1 < m_Sentence->size() && !std::iswspace(f_peek_char()));
    m_CharTypes.set_back(CharType::END);
 }
-

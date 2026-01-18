@@ -7,6 +7,7 @@
 
 #include <array>
 #include <unordered_map>
+
 #include "CharTypeArray.h"
 
 namespace QinBuRua::auto_sorting_machine {
@@ -25,10 +26,9 @@ public:
 
    void set_ISDs(
       unsigned int singleTimes,
-      unsigned int beginTimes,
-      unsigned int middleTimes,
-      unsigned int endTimes
-      );
+      unsigned int beginTimes
+   );
+
 
 private:
    double m_InitialStateDistribution[4] = {0.0f, 0.0f, 0.0f, 0.0f};

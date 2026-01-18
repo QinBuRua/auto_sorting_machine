@@ -37,14 +37,10 @@ void MarkovChainModel::set_EP(const wchar_t wch, CharType tp, const double proba
 
 void MarkovChainModel::set_ISDs(
    const unsigned int singleTimes,
-   const unsigned int beginTimes,
-   const unsigned int middleTimes,
-   const unsigned int endTimes
-   ) {
-   const auto allTimes = singleTimes + beginTimes + middleTimes + endTimes;
+   const unsigned int beginTimes
+) {
+   const double allTimes = singleTimes + beginTimes;
 
    m_InitialStateDistribution[0] = singleTimes / allTimes;
    m_InitialStateDistribution[1] = beginTimes / allTimes;
-   m_InitialStateDistribution[2] = middleTimes / allTimes;
-   m_InitialStateDistribution[3] = endTimes / allTimes;
 }

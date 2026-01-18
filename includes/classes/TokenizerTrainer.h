@@ -6,8 +6,12 @@
 #define AUTO_SORTING_MACHINE_TOKENIZER_H
 
 #include <map>
+
 #include "json.hpp"
+
 #include "CharTypeArray.h"
+#include "MarkovChainModel.h"
+
 
 namespace QinBuRua::auto_sorting_machine {
 
@@ -20,17 +24,20 @@ public:
    void load_config(const nlohmann::json& configJson);
    void run();
 
+
 private:
    nlohmann::json m_Config;
    std::vector<std::wstring> m_Sentences;
    std::vector<CharTypeArray> m_CharTypeArrays;
+
+   MarkovChainModel m_MarkovModel;
+
 
 private:
    void f_read_files(const std::string& path, const std::string& code = "utf-8");
    void f_initialize();
    void f_preprocess();
    void f_train_ISD();
-   void f_train_TP();
 
    class c_SinglePreprocessor {
    public:
@@ -42,6 +49,7 @@ private:
       void run();
       CharTypeArray& get_result_ref();
 
+
    private:
       const std::wstring* m_Sentence;
       CharTypeArray m_CharTypes;
@@ -51,13 +59,6 @@ private:
       wchar_t f_read_token_char();
       [[nodiscard]] wchar_t f_peek_char() const;
       void f_parse_word();
-   };
-
-   class c_ISDTrainer {
-   public:
-      c_ISDTrainer();
-
-   private:
    };
 };
 
