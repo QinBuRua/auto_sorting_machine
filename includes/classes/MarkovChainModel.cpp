@@ -2,37 +2,39 @@
 // Created by QinBu_Rua on 2026/1/17.
 //
 
+#include <utility>
+
 #include "MarkovChainModel.h"
 
 using namespace QinBuRua::auto_sorting_machine;
 
 double MarkovChainModel::get_ISD(CharType charType) const {
-   return m_InitialStateDistribution[static_cast<size_t>(charType)];
+   return m_InitialStateDistribution[std::to_underlying(charType)];
 }
 
 double MarkovChainModel::get_TP(CharType from, CharType to) const {
-   return m_TransitionProbability[static_cast<size_t>(from)][static_cast<size_t>(to)];
+   return m_TransitionProbability[std::to_underlying(from)][std::to_underlying(to)];
 }
 
 double MarkovChainModel::get_EP(const wchar_t wch, CharType tp) const {
    auto arr = m_EmissionProbability.find(wch);
    if (arr != m_EmissionProbability.end()) {
-      return arr->second[static_cast<size_t>(tp)];
+      return arr->second[std::to_underlying(tp)];
    } else {
       return 0.0;
    }
 }
 
 void MarkovChainModel::set_ISD(CharType charType, const double probability) {
-   m_InitialStateDistribution[static_cast<size_t>(charType)] = probability;
+   m_InitialStateDistribution[std::to_underlying(charType)] = probability;
 }
 
 void MarkovChainModel::set_TP(CharType from, CharType to, const double probability) {
-   m_TransitionProbability[static_cast<size_t>(from)][static_cast<size_t>(to)] = probability;
+   m_TransitionProbability[std::to_underlying(from)][std::to_underlying(to)] = probability;
 }
 
 void MarkovChainModel::set_EP(const wchar_t wch, CharType tp, const double probability) {
-   m_EmissionProbability[static_cast<size_t>(wch)][static_cast<size_t>(tp)] = probability;
+   m_EmissionProbability[wch][std::to_underlying(tp)] = probability;
 }
 
 void MarkovChainModel::set_ISDs(

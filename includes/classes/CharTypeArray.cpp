@@ -4,6 +4,7 @@
 
 #include <algorithm>
 #include <cstring>
+#include <utility>
 
 #include "CharTypeArray.h"
 
@@ -223,7 +224,7 @@ std::string CharTypeArray::dump_sc() const {
    std::string result;
    result.reserve(m_Size);
    for (size_t i = 0; i < m_Size; ++i) {
-      result.push_back(m_CHARTYPE_TO_SINGLE_CHAR[static_cast<size_t>(get(i))]);
+      result.push_back(m_CHARTYPE_TO_SINGLE_CHAR[std::to_underlying(get(i))]);
    }
    return result;
 }

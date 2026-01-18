@@ -8,6 +8,7 @@
 #include <iostream>
 #include <numeric>
 #include <string>
+#include <utility>
 #include <vector>
 
 #include "TokenizerTrainer.h"
@@ -99,7 +100,7 @@ void TokenizerTrainer::f_preprocess() {
 void TokenizerTrainer::f_train_ISD() {
    std::array<unsigned int, 2> counts{};
    for (auto& ct: m_CharTypeArrays) {
-      counts[static_cast<size_t>(ct.get_front())]++;
+      counts[std::to_underlying(ct.get_front())]++;
    }
    m_MarkovModel.set_ISDs(
       counts[0],
@@ -113,7 +114,7 @@ void TokenizerTrainer::f_train_TP() {
       if (iter.size() == 1 || iter.empty())
          continue;
       for (size_t i = 1; i < iter.size(); ++i) {
-         ++counts[static_cast<size_t>(iter.get(i - 1))][static_cast<size_t>(iter.get(i))];
+         ++counts[std::to_underlying(iter.get(i - 1))][std::to_underlying(iter.get(i))];
       }
    }
    for (int i = 0; i < 4; i++) {
