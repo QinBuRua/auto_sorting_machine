@@ -35,9 +35,11 @@ private:
 
 private:
    void f_read_files(const std::string& path, const std::string& code = "utf-8");
+
    void f_initialize();
    void f_preprocess();
    void f_train_ISD();
+   void f_train_TP();
 
    class c_SinglePreprocessor {
    public:

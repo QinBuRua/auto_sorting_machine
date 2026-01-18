@@ -6,6 +6,7 @@
 #include <filesystem>
 #include <fstream>
 #include <iostream>
+#include <numeric>
 #include <string>
 #include <vector>
 
@@ -35,6 +36,7 @@ void TokenizerTrainer::run() {
    f_initialize();
    f_preprocess();
    f_train_ISD();
+   f_train_TP();
 }
 
 void TokenizerTrainer::f_read_files(const std::string& path, const std::string& code) {
@@ -95,7 +97,7 @@ void TokenizerTrainer::f_preprocess() {
 }
 
 void TokenizerTrainer::f_train_ISD() {
-   std::array<unsigned int, 2> counts{0, 0};
+   std::array<unsigned int, 2> counts{};
    for (auto& ct: m_CharTypeArrays) {
       counts[static_cast<size_t>(ct.get_front())]++;
    }
@@ -103,6 +105,31 @@ void TokenizerTrainer::f_train_ISD() {
       counts[0],
       counts[1]
    );
+}
+
+void TokenizerTrainer::f_train_TP() {
+   std::array<std::array<unsigned int, 4>, 4> counts{};
+   for (const auto& iter: m_CharTypeArrays) {
+      if (iter.size() == 1 || iter.empty())
+         continue;
+      for (size_t i = 1; i < iter.size(); ++i) {
+         ++counts[static_cast<size_t>(iter.get(i - 1))][static_cast<size_t>(iter.get(i))];
+      }
+   }
+   for (int i = 0; i < 4; i++) {
+      const double sum = std::accumulate(
+         counts[i].begin(),
+         counts[i].end(),
+         static_cast<unsigned int>(0)
+      );
+      for (int j = 0; j < 4; j++) {
+         m_MarkovModel.set_TP(
+            static_cast<CharType>(i),
+            static_cast<CharType>(j),
+            counts[i][j] / sum
+         );
+      }
+   }
 }
 
 TokenizerTrainer::c_SinglePreprocessor::c_SinglePreprocessor() {
