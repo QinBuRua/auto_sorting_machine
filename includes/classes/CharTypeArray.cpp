@@ -7,10 +7,6 @@
 
 #include "CharTypeArray.h"
 
-using std::make_unique;
-using std::unique_ptr;
-using std::string;
-
 using namespace QinBuRua::auto_sorting_machine;
 
 const std::string QinBuRua::auto_sorting_machine::CHARTYPE_TO_STR[4] = {
@@ -32,7 +28,7 @@ CharTypeArray::CharTypeArray(size_t size) {
    m_Size         = size;
    m_ByteCapacity = (size + 3) / 4;
    m_Data         = std::move(
-      unique_ptr<uint8_t[]>(new uint8_t[m_ByteCapacity]())
+      std::unique_ptr<uint8_t[]>(new uint8_t[m_ByteCapacity]())
    );
 }
 
@@ -73,7 +69,7 @@ CharTypeArray& CharTypeArray::operator=(const CharTypeArray& other) {
       m_ByteCapacity = otherUsedBytes;
       m_Size         = other.m_Size;
       m_Data         = std::move(
-         unique_ptr<uint8_t[]>(new uint8_t[m_ByteCapacity])
+         std::unique_ptr<uint8_t[]>(new uint8_t[m_ByteCapacity])
       );
       std::copy_n(other.m_Data.get(), m_ByteCapacity, m_Data.get());
       return *this;
@@ -149,12 +145,12 @@ void CharTypeArray::push_back(CharType value) {
    if (m_Size == 0) {
       m_Size         = 1;
       m_ByteCapacity = 1;
-      m_Data         = make_unique<uint8_t[]>(m_ByteCapacity);
+      m_Data         = std::make_unique<uint8_t[]>(m_ByteCapacity);
       m_Data[0]      = static_cast<uint8_t>(value);
       return;
    }
    if (m_Size >= m_ByteCapacity * 4) {
-      auto tmp = make_unique<uint8_t[]>(m_ByteCapacity * 2);
+      auto tmp = std::make_unique<uint8_t[]>(m_ByteCapacity * 2);
       std::copy_n(m_Data.get(), m_ByteCapacity, tmp.get());
       m_Data         = std::move(tmp);
       m_ByteCapacity *= 2;
@@ -181,7 +177,7 @@ void CharTypeArray::reserve(size_t elementsCapacity) {
    if (bytes <= m_ByteCapacity) {
       return;
    }
-   auto tmp = unique_ptr<uint8_t[]>(new uint8_t[bytes]());
+   auto tmp = std::unique_ptr<uint8_t[]>(new uint8_t[bytes]());
    std::copy_n(m_Data.get(), (m_Size + 3) / 4, tmp.get());
    m_Data         = std::move(tmp);
    m_ByteCapacity = bytes;
@@ -201,7 +197,7 @@ void CharTypeArray::resize(size_t size) {
    }
    auto reqBytes = (size + 3) / 4;
    if (reqBytes > m_ByteCapacity) {
-      auto tmp = unique_ptr<uint8_t[]>(new uint8_t[reqBytes]());
+      auto tmp = std::unique_ptr<uint8_t[]>(new uint8_t[reqBytes]());
       std::copy_n(m_Data.get(), (m_Size + 3) / 4, tmp.get());
       m_Data = std::move(tmp);
    }
@@ -214,17 +210,17 @@ void CharTypeArray::shrink_to_fit() {
       return;
    }
    auto bytes = (m_Size + 3) / 4;
-   auto tmp   = unique_ptr<uint8_t[]>(new uint8_t[bytes]);
+   auto tmp   = std::unique_ptr<uint8_t[]>(new uint8_t[bytes]);
    std::copy_n(m_Data.get(), bytes, tmp.get());
    m_Data         = std::move(tmp);
    m_ByteCapacity = bytes;
 }
 
-string CharTypeArray::dump_sc() const {
+std::string CharTypeArray::dump_sc() const {
    if (m_Size == 0) {
       return {};
    }
-   string result;
+   std::string result;
    result.reserve(m_Size);
    for (size_t i = 0; i < m_Size; ++i) {
       result.push_back(m_CHARTYPE_TO_SINGLE_CHAR[static_cast<size_t>(get(i))]);

@@ -8,8 +8,6 @@
 #include "json.hpp"
 #include "Trainer.h"
 
-using std::runtime_error;
-using std::ifstream;
 using Json = nlohmann::json;
 
 using namespace QinBuRua::auto_sorting_machine;
@@ -17,9 +15,9 @@ using namespace QinBuRua::auto_sorting_machine;
 
 
 Trainer::Trainer(const std::string& configFile) {
-   ifstream fin(configFile);
+   std::ifstream fin(configFile);
    if (fin.fail()) {
-      throw runtime_error("Error opening config file");
+      throw std::runtime_error("Error opening config file");
    }
    m_Config = Json::parse(fin);
    m_Tokenizer.load_config(m_Config["train_files"]);

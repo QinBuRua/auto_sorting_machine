@@ -11,12 +11,6 @@
 
 #include "TokenizerTrainer.h"
 
-using std::vector;
-using std::string;
-using std::wstring;
-using std::wifstream;
-using std::runtime_error;
-
 using nlohmann::json;
 
 namespace fs = std::filesystem;
@@ -43,28 +37,28 @@ void TokenizerTrainer::run() {
    f_train_ISD();
 }
 
-void TokenizerTrainer::f_read_files(const string& path, const string& code) {
+void TokenizerTrainer::f_read_files(const std::string& path, const std::string& code) {
    if (!(fs::exists(path) && fs::is_directory(path))) {
       throw std::runtime_error("The direction of training files does NOT exist!");
    }
    fs::path trainingFilesPath(path);
-   vector<fs::path> files;
+   std::vector<fs::path> files;
    for (const auto& entry: fs::directory_iterator(trainingFilesPath)) {
       if (entry.is_regular_file() && entry.path().extension() == ".txt") {
          files.push_back(entry.path());
       }
    }
    if (files.empty()) {
-      throw runtime_error("No training files found!");
+      throw std::runtime_error("No training files found!");
    }
    std::locale localeCode;
    if (code == "utf-8") {
       localeCode = std::locale(std::locale(), new std::codecvt_utf8<wchar_t>);
    }
    for (const auto& file: files) {
-      wifstream fin(file);
+      std::wifstream fin(file);
       if (fin.fail()) {
-         throw runtime_error("Error opening file \"!" + file.string() + "\"!");
+         throw std::runtime_error("Error opening file \"!" + file.string() + "\"!");
       }
       fin.imbue(localeCode);
       do {
@@ -85,7 +79,7 @@ void TokenizerTrainer::f_initialize() {
       m_Config["code"].is_null() ? "utf-8" : m_Config["code"]
    );
    if (m_Sentences.empty()) {
-      throw runtime_error("No training sentences found!");
+      throw std::runtime_error("No training sentences found!");
    }
 }
 
