@@ -134,6 +134,7 @@ void TokenizerTrainer::f_train_TP() {
 }
 
 void TokenizerTrainer::f_train_EP() {
+
 }
 
 TokenizerTrainer::c_SinglePreprocessor::c_SinglePreprocessor() {
@@ -211,5 +212,49 @@ void TokenizerTrainer::c_SinglePreprocessor::f_parse_word() {
    m_CharTypes.set_back(CharType::END);
 }
 
-TokenizerTrainer::c_EPTrainer::c_EPTrainer() : m_Sentences(nullptr){
+TokenizerTrainer::c_EPTrainer::c_EPTrainer() : m_ChIndex({}),
+                                               m_ChtIndex({}) {
+}
+
+void TokenizerTrainer::c_EPTrainer::load(
+   std::vector<std::wstring>& sentences,
+   std::vector<CharTypeArray>& char_type_arrays,
+   MarkovChainModel& markov_chain
+) {
+   m_Sentences      = sentences;
+   m_CharTypeArrays = char_type_arrays;
+   m_MarkovModel    = &markov_chain;
+   m_ChIndex.fill(0);
+   m_ChtIndex.fill(0);
+   m_Ch = std::make_pair(
+      m_Sentences[m_ChIndex[0]][m_ChIndex[1]],
+      m_CharTypeArrays[m_ChtIndex[0]].get(m_ChtIndex[1])
+   );
+}
+
+void TokenizerTrainer::c_EPTrainer::run() {
+   do {
+
+   } while (f_read_token_char());
+}
+
+bool TokenizerTrainer::c_EPTrainer::f_read_token_char() {
+   do {
+      m_ChIndex[1]++;
+   } while (m_Sentences[m_ChIndex[0]][m_ChIndex[1]] == L' '
+      && m_ChIndex[1] < m_Sentences[m_ChIndex[0]].size());
+   if (m_ChIndex[1] >= m_Sentences[m_ChIndex[0]].size()) {
+      m_ChIndex[0]++;
+      if (m_ChIndex[0] >= m_Sentences.size()) {
+         return false;
+      }
+      m_ChtIndex[0]++;
+      m_ChIndex[1]  = 0;
+      m_ChtIndex[1] = 0;
+   }
+   m_Ch = std::make_pair(
+      m_Sentences[m_ChIndex[0]][m_ChIndex[1]],
+      m_CharTypeArrays[m_ChtIndex[0]].get(m_ChtIndex[1])
+   );
+   return true;
 }
