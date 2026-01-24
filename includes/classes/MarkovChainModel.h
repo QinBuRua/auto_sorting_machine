@@ -24,11 +24,7 @@ public:
    void set_TP(CharType from, CharType to, double probability);
    void set_EP(wchar_t wch, CharType tp, double probability);
 
-   void set_ISDs(
-      unsigned int singleTimes,
-      unsigned int beginTimes
-   );
-
+   void set_ISDs(unsigned int single_times, unsigned int begin_times);
 
 private:
    double m_InitialStateDistribution[4] = {0.0f, 0.0f, 0.0f, 0.0f};

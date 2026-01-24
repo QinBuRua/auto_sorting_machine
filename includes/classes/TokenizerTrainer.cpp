@@ -18,8 +18,8 @@ using nlohmann::json;
 namespace fs = std::filesystem;
 using namespace QinBuRua::auto_sorting_machine;
 
-TokenizerTrainer::TokenizerTrainer(const json& configJson) {
-   m_Config = configJson;
+TokenizerTrainer::TokenizerTrainer(const json& config_json) {
+   m_Config = config_json;
 }
 
 void TokenizerTrainer::destroy() {
@@ -28,9 +28,9 @@ void TokenizerTrainer::destroy() {
    m_CharTypeArrays.clear();
 }
 
-void TokenizerTrainer::load_config(const nlohmann::json& configJson) {
+void TokenizerTrainer::load_config(const nlohmann::json& config_json) {
    destroy();
-   m_Config = configJson;
+   m_Config = config_json;
 }
 
 void TokenizerTrainer::run() {
@@ -133,6 +133,9 @@ void TokenizerTrainer::f_train_TP() {
    }
 }
 
+void TokenizerTrainer::f_train_EP() {
+}
+
 TokenizerTrainer::c_SinglePreprocessor::c_SinglePreprocessor() {
    m_Sentence = nullptr;
    m_Index    = 0;
@@ -206,4 +209,7 @@ void TokenizerTrainer::c_SinglePreprocessor::f_parse_word() {
       m_CharTypes.push_back(CharType::MIDDLE);
    } while (m_Index + 1 < m_Sentence->size() && !std::iswspace(f_peek_char()));
    m_CharTypes.set_back(CharType::END);
+}
+
+TokenizerTrainer::c_EPTrainer::c_EPTrainer() : m_Sentences(nullptr){
 }

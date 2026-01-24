@@ -173,8 +173,8 @@ void CharTypeArray::destroy() {
    m_Data         = nullptr;
 }
 
-void CharTypeArray::reserve(size_t elementsCapacity) {
-   size_t bytes = (elementsCapacity + 3) / 4;
+void CharTypeArray::reserve(size_t elements_capacity) {
+   size_t bytes = (elements_capacity + 3) / 4;
    if (bytes <= m_ByteCapacity) {
       return;
    }

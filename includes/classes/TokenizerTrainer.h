@@ -18,12 +18,11 @@ namespace QinBuRua::auto_sorting_machine {
 class TokenizerTrainer {
 public:
    TokenizerTrainer() = default;
-   TokenizerTrainer(const nlohmann::json& configJson);
+   TokenizerTrainer(const nlohmann::json& config_json);
 
    void destroy();
-   void load_config(const nlohmann::json& configJson);
+   void load_config(const nlohmann::json& config_json);
    void run();
-
 
 private:
    nlohmann::json m_Config;
@@ -32,7 +31,6 @@ private:
 
    MarkovChainModel m_MarkovModel;
 
-
 private:
    void f_read_files(const std::string& path, const std::string& code = "utf-8");
 
@@ -40,6 +38,8 @@ private:
    void f_preprocess();
    void f_train_ISD();
    void f_train_TP();
+   // void f_train_EP(); //todo
+
 
    class c_SinglePreprocessor {
    public:
@@ -50,7 +50,6 @@ private:
       void load(const std::wstring& sentence);
       void run();
       CharTypeArray& get_result_ref();
-
 
    private:
       const std::wstring* m_Sentence;

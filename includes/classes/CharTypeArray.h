@@ -44,7 +44,7 @@ public:
 
    void clear();
    void destroy();
-   void reserve(size_t elementsCapacity);
+   void reserve(size_t elements_capacity);
    void resize(size_t size);
    void shrink_to_fit();
    std::string dump_sc() const;

@@ -14,8 +14,8 @@ namespace QinBuRua::auto_sorting_machine {
 class Trainer {
 public:
    Trainer() = default;
-   explicit Trainer(const std::string& configFile);
-   explicit Trainer(const nlohmann::json& configJson);
+   explicit Trainer(const std::string& config_file);
+   explicit Trainer(const nlohmann::json& config_json);
 
    void run();
 
