@@ -40,7 +40,7 @@ private:
    void f_preprocess();
    void f_train_ISD();
    void f_train_TP();
-   void f_train_EP();//todo
+   void f_train_EP();
 
 
    class c_SinglePreprocessor {
@@ -65,29 +65,30 @@ private:
    };
 
 
-   class c_EPTrainer {//todo
+   class c_EPTrainer {
    public:
       c_EPTrainer();
 
       void load(
-         std::vector<std::wstring>& sentences,
-         std::vector<CharTypeArray>& char_type_arrays,
+         const std::vector<std::wstring>& sentences,
+         const std::vector<CharTypeArray>& char_type_arrays,
          MarkovChainModel& markov_chain
       );
       void run();
 
    private:
-      std::span<std::wstring> m_Sentences;
-      std::span<CharTypeArray> m_CharTypeArrays;
+      std::span<const std::wstring> m_Sentences;
+      std::span<const CharTypeArray> m_CharTypeArrays;
       MarkovChainModel* m_MarkovModel;
 
       std::array<size_t, 2> m_ChIndex;
       std::array<size_t, 2> m_ChtIndex;
       std::pair<wchar_t, CharType> m_Ch;
 
+      std::unordered_map<wchar_t, std::array<unsigned int, 4>> m_CharToTypeTimes;
+
    private:
       bool f_read_token_char(); //true为正常，false为结束
-
    };
 };
 

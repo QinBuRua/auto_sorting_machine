@@ -5,7 +5,6 @@
 #include <array>
 #include <filesystem>
 #include <fstream>
-#include <iostream>
 #include <numeric>
 #include <string>
 #include <utility>
@@ -38,6 +37,7 @@ void TokenizerTrainer::run() {
    f_preprocess();
    f_train_ISD();
    f_train_TP();
+   f_train_EP();
 }
 
 void TokenizerTrainer::f_read_files(const std::string& path, const std::string& code) {
@@ -134,7 +134,9 @@ void TokenizerTrainer::f_train_TP() {
 }
 
 void TokenizerTrainer::f_train_EP() {
-
+   c_EPTrainer epTrainer;
+   epTrainer.load(m_Sentences, m_CharTypeArrays, m_MarkovModel);
+   epTrainer.run();
 }
 
 TokenizerTrainer::c_SinglePreprocessor::c_SinglePreprocessor() {
@@ -212,13 +214,14 @@ void TokenizerTrainer::c_SinglePreprocessor::f_parse_word() {
    m_CharTypes.set_back(CharType::END);
 }
 
-TokenizerTrainer::c_EPTrainer::c_EPTrainer() : m_ChIndex({}),
+TokenizerTrainer::c_EPTrainer::c_EPTrainer() : m_MarkovModel(nullptr),
+                                               m_ChIndex({}),
                                                m_ChtIndex({}) {
 }
 
 void TokenizerTrainer::c_EPTrainer::load(
-   std::vector<std::wstring>& sentences,
-   std::vector<CharTypeArray>& char_type_arrays,
+   const std::vector<std::wstring>& sentences,
+   const std::vector<CharTypeArray>& char_type_arrays,
    MarkovChainModel& markov_chain
 ) {
    m_Sentences      = sentences;
@@ -234,8 +237,33 @@ void TokenizerTrainer::c_EPTrainer::load(
 
 void TokenizerTrainer::c_EPTrainer::run() {
    do {
-
+      m_CharToTypeTimes[m_Ch.first][std::to_underlying(m_Ch.second)]++;
    } while (f_read_token_char());
+
+   for (const auto& [wch, counts]: m_CharToTypeTimes) {
+      const double allTimes = std::accumulate(counts.begin(), counts.end(), 0);
+
+      m_MarkovModel->set_EP(
+         wch,
+         CharType::SINGLE,
+         counts[std::to_underlying(CharType::SINGLE)] / allTimes
+      );
+      m_MarkovModel->set_EP(
+         wch,
+         CharType::BEGIN,
+         counts[std::to_underlying(CharType::BEGIN)] / allTimes
+      );
+      m_MarkovModel->set_EP(
+         wch,
+         CharType::MIDDLE,
+         counts[std::to_underlying(CharType::MIDDLE)] / allTimes
+      );
+      m_MarkovModel->set_EP(
+         wch,
+         CharType::END,
+         counts[std::to_underlying(CharType::END)] / allTimes
+      );
+   }
 }
 
 bool TokenizerTrainer::c_EPTrainer::f_read_token_char() {
@@ -251,6 +279,8 @@ bool TokenizerTrainer::c_EPTrainer::f_read_token_char() {
       m_ChtIndex[0]++;
       m_ChIndex[1]  = 0;
       m_ChtIndex[1] = 0;
+   } else {
+      m_ChtIndex[1]++;
    }
    m_Ch = std::make_pair(
       m_Sentences[m_ChIndex[0]][m_ChIndex[1]],
