@@ -7,6 +7,7 @@
 
 #include <array>
 #include <unordered_map>
+#include <vector>
 
 #include "CharTypeArray.h"
 
@@ -28,8 +29,10 @@ public:
 
    void set_ISDs(unsigned int single_times, unsigned int begin_times);
 
+   std::vector<uint8_t> get_binary_model_data() const;
+
 private:
-   double m_InitialStateDistribution[4] = {0.0f, 0.0f, 0.0f, 0.0f};
+   double m_InitialStateDistribution[2] = {0.0f, 0.0f};
    double m_TransitionProbability[4][4] = {
       {0.0f, 0.0f, 0.0f, 0.0f},
       {0.0f, 0.0f, 0.0f, 0.0f},

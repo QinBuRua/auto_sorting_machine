@@ -2,6 +2,7 @@
 // Created by QinBu_Rua on 2026/1/17.
 //
 
+#include <algorithm>
 #include <utility>
 
 #include "MarkovChainModel.h"
@@ -49,4 +50,50 @@ void MarkovChainModel::set_ISDs(
 
    m_InitialStateDistribution[0] = single_times / allTimes;
    m_InitialStateDistribution[1] = begin_times / allTimes;
+}
+
+std::vector<uint8_t> MarkovChainModel::get_binary_model_data() const {
+   std::vector<uint8_t> result;
+
+   constexpr size_t isdReqSize = sizeof(double) * 2;
+   constexpr size_t tpReqSize  = sizeof(double) * 4 * 4;
+   const size_t epReqSize      = m_EmissionProbability.size() * (sizeof(wchar_t) + sizeof(double) * 4);
+   const size_t sumReqSize     = isdReqSize + tpReqSize + epReqSize + sizeof(decltype(m_EmissionProbability.size()));
+   result.resize(sumReqSize);
+
+   std::copy_n(
+      reinterpret_cast<const uint8_t*>(m_InitialStateDistribution),
+      isdReqSize,
+      result.data()
+   );
+   std::copy_n(
+      reinterpret_cast<const uint8_t*>(m_TransitionProbability),
+      tpReqSize,
+      result.data() + isdReqSize
+   );
+   size_t index          = isdReqSize + tpReqSize;
+   const auto size_of_ep = m_EmissionProbability.size();
+   std::copy_n(
+      reinterpret_cast<const uint8_t*>(&size_of_ep),
+      sizeof(decltype(size_of_ep)),
+      result.data() + index
+   );
+   index += sizeof(decltype(size_of_ep));
+
+   for (const auto& [key, value]: m_EmissionProbability) {
+      std::copy_n(
+         reinterpret_cast<const uint8_t*>(&key),
+         sizeof(decltype(key)),
+         result.data() + index
+      );
+      index += sizeof(decltype(key));
+      std::copy_n(
+         reinterpret_cast<const uint8_t*>(value.data()),
+         sizeof(double) * 4,
+         result.data() + index
+      );
+      index += sizeof(double) * 4;
+   }
+
+   return result;
 }
