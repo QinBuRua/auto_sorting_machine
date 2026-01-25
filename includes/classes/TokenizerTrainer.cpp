@@ -241,7 +241,8 @@ void TokenizerTrainer::c_EPTrainer::run() {
    } while (f_read_token_char());
 
    for (const auto& [wch, counts]: m_CharToTypeTimes) {
-      const double allTimes = std::accumulate(counts.begin(), counts.end(), 0);
+      const double allTimes = std::accumulate<decltype(counts.begin()), unsigned int>
+         (counts.begin(), counts.end(), 0);
 
       m_MarkovModel->set_EP(
          wch,
