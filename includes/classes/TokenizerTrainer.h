@@ -20,7 +20,7 @@ namespace QinBuRua::auto_sorting_machine {
 class TokenizerTrainer {
 public:
    TokenizerTrainer() = default;
-   TokenizerTrainer(const nlohmann::json& config_json);
+   explicit TokenizerTrainer(const nlohmann::json& config_json);
 
    void destroy();
    void load_config(const nlohmann::json& config_json);
