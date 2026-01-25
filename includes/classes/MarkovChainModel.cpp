@@ -8,6 +8,10 @@
 
 using namespace QinBuRua::auto_sorting_machine;
 
+bool MarkovChainModel::has_EP(wchar_t charType) const {
+   return m_EmissionProbability.contains(charType);
+}
+
 double MarkovChainModel::get_ISD(CharType charType) const {
    return m_InitialStateDistribution[std::to_underlying(charType)];
 }

@@ -16,6 +16,8 @@ class MarkovChainModel {
 public:
    MarkovChainModel() = default;
 
+   bool has_EP(wchar_t charType) const;
+
    double get_ISD(CharType charType) const;
    double get_TP(CharType from, CharType to) const;
    double get_EP(wchar_t wch, CharType tp) const;
