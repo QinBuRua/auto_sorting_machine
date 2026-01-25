@@ -17,6 +17,10 @@ public:
    explicit Trainer(const std::string& config_file);
    explicit Trainer(const nlohmann::json& config_json);
 
+   void clear();
+   void load_config(const std::string& config_file);
+   void load_config(const nlohmann::json& config_json);
+   void load_config(const char* config_file_chptr);
    void run();
 
 private:

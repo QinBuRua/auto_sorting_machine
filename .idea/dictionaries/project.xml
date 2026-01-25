@@ -2,6 +2,7 @@
   <dictionary name="project">
     <words>
       <w>chartype</w>
+      <w>chptr</w>
     </words>
   </dictionary>
 </component>
