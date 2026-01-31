@@ -55,19 +55,19 @@ void MarkovChainModel::set_ISDs(
 std::vector<uint8_t> MarkovChainModel::get_binary_model_data() const {
    std::vector<uint8_t> result;
 
-   constexpr size_t isdReqSize = sizeof(double) * 2;
-   constexpr size_t tpReqSize  = sizeof(double) * 4 * 4;
-   const size_t epReqSize      = m_EmissionProbability.size() * (sizeof(wchar_t) + sizeof(double) * 4);
-   const size_t sumReqSize     = isdReqSize + tpReqSize + epReqSize + sizeof(decltype(m_EmissionProbability.size()));
+   const size_t isdReqSize = sizeof(double) * m_InitialStateDistribution.size();
+   const size_t tpReqSize  = sizeof(double) * m_TransitionProbability.size() * m_TransitionProbability.front().size();
+   const size_t epReqSize  = m_EmissionProbability.size() * (sizeof(wchar_t) + sizeof(double) * 4);
+   const size_t sumReqSize = isdReqSize + tpReqSize + epReqSize + sizeof(decltype(m_EmissionProbability.size()));
    result.resize(sumReqSize);
 
    std::copy_n(
-      reinterpret_cast<const uint8_t*>(m_InitialStateDistribution),
+      reinterpret_cast<const uint8_t*>(m_InitialStateDistribution.data()),
       isdReqSize,
       result.data()
    );
    std::copy_n(
-      reinterpret_cast<const uint8_t*>(m_TransitionProbability),
+      reinterpret_cast<const uint8_t*>(m_TransitionProbability.data()),
       tpReqSize,
       result.data() + isdReqSize
    );

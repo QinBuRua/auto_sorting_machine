@@ -32,13 +32,8 @@ public:
    std::vector<uint8_t> get_binary_model_data() const;
 
 private:
-   double m_InitialStateDistribution[2] = {0.0f, 0.0f};
-   double m_TransitionProbability[4][4] = {
-      {0.0f, 0.0f, 0.0f, 0.0f},
-      {0.0f, 0.0f, 0.0f, 0.0f},
-      {0.0f, 0.0f, 0.0f, 0.0f},
-      {0.0f, 0.0f, 0.0f, 0.0f}
-   };
+   std::array<double,2> m_InitialStateDistribution{};
+   std::array<std::array<double, 4>, 4> m_TransitionProbability{};
    std::unordered_map<wchar_t, std::array<double, 4>> m_EmissionProbability;
 
 };
