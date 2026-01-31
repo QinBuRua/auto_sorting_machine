@@ -10,6 +10,7 @@
 #include <vector>
 
 #include "CharTypeArray.h"
+#include "ModelHeader.h"
 
 namespace QinBuRua::auto_sorting_machine {
 
@@ -32,7 +33,8 @@ public:
    std::vector<uint8_t> get_binary_model_data() const;
 
 private:
-   std::array<double,2> m_InitialStateDistribution{};
+   ModelHeader m_ModelHeader; //todo
+   std::array<double, 2> m_InitialStateDistribution{};
    std::array<std::array<double, 4>, 4> m_TransitionProbability{};
    std::unordered_map<wchar_t, std::array<double, 4>> m_EmissionProbability;
 
