@@ -11,11 +11,15 @@
 #include <vector>
 
 #include "TokenizerTrainer.h"
+#include "details/TokenizerTrainer/EPTrainerHelper.h"
+#include "details/TokenizerTrainer/SinglePreprocessorHelper.h"
 
 using nlohmann::json;
 
 namespace fs = std::filesystem;
 using namespace QinBuRua::auto_sorting_machine;
+using details::tokenizer_trainer::EPTrainerHelper;
+using details::tokenizer_trainer::SinglePreprocessorHelper;
 
 TokenizerTrainer::TokenizerTrainer(const json& config_json) {
    m_Config = config_json;
@@ -87,7 +91,7 @@ void TokenizerTrainer::f_initialize() {
 }
 
 void TokenizerTrainer::f_preprocess() {
-   c_SinglePreprocessor preprocessor;
+   SinglePreprocessorHelper preprocessor;
    for (const auto& sentence: m_Sentences) {
       preprocessor.load(sentence);
       preprocessor.run();
@@ -134,158 +138,8 @@ void TokenizerTrainer::f_train_TP() {
 }
 
 void TokenizerTrainer::f_train_EP() {
-   c_EPTrainer epTrainer;
+   EPTrainerHelper epTrainer;
    epTrainer.load(m_Sentences, m_CharTypeArrays, m_MarkovModel);
    epTrainer.run();
 }
 
-TokenizerTrainer::c_SinglePreprocessor::c_SinglePreprocessor() {
-   m_Sentence = nullptr;
-   m_Index    = 0;
-   m_Char     = '\0';
-}
-
-TokenizerTrainer::c_SinglePreprocessor::c_SinglePreprocessor(const std::wstring& sentence) {
-   m_Sentence = &sentence;
-   m_Index    = 0;
-   while (m_Index < m_Sentence->size()) {
-      if (!std::iswspace((*m_Sentence)[m_Index])) {
-         m_Char = (*m_Sentence)[m_Index];
-         break;
-      }
-      m_Index++;
-   }
-}
-
-void TokenizerTrainer::c_SinglePreprocessor::clear() {
-   m_CharTypes.destroy();
-}
-
-void TokenizerTrainer::c_SinglePreprocessor::load(const std::wstring& sentence) {
-   clear();
-   m_Sentence = &sentence;
-   m_Index    = 0;
-   while (m_Index < m_Sentence->size()) {
-      if (!std::iswspace((*m_Sentence)[m_Index])) {
-         m_Char = (*m_Sentence)[m_Index];
-         break;
-      }
-      m_Index++;
-   }
-}
-
-void TokenizerTrainer::c_SinglePreprocessor::run() {
-   while (m_Index < m_Sentence->size()) {
-      f_parse_word();
-      f_read_token_char();
-   }
-}
-
-CharTypeArray& TokenizerTrainer::c_SinglePreprocessor::get_result_ref() {
-   return m_CharTypes;
-}
-
-wchar_t TokenizerTrainer::c_SinglePreprocessor::f_read_token_char() {
-   m_Index++;
-   while (m_Index < m_Sentence->size()) {
-      if (!std::iswspace((*m_Sentence)[m_Index])) {
-         m_Char = (*m_Sentence)[m_Index];
-         break;
-      }
-      m_Index++;
-   }
-   return m_Char;
-}
-
-wchar_t TokenizerTrainer::c_SinglePreprocessor::f_peek_char() const {
-   return (*m_Sentence)[m_Index + 1];
-}
-
-void TokenizerTrainer::c_SinglePreprocessor::f_parse_word() {
-   if (m_Index + 1 == m_Sentence->size() || std::iswspace(f_peek_char())) {
-      m_CharTypes.push_back(CharType::SINGLE);
-      return;
-   }
-   m_CharTypes.push_back(CharType::BEGIN);
-   do {
-      f_read_token_char();
-      m_CharTypes.push_back(CharType::MIDDLE);
-   } while (m_Index + 1 < m_Sentence->size() && !std::iswspace(f_peek_char()));
-   m_CharTypes.set_back(CharType::END);
-}
-
-TokenizerTrainer::c_EPTrainer::c_EPTrainer() : m_MarkovModel(nullptr),
-                                               m_ChIndex({}),
-                                               m_ChtIndex({}) {
-}
-
-void TokenizerTrainer::c_EPTrainer::load(
-   const std::vector<std::wstring>& sentences,
-   const std::vector<CharTypeArray>& char_type_arrays,
-   MarkovChainModel& markov_chain
-) {
-   m_Sentences      = sentences;
-   m_CharTypeArrays = char_type_arrays;
-   m_MarkovModel    = &markov_chain;
-   m_ChIndex.fill(0);
-   m_ChtIndex.fill(0);
-   m_Ch = std::make_pair(
-      m_Sentences[m_ChIndex[0]][m_ChIndex[1]],
-      m_CharTypeArrays[m_ChtIndex[0]].get(m_ChtIndex[1])
-   );
-}
-
-void TokenizerTrainer::c_EPTrainer::run() {
-   do {
-      m_CharToTypeTimes[m_Ch.first][std::to_underlying(m_Ch.second)]++;
-   } while (f_read_token_char());
-
-   for (const auto& [wch, counts]: m_CharToTypeTimes) {
-      const double allTimes = std::accumulate<decltype(counts.begin()), unsigned int>
-         (counts.begin(), counts.end(), 0);
-
-      m_MarkovModel->set_EP(
-         wch,
-         CharType::SINGLE,
-         counts[std::to_underlying(CharType::SINGLE)] / allTimes
-      );
-      m_MarkovModel->set_EP(
-         wch,
-         CharType::BEGIN,
-         counts[std::to_underlying(CharType::BEGIN)] / allTimes
-      );
-      m_MarkovModel->set_EP(
-         wch,
-         CharType::MIDDLE,
-         counts[std::to_underlying(CharType::MIDDLE)] / allTimes
-      );
-      m_MarkovModel->set_EP(
-         wch,
-         CharType::END,
-         counts[std::to_underlying(CharType::END)] / allTimes
-      );
-   }
-}
-
-bool TokenizerTrainer::c_EPTrainer::f_read_token_char() {
-   do {
-      m_ChIndex[1]++;
-   } while (m_Sentences[m_ChIndex[0]][m_ChIndex[1]] == L' '
-      && m_ChIndex[1] < m_Sentences[m_ChIndex[0]].size());
-   if (m_ChIndex[1] >= m_Sentences[m_ChIndex[0]].size()) {
-      m_ChIndex[0]++;
-      if (m_ChIndex[0] >= m_Sentences.size()) {
-         return false;
-      }
-      m_ChtIndex[0]++;
-      m_ChIndex[1]  = 0;
-      m_ChtIndex[1] = 0;
-   } else {
-      m_ChtIndex[1]++;
-   }
-   m_Ch = std::make_pair(
-      m_Sentences[m_ChIndex[0]][m_ChIndex[1]],
-      m_CharTypeArrays[m_ChtIndex[0]].get(m_ChtIndex[1])
-   );
-   return true;
-}

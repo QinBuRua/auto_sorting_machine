@@ -4,9 +4,11 @@ project(auto_sorting_machine)
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+aux_source_directory(includes/details/TokenizerTrainer DETAILS_TokenizerTrainer_SRC)
 aux_source_directory(includes/classes CLASSES_SRC)
 add_library(CommonCore STATIC
         ${CLASSES_SRC}
+        ${DETAILS_TokenizerTrainer_SRC}
 )
 target_include_directories(CommonCore PUBLIC
         includes
