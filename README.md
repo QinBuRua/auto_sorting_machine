@@ -9,3 +9,7 @@ This project is licensed under the [Apache License](https://www.apache.org/licen
     - 许可证：MIT License
     - 用途：用于处理JSON数据的解析与序列化。
     - 版权：Copyright (c) 2013-2025 Niels Lohmann
+- **[PicoSHA2](https://github.com/okdshin/PicoSHA2)** (版本 master(161cb3f))
+    - 许可证：MIT License
+    - 用途：用于计算数据的哈希值进行版本校验
+    - 版权：Copyright (C) 2017 okdshin
