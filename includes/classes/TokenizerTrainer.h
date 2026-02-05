@@ -22,6 +22,7 @@ public:
 
    void destroy();
    void load_config(const nlohmann::json& config_json);
+   ModelHeader& header();
    void run();
    MarkovChainModel& get_model_ref();
 

@@ -36,6 +36,10 @@ void TokenizerTrainer::load_config(const nlohmann::json& config_json) {
    m_Config = config_json;
 }
 
+ModelHeader& TokenizerTrainer::header() {
+   return m_MarkovModel.header();
+}
+
 void TokenizerTrainer::run() {
    f_initialize();
    f_preprocess();
