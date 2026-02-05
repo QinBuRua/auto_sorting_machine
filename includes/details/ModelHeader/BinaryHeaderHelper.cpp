@@ -51,7 +51,7 @@ void BinaryHeaderHelper::f_binary_version() {
    const auto len = m_Header.m_Version.length();
 
    m_Iter = std::copy_n(
-      reinterpret_cast<const uint8_t*>(len),
+      reinterpret_cast<const uint8_t*>(&len),
       sizeof(len),
       m_Iter
    );
