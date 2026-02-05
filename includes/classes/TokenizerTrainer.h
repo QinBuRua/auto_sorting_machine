@@ -22,16 +22,22 @@ public:
 
    void destroy();
    void load_config(const nlohmann::json& config_json);
-   ModelHeader& header();
    void run();
+
+   ModelHeader& header();
    MarkovChainModel& get_model_ref();
+
+   std::vector<uint8_t> get_model_data(); //包括模型头
 
 private:
    nlohmann::json m_Config;
    std::vector<std::wstring> m_Sentences;
    std::vector<CharTypeArray> m_CharTypeArrays;
 
+   bool m_IsDone = false;
    MarkovChainModel m_MarkovModel;
+   std::vector<uint8_t> m_RawModelData{};
+   std::vector<uint8_t> m_RawHeaderData{};
 
 private:
    void f_read_files(const std::string& path, const std::string& code = "utf-8");
@@ -41,6 +47,7 @@ private:
    void f_train_isd();
    void f_train_tp();
    void f_train_ep();
+   void f_done();
 };
 
 }

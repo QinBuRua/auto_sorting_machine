@@ -9,6 +9,7 @@
 #include <string>
 #include <utility>
 #include <vector>
+#include <ranges>
 
 #include "TokenizerTrainer.h"
 #include "details/TokenizerTrainer/EPTrainerHelper.h"
@@ -17,6 +18,7 @@
 using nlohmann::json;
 
 namespace fs = std::filesystem;
+namespace ranges = std::ranges;
 using namespace QinBuRua::auto_sorting_machine;
 using details::tokenizer_trainer::EPTrainerHelper;
 using details::tokenizer_trainer::SinglePreprocessorHelper;
@@ -41,15 +43,27 @@ ModelHeader& TokenizerTrainer::header() {
 }
 
 void TokenizerTrainer::run() {
+   if (m_IsDone) {
+      throw std::runtime_error("You can't train this model again!");
+   }
    f_initialize();
    f_preprocess();
    f_train_isd();
    f_train_tp();
    f_train_ep();
+   f_done();
 }
 
 MarkovChainModel& TokenizerTrainer::get_model_ref() {
    return m_MarkovModel;
+}
+
+std::vector<uint8_t> TokenizerTrainer::get_model_data() {
+   std::vector<uint8_t> result(m_RawModelData.size() + m_RawHeaderData.size());
+   auto iter = result.begin();
+   iter      = ranges::copy(m_RawHeaderData, iter).out;
+   ranges::copy(m_RawModelData, iter);
+   return result;
 }
 
 void TokenizerTrainer::f_read_files(const std::string& path, const std::string& code) {
@@ -151,3 +165,12 @@ void TokenizerTrainer::f_train_ep() {
    epTrainer.run();
 }
 
+void TokenizerTrainer::f_done() {
+   m_CharTypeArrays.clear();
+   m_Sentences.clear();
+   m_Config.clear();
+
+   m_RawModelData = std::move(m_MarkovModel.get_binary_data());
+   m_MarkovModel.header().set_sha256_from(m_RawModelData);
+   m_RawHeaderData = std::move(m_MarkovModel.header().get_binary_model_data());
+}

@@ -34,7 +34,7 @@ public:
 
    ModelHeader& header();
    ModelHeader header() const;
-   std::vector<uint8_t> get_binary_model_data() const;
+   std::vector<uint8_t> get_binary_data() const;
 
 private:
    ModelHeader m_ModelHeader{};

@@ -63,3 +63,7 @@ void Trainer::load_config(const char* config_file_chptr) {
 void Trainer::run() {
    m_Tokenizer.run();
 }
+
+TokenizerTrainer& Trainer::get_tokenizer_trainer() {
+   return m_Tokenizer;
+}

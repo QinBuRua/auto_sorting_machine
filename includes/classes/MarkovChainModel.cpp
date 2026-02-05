@@ -66,7 +66,7 @@ ModelHeader MarkovChainModel::header() const {
    return m_ModelHeader;
 }
 
-std::vector<uint8_t> MarkovChainModel::get_binary_model_data() const {
+std::vector<uint8_t> MarkovChainModel::get_binary_data() const {
    BinaryModelHelper helper{*this};
    helper.run();
    return std::move(helper.get_data_ref());

@@ -23,6 +23,8 @@ public:
    void load_config(const char* config_file_chptr);
    void run();
 
+   TokenizerTrainer& get_tokenizer_trainer();
+
 private:
    nlohmann::json m_Config;
    TokenizerTrainer m_Tokenizer;
