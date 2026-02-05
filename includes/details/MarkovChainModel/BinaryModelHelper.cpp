@@ -9,7 +9,7 @@
 #include "json.hpp"
 
 namespace ranges = std::ranges;
-using namespace QinBuRua::auto_sorting_machine::markov_chain_model;
+using namespace QinBuRua::auto_sorting_machine::details::markov_chain_model;
 
 BinaryModelHelper::BinaryModelHelper(const MarkovChainModel& model) : m_Model(model) {
 }

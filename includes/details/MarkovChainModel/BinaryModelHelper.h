@@ -9,7 +9,7 @@
 
 #include "classes/MarkovChainModel.h"
 
-namespace QinBuRua::auto_sorting_machine::markov_chain_model {
+namespace QinBuRua::auto_sorting_machine::details::markov_chain_model {
 
 class BinaryModelHelper {
 public:

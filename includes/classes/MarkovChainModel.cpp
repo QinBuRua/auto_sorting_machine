@@ -9,6 +9,7 @@
 #include "details/MarkovChainModel/BinaryModelHelper.h"
 
 using namespace QinBuRua::auto_sorting_machine;
+using namespace details::markov_chain_model;
 
 bool MarkovChainModel::has_EP(wchar_t charType) const {
    return m_EmissionProbability.contains(charType);
@@ -54,7 +55,7 @@ void MarkovChainModel::set_ISDs(
 }
 
 std::vector<uint8_t> MarkovChainModel::get_binary_model_data() const {
-   markov_chain_model::BinaryModelHelper helper{*this};
+   BinaryModelHelper helper{*this};
    helper.run();
    return std::move(helper.get_data_ref());
 }
