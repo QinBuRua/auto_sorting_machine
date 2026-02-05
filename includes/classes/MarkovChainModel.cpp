@@ -11,6 +11,10 @@
 using namespace QinBuRua::auto_sorting_machine;
 using namespace details::markov_chain_model;
 
+MarkovChainModel::MarkovChainModel() {
+   f_initialize_header();
+}
+
 bool MarkovChainModel::has_ep(wchar_t charType) const {
    return m_EmissionProbability.contains(charType);
 }
@@ -66,4 +70,9 @@ std::vector<uint8_t> MarkovChainModel::get_binary_model_data() const {
    BinaryModelHelper helper{*this};
    helper.run();
    return std::move(helper.get_data_ref());
+}
+
+void MarkovChainModel::f_initialize_header() {
+   m_ModelHeader.set_name("markov_chain_model");
+   m_ModelHeader.set_train_time(time(nullptr));
 }

@@ -19,7 +19,7 @@ class BinaryModelHelper;
 
 class MarkovChainModel {
 public:
-   MarkovChainModel() = default;
+   MarkovChainModel();
 
    bool has_ep(wchar_t charType) const;
 
@@ -37,12 +37,15 @@ public:
    std::vector<uint8_t> get_binary_model_data() const;
 
 private:
-   ModelHeader m_ModelHeader;
+   ModelHeader m_ModelHeader{};
    std::array<double, 2> m_InitialStateDistribution{};
    std::array<std::array<double, 4>, 4> m_TransitionProbability{};
    std::unordered_map<wchar_t, std::array<double, 4>> m_EmissionProbability;
 
    friend class details::markov_chain_model::BinaryModelHelper;
+
+private:
+   void f_initialize_header();
 
 };
 
