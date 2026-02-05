@@ -39,9 +39,9 @@ void TokenizerTrainer::load_config(const nlohmann::json& config_json) {
 void TokenizerTrainer::run() {
    f_initialize();
    f_preprocess();
-   f_train_ISD();
-   f_train_TP();
-   f_train_EP();
+   f_train_isd();
+   f_train_tp();
+   f_train_ep();
 }
 
 void TokenizerTrainer::f_read_files(const std::string& path, const std::string& code) {
@@ -101,7 +101,7 @@ void TokenizerTrainer::f_preprocess() {
    }
 }
 
-void TokenizerTrainer::f_train_ISD() {
+void TokenizerTrainer::f_train_isd() {
    std::array<unsigned int, 2> counts{};
    for (auto& ct: m_CharTypeArrays) {
       counts[std::to_underlying(ct.get_front())]++;
@@ -112,7 +112,7 @@ void TokenizerTrainer::f_train_ISD() {
    );
 }
 
-void TokenizerTrainer::f_train_TP() {
+void TokenizerTrainer::f_train_tp() {
    std::array<std::array<unsigned int, 4>, 4> counts{};
    for (const auto& iter: m_CharTypeArrays) {
       if (iter.size() == 1 || iter.empty())
@@ -137,7 +137,7 @@ void TokenizerTrainer::f_train_TP() {
    }
 }
 
-void TokenizerTrainer::f_train_EP() {
+void TokenizerTrainer::f_train_ep() {
    EPTrainerHelper epTrainer;
    epTrainer.load(m_Sentences, m_CharTypeArrays, m_MarkovModel);
    epTrainer.run();

@@ -36,9 +36,9 @@ private:
 
    void f_initialize();
    void f_preprocess();
-   void f_train_ISD();
-   void f_train_TP();
-   void f_train_EP();
+   void f_train_isd();
+   void f_train_tp();
+   void f_train_ep();
 };
 
 }
