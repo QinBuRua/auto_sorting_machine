@@ -28,12 +28,18 @@ enum class ModelMatching:uint8_t {
 class ModelHeader {
    //todo
 public:
-   size_t get_need_capacity() const;
+   [[nodiscard]] size_t get_need_capacity() const;
+
+   [[nodiscard]] std::array<uint8_t, 32> get_sha256() const;
+   [[nodiscard]] std::string get_name() const;
+   [[nodiscard]] std::string get_version() const;
+   [[nodiscard]] std::string get_description() const;
 
    void set_sha256(const std::array<uint8_t, 32>& arr);
    void set_name(const std::string& name);
    void set_version(const std::string& version);
    void set_description(const std::string& description);
+   void add_dependency(uint8_t matching_method, const ModelHeader& header);
 
    template<std::input_iterator Iter>
    void set_sha256_from(Iter begin, Iter end);
@@ -45,12 +51,14 @@ private:
    std::string m_Name;
    std::string m_Version;
    time_t m_TrainTime = 0;
-   std::vector<std::pair<uint8_t, ModelHeader>> m_Dependence{};
+   std::vector<std::pair<uint8_t/*匹配方式*/, ModelHeader>> m_Dependency{};
    std::string m_Description;
 
 private:
-   size_t f_calculate_dependence_need_capacity() const;
+   [[nodiscard]] size_t f_calculate_dependency_require_capacity() const;
 };
+
+
 
 #include "ModelHeader.inl"
 

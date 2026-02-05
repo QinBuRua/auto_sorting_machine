@@ -12,4 +12,5 @@ void ModelHeader::set_sha256_from(Ranges&& ranges) {
    using picosha2::hash256;
    hash256(std::ranges::begin(ranges),std::ranges::end(ranges), m_Sha256.begin(), m_Sha256.end());
 }
+
 #endif // MODELHEADER_INL
