@@ -21,17 +21,17 @@ class MarkovChainModel {
 public:
    MarkovChainModel() = default;
 
-   bool has_EP(wchar_t charType) const;
+   bool has_ep(wchar_t charType) const;
 
-   double get_ISD(CharType charType) const;
-   double get_TP(CharType from, CharType to) const;
-   double get_EP(wchar_t wch, CharType tp) const;
+   double get_isd(CharType charType) const;
+   double get_tp(CharType from, CharType to) const;
+   double get_ep(wchar_t wch, CharType tp) const;
 
-   void set_ISD(CharType charType, double probability);
-   void set_TP(CharType from, CharType to, double probability);
-   void set_EP(wchar_t wch, CharType tp, double probability);
+   void set_isd(CharType charType, double probability);
+   void set_tp(CharType from, CharType to, double probability);
+   void set_ep(wchar_t wch, CharType tp, double probability);
 
-   void set_ISDs(unsigned int single_times, unsigned int begin_times);
+   void set_isd_s(unsigned int single_times, unsigned int begin_times);
 
    std::vector<uint8_t> get_binary_model_data() const;
 

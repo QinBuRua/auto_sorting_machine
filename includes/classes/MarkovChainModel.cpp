@@ -11,19 +11,19 @@
 using namespace QinBuRua::auto_sorting_machine;
 using namespace details::markov_chain_model;
 
-bool MarkovChainModel::has_EP(wchar_t charType) const {
+bool MarkovChainModel::has_ep(wchar_t charType) const {
    return m_EmissionProbability.contains(charType);
 }
 
-double MarkovChainModel::get_ISD(CharType charType) const {
+double MarkovChainModel::get_isd(CharType charType) const {
    return m_InitialStateDistribution[std::to_underlying(charType)];
 }
 
-double MarkovChainModel::get_TP(CharType from, CharType to) const {
+double MarkovChainModel::get_tp(CharType from, CharType to) const {
    return m_TransitionProbability[std::to_underlying(from)][std::to_underlying(to)];
 }
 
-double MarkovChainModel::get_EP(const wchar_t wch, CharType tp) const {
+double MarkovChainModel::get_ep(const wchar_t wch, CharType tp) const {
    auto arr = m_EmissionProbability.find(wch);
    if (arr != m_EmissionProbability.end()) {
       return arr->second[std::to_underlying(tp)];
@@ -32,19 +32,19 @@ double MarkovChainModel::get_EP(const wchar_t wch, CharType tp) const {
    }
 }
 
-void MarkovChainModel::set_ISD(CharType charType, const double probability) {
+void MarkovChainModel::set_isd(CharType charType, const double probability) {
    m_InitialStateDistribution[std::to_underlying(charType)] = probability;
 }
 
-void MarkovChainModel::set_TP(CharType from, CharType to, const double probability) {
+void MarkovChainModel::set_tp(CharType from, CharType to, const double probability) {
    m_TransitionProbability[std::to_underlying(from)][std::to_underlying(to)] = probability;
 }
 
-void MarkovChainModel::set_EP(const wchar_t wch, CharType tp, const double probability) {
+void MarkovChainModel::set_ep(const wchar_t wch, CharType tp, const double probability) {
    m_EmissionProbability[wch][std::to_underlying(tp)] = probability;
 }
 
-void MarkovChainModel::set_ISDs(
+void MarkovChainModel::set_isd_s(
    const unsigned int single_times,
    const unsigned int begin_times
 ) {

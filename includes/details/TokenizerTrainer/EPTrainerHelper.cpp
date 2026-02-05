@@ -40,22 +40,22 @@ void EPTrainerHelper::run() {
       const double allTimes = std::accumulate<decltype(counts.begin()), unsigned int>
          (counts.begin(), counts.end(), 0);
 
-      m_MarkovModel->set_EP(
+      m_MarkovModel->set_ep(
          wch,
          CharType::SINGLE,
          counts[std::to_underlying(CharType::SINGLE)] / allTimes
       );
-      m_MarkovModel->set_EP(
+      m_MarkovModel->set_ep(
          wch,
          CharType::BEGIN,
          counts[std::to_underlying(CharType::BEGIN)] / allTimes
       );
-      m_MarkovModel->set_EP(
+      m_MarkovModel->set_ep(
          wch,
          CharType::MIDDLE,
          counts[std::to_underlying(CharType::MIDDLE)] / allTimes
       );
-      m_MarkovModel->set_EP(
+      m_MarkovModel->set_ep(
          wch,
          CharType::END,
          counts[std::to_underlying(CharType::END)] / allTimes

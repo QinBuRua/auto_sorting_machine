@@ -106,7 +106,7 @@ void TokenizerTrainer::f_train_ISD() {
    for (auto& ct: m_CharTypeArrays) {
       counts[std::to_underlying(ct.get_front())]++;
    }
-   m_MarkovModel.set_ISDs(
+   m_MarkovModel.set_isd_s(
       counts[0],
       counts[1]
    );
@@ -128,7 +128,7 @@ void TokenizerTrainer::f_train_TP() {
          static_cast<unsigned int>(0)
       );
       for (int j = 0; j < 4; j++) {
-         m_MarkovModel.set_TP(
+         m_MarkovModel.set_tp(
             static_cast<CharType>(i),
             static_cast<CharType>(j),
             counts[i][j] / sum
