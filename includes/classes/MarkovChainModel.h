@@ -37,7 +37,7 @@ public:
    std::vector<uint8_t> get_binary_model_data() const;
 
 private:
-   ModelHeader m_ModelHeader; //todo
+   ModelHeader m_ModelHeader;
    std::array<double, 2> m_InitialStateDistribution{};
    std::array<std::array<double, 4>, 4> m_TransitionProbability{};
    std::unordered_map<wchar_t, std::array<double, 4>> m_EmissionProbability;

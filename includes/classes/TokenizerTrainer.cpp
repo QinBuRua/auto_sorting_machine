@@ -44,6 +44,10 @@ void TokenizerTrainer::run() {
    f_train_ep();
 }
 
+MarkovChainModel& TokenizerTrainer::get_model_ref() {
+   return m_MarkovModel;
+}
+
 void TokenizerTrainer::f_read_files(const std::string& path, const std::string& code) {
    if (!(fs::exists(path) && fs::is_directory(path))) {
       throw std::runtime_error("The direction of training files does NOT exist!");
