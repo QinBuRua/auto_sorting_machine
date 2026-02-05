@@ -93,7 +93,7 @@ void BinaryHeaderHelper::f_binary_description() {
    const auto len = m_Header.m_Description.length();
 
    m_Iter = std::copy_n(
-      reinterpret_cast<const uint8_t*>(len),
+      reinterpret_cast<const uint8_t*>(&len),
       sizeof(len),
       m_Iter
    );
