@@ -58,7 +58,8 @@ private:
    [[nodiscard]] size_t f_calculate_dependency_require_capacity() const;
 };
 
-
+template<std::same_as<ModelMatching>... Matchings>
+uint8_t model_match(Matchings... matchings);
 
 #include "ModelHeader.inl"
 

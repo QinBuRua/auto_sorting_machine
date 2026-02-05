@@ -13,4 +13,9 @@ void ModelHeader::set_sha256_from(Ranges&& ranges) {
    hash256(std::ranges::begin(ranges),std::ranges::end(ranges), m_Sha256.begin(), m_Sha256.end());
 }
 
+template<std::same_as<ModelMatching> ... Matchings>
+uint8_t model_match(Matchings... matchings) {
+   return (std::to_underlying(matchings) | ...);
+}
+
 #endif // MODELHEADER_INL
