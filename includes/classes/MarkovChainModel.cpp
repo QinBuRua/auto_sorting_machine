@@ -54,6 +54,14 @@ void MarkovChainModel::set_isd_s(
    m_InitialStateDistribution[1] = begin_times / allTimes;
 }
 
+ModelHeader& MarkovChainModel::header() {
+   return m_ModelHeader;
+}
+
+ModelHeader MarkovChainModel::header() const {
+   return m_ModelHeader;
+}
+
 std::vector<uint8_t> MarkovChainModel::get_binary_model_data() const {
    BinaryModelHelper helper{*this};
    helper.run();

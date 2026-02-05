@@ -30,9 +30,10 @@ public:
    void set_isd(CharType charType, double probability);
    void set_tp(CharType from, CharType to, double probability);
    void set_ep(wchar_t wch, CharType tp, double probability);
-
    void set_isd_s(unsigned int single_times, unsigned int begin_times);
 
+   ModelHeader& header();
+   ModelHeader header() const;
    std::vector<uint8_t> get_binary_model_data() const;
 
 private:
