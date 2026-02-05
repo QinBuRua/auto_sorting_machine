@@ -6,7 +6,7 @@
 #include <utility>
 
 #include "MarkovChainModel.h"
-#include "details/MarkovChain/BinaryModelHelper.h"
+#include "details/MarkovChainModel/BinaryModelHelper.h"
 
 using namespace QinBuRua::auto_sorting_machine;
 
