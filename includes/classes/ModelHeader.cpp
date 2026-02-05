@@ -5,6 +5,7 @@
 #include "picosha2.h"
 
 #include "ModelHeader.h"
+#include "details/ModelHeader/BinaryHeaderHelper.h"
 
 using namespace QinBuRua::auto_sorting_machine;
 
@@ -58,6 +59,12 @@ void ModelHeader::add_dependency(uint8_t matching_method, const ModelHeader& hea
    m_Dependency.emplace_back();
    m_Dependency.back().first = matching_method;
    m_Dependency.back().second = header;
+}
+
+std::vector<uint8_t> ModelHeader::get_binary_model_data() const {
+   details::model_header::BinaryHeaderHelper helper{*this};
+   helper.run();
+   return std::move(helper.get_data_ref());
 }
 
 size_t ModelHeader::f_calculate_dependency_require_capacity() const {

@@ -15,6 +15,9 @@
 #include "picosha2.h"
 
 namespace QinBuRua::auto_sorting_machine {
+namespace details::model_header {
+class BinaryHeaderHelper;
+}
 
 enum class ModelMatching:uint8_t {
    SHA256      = 0b1,
@@ -41,6 +44,8 @@ public:
    void set_description(const std::string& description);
    void add_dependency(uint8_t matching_method, const ModelHeader& header);
 
+   [[nodiscard]] std::vector<uint8_t> get_binary_model_data() const;
+
    template<std::input_iterator Iter>
    void set_sha256_from(Iter begin, Iter end);
    template<std::ranges::input_range Ranges>
@@ -56,6 +61,7 @@ private:
 
 private:
    [[nodiscard]] size_t f_calculate_dependency_require_capacity() const;
+   friend class details::model_header::BinaryHeaderHelper;
 };
 
 template<std::same_as<ModelMatching>... Matchings>
