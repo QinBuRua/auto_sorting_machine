@@ -11,7 +11,7 @@ using namespace QinBuRua::auto_sorting_machine;
 
 using picosha2::hash256;
 
-size_t ModelHeader::get_need_capacity() const{
+size_t ModelHeader::get_need_capacity() const {
    auto size_tNeed      = sizeof(m_Dependency.size());
    auto sha256Need      = 32;
    auto nameNeed        = size_tNeed + m_Name.size();
@@ -35,13 +35,28 @@ std::string ModelHeader::get_version() const {
    return m_Version;
 }
 
+time_t ModelHeader::get_train_time() const {
+   return m_TrainTime;
+}
+
 std::string ModelHeader::get_description() const {
    return m_Description;
+}
+
+std::optional<const ModelHeader::DependencyType> ModelHeader::find_dependency(const std::string& name) const {
+   for (const auto& dependency : m_Dependency) {
+      if (name==dependency.second.get_name()) {
+         return dependency;
+      }
+   }
+   return std::nullopt;
 }
 
 void ModelHeader::set_sha256(const std::array<uint8_t, 32>& arr) {
    m_Sha256 = arr;
 }
+
+
 
 void ModelHeader::set_name(const std::string& name) {
    m_Name = name;
@@ -51,14 +66,22 @@ void ModelHeader::set_version(const std::string& version) {
    m_Version = version;
 }
 
+void ModelHeader::set_train_time(const time_t& train_time) {
+   m_TrainTime = train_time;
+}
+
 void ModelHeader::set_description(const std::string& description) {
    m_Description = description;
 }
 
 void ModelHeader::add_dependency(uint8_t matching_method, const ModelHeader& header) {
    m_Dependency.emplace_back();
-   m_Dependency.back().first = matching_method;
+   m_Dependency.back().first  = matching_method;
    m_Dependency.back().second = header;
+}
+
+const std::vector<ModelHeader::DependencyType>& ModelHeader::dependency(){
+   return m_Dependency;
 }
 
 std::vector<uint8_t> ModelHeader::get_binary_model_data() const {
