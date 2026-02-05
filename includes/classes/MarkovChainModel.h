@@ -13,6 +13,9 @@
 #include "ModelHeader.h"
 
 namespace QinBuRua::auto_sorting_machine {
+namespace markov_chain_model {
+class BinaryModelHelper;
+}
 
 class MarkovChainModel {
 public:
@@ -37,6 +40,8 @@ private:
    std::array<double, 2> m_InitialStateDistribution{};
    std::array<std::array<double, 4>, 4> m_TransitionProbability{};
    std::unordered_map<wchar_t, std::array<double, 4>> m_EmissionProbability;
+
+   friend class markov_chain_model::BinaryModelHelper;
 
 };
 

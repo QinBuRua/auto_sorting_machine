@@ -6,6 +6,7 @@
 #include <utility>
 
 #include "MarkovChainModel.h"
+#include "details/MarkovChain/BinaryModelHelper.h"
 
 using namespace QinBuRua::auto_sorting_machine;
 
@@ -53,47 +54,7 @@ void MarkovChainModel::set_ISDs(
 }
 
 std::vector<uint8_t> MarkovChainModel::get_binary_model_data() const {
-   std::vector<uint8_t> result;
-
-   const size_t isdReqSize = sizeof(double) * m_InitialStateDistribution.size();
-   const size_t tpReqSize  = sizeof(double) * m_TransitionProbability.size() * m_TransitionProbability.front().size();
-   const size_t epReqSize  = m_EmissionProbability.size() * (sizeof(wchar_t) + sizeof(double) * 4);
-   const size_t sumReqSize = isdReqSize + tpReqSize + epReqSize + sizeof(decltype(m_EmissionProbability.size()));
-   result.resize(sumReqSize);
-
-   std::copy_n(
-      reinterpret_cast<const uint8_t*>(m_InitialStateDistribution.data()),
-      isdReqSize,
-      result.data()
-   );
-   std::copy_n(
-      reinterpret_cast<const uint8_t*>(m_TransitionProbability.data()),
-      tpReqSize,
-      result.data() + isdReqSize
-   );
-   size_t index          = isdReqSize + tpReqSize;
-   const auto size_of_ep = m_EmissionProbability.size();
-   std::copy_n(
-      reinterpret_cast<const uint8_t*>(&size_of_ep),
-      sizeof(decltype(size_of_ep)),
-      result.data() + index
-   );
-   index += sizeof(decltype(size_of_ep));
-
-   for (const auto& [key, value]: m_EmissionProbability) {
-      std::copy_n(
-         reinterpret_cast<const uint8_t*>(&key),
-         sizeof(decltype(key)),
-         result.data() + index
-      );
-      index += sizeof(decltype(key));
-      std::copy_n(
-         reinterpret_cast<const uint8_t*>(value.data()),
-         sizeof(double) * 4,
-         result.data() + index
-      );
-      index += sizeof(double) * 4;
-   }
-
-   return result;
+   markov_chain_model::BinaryModelHelper helper{*this};
+   helper.run();
+   return std::move(helper.get_data_ref());
 }

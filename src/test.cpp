@@ -2,6 +2,7 @@
 
 #include "classes/CharTypeArray.h"
 #include "classes/Trainer.h"
+#include "classes/ModelHeader.h"
 
 using std::cout;
 using std::endl;
