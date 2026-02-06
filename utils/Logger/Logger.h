@@ -26,6 +26,10 @@ public:
       const std::source_location& sl = std::source_location::current()
    );
    static void set_log_level(LogLevel level) noexcept; //只有debug等级会包含源码信息
+
+   static std::string get_log_file();
+   static LogLevel get_log_level();
+
    static void log(
       LogLevel level,
       const std::string& message,

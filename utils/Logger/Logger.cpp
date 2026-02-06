@@ -32,6 +32,14 @@ void Logger::set_log_level(LogLevel level) noexcept {
    m_LogLevel = level;
 }
 
+std::string Logger::get_log_file() {
+   return m_FileName;
+}
+
+LogLevel Logger::get_log_level() {
+   return m_LogLevel;
+}
+
 void Logger::log(LogLevel level, const std::string& message, const std::source_location& sl) {
    if (level < m_LogLevel) {
       return;
