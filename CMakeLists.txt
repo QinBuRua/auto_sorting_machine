@@ -4,12 +4,15 @@ project(auto_sorting_machine)
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+aux_source_directory(utils/Logger UTILS_Logger_SRC)
+
 aux_source_directory(includes/details/TokenizerTrainer DETAILS_TokenizerTrainer_SRC)
 aux_source_directory(includes/details/MarkovChainModel DETAILS_MarkovChain_SRC)
 aux_source_directory(includes/details/ModelHeader DETAILS_ModelHeader_SRC)
 aux_source_directory(includes/classes CLASSES_SRC)
 
 add_library(CommonCore STATIC
+        ${UTILS_Logger_SRC}
         ${CLASSES_SRC}
         ${DETAILS_TokenizerTrainer_SRC}
         ${DETAILS_MarkovChain_SRC}
