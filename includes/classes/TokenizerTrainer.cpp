@@ -66,6 +66,28 @@ std::vector<uint8_t> TokenizerTrainer::get_model_data() {
    return result;
 }
 
+void TokenizerTrainer::write_to_file(const std::string& filename, const std::source_location& sl) const {
+   std::ofstream fout(filename, std::ios::binary);
+   if (fout.fail()) {
+      throw std::runtime_error{
+         std::format(
+            "[ERROR][{}][l{}:c{}]Fail to open file \"{}\"",
+            sl.file_name(), sl.line(), sl.column(), filename
+         )
+      };
+   }
+   fout.write(reinterpret_cast<const char*>(m_RawHeaderData.data()), m_RawHeaderData.size());
+   fout.write(reinterpret_cast<const char*>(m_RawModelData.data()), m_RawModelData.size());
+   if (fout.fail()) {
+      throw std::runtime_error{
+         std::format(
+            "[ERROR][{}][l{}:c{}]Fail to write file \"{}\"",
+            sl.file_name(), sl.line(), sl.column(), filename
+         )
+      };
+   }
+}
+
 void TokenizerTrainer::f_read_files(const std::string& path, const std::string& code) {
    if (!(fs::exists(path) && fs::is_directory(path))) {
       throw std::runtime_error("The direction of training files does NOT exist!");

@@ -12,7 +12,7 @@ using namespace QinBuRua::auto_sorting_machine;
 int main() {
    Trainer trainer(std::string(R"(data\train\config.json)"));
    trainer.run();
-   std::vector<uint8_t> data=trainer.get_tokenizer_trainer().get_model_data();
+   trainer.get_tokenizer_trainer().write_to_file(R"(data\model\markov_chain_model.dat)");
 
    return 0;
 }

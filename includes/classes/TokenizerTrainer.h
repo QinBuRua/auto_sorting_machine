@@ -5,6 +5,7 @@
 #ifndef AUTO_SORTING_MACHINE_TOKENIZER_H
 #define AUTO_SORTING_MACHINE_TOKENIZER_H
 
+#include <source_location>
 #include <unordered_map>
 
 #include "json.hpp"
@@ -28,6 +29,7 @@ public:
    MarkovChainModel& get_model_ref();
 
    std::vector<uint8_t> get_model_data(); //包括模型头
+   void write_to_file(const std::string& filename, const std::source_location& sl = std::source_location::current()) const;
 
 private:
    nlohmann::json m_Config;
