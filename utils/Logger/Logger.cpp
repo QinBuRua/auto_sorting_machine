@@ -4,6 +4,7 @@
 
 #include "Logger.h"
 
+#include <chrono>
 #include <fstream>
 #include <utility>
 
@@ -27,7 +28,14 @@ void Logger::set_log_file(const std::string& filename, const std::source_locatio
    }
 }
 
+void Logger::set_log_level(LogLevel level) noexcept {
+   m_LogLevel = level;
+}
+
 void Logger::log(LogLevel level, const std::string& message, const std::source_location& sl) {
+   if (level < m_LogLevel) {
+      return;
+   }
    m_Fout << f_make_message(level, message, sl) << std::endl;
    if (m_Fout.fail()) {
       throw std::runtime_error{
@@ -44,9 +52,27 @@ std::string Logger::m_FileName{};
 
 std::ofstream Logger::m_Fout{};
 
+LogLevel Logger::m_LogLevel;
+
 std::string Logger::f_make_message(LogLevel level, const std::string& message, const std::source_location& sl) {
+   if (m_LogLevel == LogLevel::DEBUG) {
+      return std::format(
+         "[{}][{}][{}][l{}:c{}]{}",
+         f_get_time(),
+         LOGLEVEL_TO_STRING[std::to_underlying(level)],
+         sl.file_name(),
+         sl.line(),
+         sl.column(),
+         message
+      );
+   }
    return std::format(
-      "[{}][{}][l{}:c{}]{}",
-      LOGLEVEL_TO_STRING[std::to_underlying(level)], sl.file_name(), sl.line(), sl.column(), message
+      "[{}][{}]{}",
+      f_get_time(), LOGLEVEL_TO_STRING[std::to_underlying(level)], message
    );
+}
+
+std::string Logger::f_get_time() {
+   auto now = std::chrono::floor<std::chrono::seconds>(std::chrono::system_clock::now());
+   return std::format("{:%Y-%m-%d %H:%M:%S}", now);
 }

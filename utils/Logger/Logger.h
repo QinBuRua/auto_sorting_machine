@@ -25,6 +25,7 @@ public:
       const std::string& filename,
       const std::source_location& sl = std::source_location::current()
    );
+   static void set_log_level(LogLevel level) noexcept; //只有debug等级会包含源码信息
    static void log(
       LogLevel level,
       const std::string& message,
@@ -40,8 +41,11 @@ public:
 private:
    static std::string m_FileName;
    static std::ofstream m_Fout;
+   static LogLevel m_LogLevel;
 
+private:
    static std::string f_make_message(LogLevel level, const std::string& message, const std::source_location& sl);
+   static std::string f_get_time();
 };
 
 }
