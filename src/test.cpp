@@ -12,8 +12,7 @@ using utils::Logger;
 using utils::LogLevel;
 
 int main() {
-   Logger::set_log_file("logs\\latest.txt");
-   Logger::set_log_level(LogLevel::INFO);
+   Logger::auto_initialize();
    Logger::log(LogLevel::INFO, "Begin training");
    Trainer trainer(std::string(R"(data\train\config.json)"));
    trainer.run();

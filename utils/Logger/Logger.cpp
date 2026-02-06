@@ -40,6 +40,22 @@ LogLevel Logger::get_log_level() {
    return m_LogLevel;
 }
 
+void Logger::auto_initialize(LogLevel level, const std::source_location& sl) {
+   m_LogLevel = level;
+   auto now   = std::chrono::floor<std::chrono::seconds>(std::chrono::system_clock::now());
+   m_FileName = std::format("logs\\{:%Y-%m-%d %H.%M.%S}.txt", now);
+   m_Fout.open(m_FileName);
+   if (m_Fout.fail()) {
+      throw std::runtime_error{
+         f_make_message(
+            LogLevel::ERROR,
+            std::format("Fail to open log file \"{}\"", m_FileName),
+            sl
+         )
+      };
+   }
+}
+
 void Logger::log(LogLevel level, const std::string& message, const std::source_location& sl) {
    if (level < m_LogLevel) {
       return;

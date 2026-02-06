@@ -30,6 +30,11 @@ public:
    static std::string get_log_file();
    static LogLevel get_log_level();
 
+   static void auto_initialize(
+      LogLevel level                 = LogLevel::INFO,
+      const std::source_location& sl = std::source_location::current()
+   );
+
    static void log(
       LogLevel level,
       const std::string& message,
