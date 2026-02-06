@@ -57,6 +57,17 @@ private:
    static std::string f_get_time();
 };
 
+namespace log {
+//已经封装好的，直接用，不需要初始化
+
+void debug(const std::string& message, const std::source_location& sl = std::source_location::current());
+void info(const std::string& message, const std::source_location& sl = std::source_location::current());
+void warn(const std::string& message, const std::source_location& sl = std::source_location::current());
+void error(const std::string& message, const std::source_location& sl = std::source_location::current());
+void fatal(const std::string& message, const std::source_location& sl = std::source_location::current());
+
+}
+
 }
 
 

@@ -100,3 +100,38 @@ std::string Logger::f_get_time() {
    auto now = std::chrono::floor<std::chrono::seconds>(std::chrono::system_clock::now());
    return std::format("{:%Y-%m-%d %H:%M:%S}", now);
 }
+
+void log::debug(const std::string& message, const std::source_location& sl) {
+   if (Logger::get_log_file().empty()) {
+      Logger::auto_initialize();
+   }
+   Logger::log(LogLevel::DEBUG, message, sl);
+}
+
+void log::info(const std::string& message, const std::source_location& sl) {
+   if (Logger::get_log_file().empty()) {
+      Logger::auto_initialize();
+   }
+   Logger::log(LogLevel::INFO, message, sl);
+}
+
+void log::warn(const std::string& message, const std::source_location& sl) {
+   if (Logger::get_log_file().empty()) {
+      Logger::auto_initialize();
+   }
+   Logger::log(LogLevel::WARN, message, sl);
+}
+
+void log::error(const std::string& message, const std::source_location& sl) {
+   if (Logger::get_log_file().empty()) {
+      Logger::auto_initialize();
+   }
+   Logger::log(LogLevel::ERROR, message, sl);
+}
+
+void log::fatal(const std::string& message, const std::source_location& sl) {
+   if (Logger::get_log_file().empty()) {
+      Logger::auto_initialize();
+   }
+   Logger::log(LogLevel::FATAL, message, sl);
+}
