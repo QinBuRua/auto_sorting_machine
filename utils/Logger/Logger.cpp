@@ -81,7 +81,7 @@ LogLevel Logger::m_LogLevel;
 std::string Logger::f_make_message(LogLevel level, const std::string& message, const std::source_location& sl) {
    if (m_LogLevel == LogLevel::DEBUG) {
       return std::format(
-         "[{}][{}][{}][l{}:c{}]{}",
+         "[{}][{}][{}][l{}:c{}] {}",
          f_get_time(),
          LOGLEVEL_TO_STRING[std::to_underlying(level)],
          sl.file_name(),
@@ -91,7 +91,7 @@ std::string Logger::f_make_message(LogLevel level, const std::string& message, c
       );
    }
    return std::format(
-      "[{}][{}]{}",
+      "[{}][{}] {}",
       f_get_time(), LOGLEVEL_TO_STRING[std::to_underlying(level)], message
    );
 }
