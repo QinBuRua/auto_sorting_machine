@@ -56,6 +56,7 @@ public:
 
    [[nodiscard]] const std::vector<DependencyType>& dependency();
    [[nodiscard]] std::vector<uint8_t> get_binary_model_data() const;
+   void clear();
 
 private:
    std::array<uint8_t, 32> m_Sha256{};

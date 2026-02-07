@@ -44,8 +44,8 @@ std::string ModelHeader::get_description() const {
 }
 
 std::optional<const ModelHeader::DependencyType> ModelHeader::find_dependency(const std::string& name) const {
-   for (const auto& dependency : m_Dependency) {
-      if (name==dependency.second.get_name()) {
+   for (const auto& dependency: m_Dependency) {
+      if (name == dependency.second.get_name()) {
          return dependency;
       }
    }
@@ -80,7 +80,7 @@ void ModelHeader::add_dependency(uint8_t matching_method, const ModelHeader& hea
    m_Dependency.back().second = header;
 }
 
-const std::vector<ModelHeader::DependencyType>& ModelHeader::dependency(){
+const std::vector<ModelHeader::DependencyType>& ModelHeader::dependency() {
    return m_Dependency;
 }
 
@@ -88,6 +88,15 @@ std::vector<uint8_t> ModelHeader::get_binary_model_data() const {
    details::model_header::BinaryHeaderHelper helper{*this};
    helper.run();
    return std::move(helper.get_data_ref());
+}
+
+void ModelHeader::clear() {
+   m_Sha256.fill(0);
+   m_Name.clear();
+   m_Version.clear();
+   m_TrainTime = 0;
+   m_Dependency.clear();
+   m_Description.clear();
 }
 
 size_t ModelHeader::f_calculate_dependency_require_capacity() const {
