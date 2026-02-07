@@ -6,10 +6,10 @@
 #include <filesystem>
 #include <fstream>
 #include <numeric>
+#include <ranges>
 #include <string>
 #include <utility>
 #include <vector>
-#include <ranges>
 
 #include "TokenizerTrainer.h"
 #include "details/TokenizerTrainer/EPTrainerHelper.h"
