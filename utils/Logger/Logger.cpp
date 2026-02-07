@@ -101,6 +101,16 @@ std::string Logger::f_get_time() {
    return std::format("{:%Y-%m-%d %H:%M:%S}", now);
 }
 
+log::Tag::Tag(const std::source_location& sl) {
+   level    = LogLevel::DEBUG;
+   location = sl;
+}
+
+log::Tag::Tag(LogLevel lvl, const std::source_location& sl) {
+   level    = lvl;
+   location = sl;
+}
+
 void log::debug(const std::string& message, const std::source_location& sl) {
    if (Logger::get_log_file().empty()) {
       Logger::auto_initialize();

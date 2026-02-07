@@ -8,13 +8,19 @@
 using std::cout;
 using std::endl;
 using namespace QinBuRua::auto_sorting_machine;
-using namespace utils::log;
+namespace slog = utils::log;
+using utils::LogLevel;
 
 int main() {
-   info("Begin training");
+   slog::info("Begin training");
    Trainer trainer(std::string(R"(data\train\config.json)"));
    trainer.run();
    trainer.get_tokenizer_trainer().write_to_file(R"(data\model\markov_chain_model.dat)");
+
+   slog::log_throw<std::runtime_error>(
+      slog::Tag{},
+      "Missing"
+   );
 
    return 0;
 }
