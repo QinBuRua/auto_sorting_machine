@@ -6,7 +6,6 @@
 #define AUTO_SORTING_MACHINE_LOGGER_H
 
 #include <cstdint>
-#include <optional>
 #include <source_location>
 #include <string>
 

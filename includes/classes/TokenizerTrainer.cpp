@@ -11,6 +11,8 @@
 #include <utility>
 #include <vector>
 
+#include "Logger/Logger.h"
+
 #include "TokenizerTrainer.h"
 #include "details/TokenizerTrainer/EPTrainerHelper.h"
 #include "details/TokenizerTrainer/SinglePreprocessorHelper.h"
@@ -20,6 +22,7 @@ using nlohmann::json;
 namespace fs = std::filesystem;
 namespace ranges = std::ranges;
 using namespace QinBuRua::auto_sorting_machine;
+namespace slog = utils::log;
 using details::tokenizer_trainer::EPTrainerHelper;
 using details::tokenizer_trainer::SinglePreprocessorHelper;
 
@@ -44,7 +47,10 @@ ModelHeader& TokenizerTrainer::header() {
 
 void TokenizerTrainer::run() {
    if (m_IsDone) {
-      throw std::runtime_error("You can't train this model again!");
+      slog::warn_throw<std::runtime_error>(
+         slog::Tag{},
+         "You can't train this model again!"
+      );
    }
    f_initialize();
    f_preprocess();
@@ -69,28 +75,31 @@ std::vector<uint8_t> TokenizerTrainer::get_model_data() {
 void TokenizerTrainer::write_to_file(const std::string& filename, const std::source_location& sl) const {
    std::ofstream fout(filename, std::ios::binary);
    if (fout.fail()) {
-      throw std::runtime_error{
+      slog::error_throw<std::runtime_error>(
+         slog::Tag{sl},
          std::format(
-            "[ERROR][{}][l{}:c{}]Fail to open file \"{}\"",
-            sl.file_name(), sl.line(), sl.column(), filename
+            "Fail to open file \"{}\"",
+            filename
          )
-      };
+      );
    }
    fout.write(reinterpret_cast<const char*>(m_RawHeaderData.data()), m_RawHeaderData.size());
    fout.write(reinterpret_cast<const char*>(m_RawModelData.data()), m_RawModelData.size());
    if (fout.fail()) {
-      throw std::runtime_error{
+      slog::error_throw<std::runtime_error>(
+         slog::Tag{sl},
          std::format(
-            "[ERROR][{}][l{}:c{}]Fail to write file \"{}\"",
-            sl.file_name(), sl.line(), sl.column(), filename
+            "Fail to write file \"{}\"",
+            filename
          )
-      };
+      );
+
    }
 }
 
 void TokenizerTrainer::f_read_files(const std::string& path, const std::string& code) {
    if (!(fs::exists(path) && fs::is_directory(path))) {
-      throw std::runtime_error("The direction of training files does NOT exist!");
+      slog::error_throw<std::runtime_error>(slog::Tag{}, "The direction of training files does NOT exist!");
    }
    fs::path trainingFilesPath(path);
    std::vector<fs::path> files;
@@ -100,7 +109,7 @@ void TokenizerTrainer::f_read_files(const std::string& path, const std::string& 
       }
    }
    if (files.empty()) {
-      throw std::runtime_error("No training files found!");
+      slog::error_throw<std::runtime_error>(slog::Tag{}, "No training files found!");
    }
    std::locale localeCode;
    if (code == "utf-8") {
@@ -109,7 +118,7 @@ void TokenizerTrainer::f_read_files(const std::string& path, const std::string& 
    for (const auto& file: files) {
       std::wifstream fin(file);
       if (fin.fail()) {
-         throw std::runtime_error("Error opening file \"!" + file.string() + "\"!");
+         slog::error_throw<std::runtime_error>(slog::Tag{}, "Error opening file \"!" + file.string() + "\"!");
       }
       fin.imbue(localeCode);
       do {
@@ -123,14 +132,14 @@ void TokenizerTrainer::f_read_files(const std::string& path, const std::string& 
 
 void TokenizerTrainer::f_initialize() {
    if (m_Config["direction"].is_null()) {
-      throw std::runtime_error("Training config is MISSING!");
+      slog::error_throw<std::runtime_error>(slog::Tag{}, "Training config is MISSING!");
    }
    f_read_files(
       m_Config["direction"],
       m_Config["code"].is_null() ? "utf-8" : m_Config["code"]
    );
    if (m_Sentences.empty()) {
-      throw std::runtime_error("No training sentences found!");
+      slog::error_throw<std::runtime_error>(slog::Tag{}, "No training sentences found!");
    }
 }
 
