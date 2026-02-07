@@ -19,6 +19,13 @@ bool MarkovChainModel::has_ep(wchar_t charType) const {
    return m_EmissionProbability.contains(charType);
 }
 
+void MarkovChainModel::clear() {
+   m_ModelHeader.clear();
+   m_InitialStateDistribution.fill(0);
+   m_TransitionProbability.fill({});
+   m_EmissionProbability.clear();
+}
+
 double MarkovChainModel::get_isd(CharType charType) const {
    return m_InitialStateDistribution[std::to_underlying(charType)];
 }

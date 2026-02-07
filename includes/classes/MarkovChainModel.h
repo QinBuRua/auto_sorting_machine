@@ -22,6 +22,7 @@ public:
    MarkovChainModel();
 
    bool has_ep(wchar_t charType) const;
+   void clear();
 
    double get_isd(CharType charType) const;
    double get_tp(CharType from, CharType to) const;
