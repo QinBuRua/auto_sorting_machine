@@ -102,7 +102,7 @@ std::string Logger::f_get_time() {
 }
 
 log::Tag::Tag(const std::source_location& sl) {
-   level    = LogLevel::DEBUG;
+   level    = LogLevel::WARN;
    location = sl;
 }
 
