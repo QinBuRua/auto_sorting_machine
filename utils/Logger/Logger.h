@@ -35,7 +35,7 @@ public:
       const std::source_location& sl = std::source_location::current()
    );
 
-   static void log(
+   static std::string log(
       LogLevel level,
       const std::string& message,
       const std::source_location& sl = std::source_location::current()

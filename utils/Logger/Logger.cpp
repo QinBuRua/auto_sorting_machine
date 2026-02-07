@@ -56,11 +56,12 @@ void Logger::auto_initialize(LogLevel level, const std::source_location& sl) {
    }
 }
 
-void Logger::log(LogLevel level, const std::string& message, const std::source_location& sl) {
+std::string Logger::log(LogLevel level, const std::string& message, const std::source_location& sl) {
    if (level < m_LogLevel) {
-      return;
+      return {};
    }
-   m_Fout << f_make_message(level, message, sl) << std::endl;
+   std::string result = f_make_message(level, message, sl);
+   m_Fout << result << std::endl;
    if (m_Fout.fail()) {
       throw std::runtime_error{
          f_make_message(
@@ -70,6 +71,7 @@ void Logger::log(LogLevel level, const std::string& message, const std::source_l
          )
       };
    }
+   return std::move(result);
 }
 
 std::string Logger::m_FileName{};
