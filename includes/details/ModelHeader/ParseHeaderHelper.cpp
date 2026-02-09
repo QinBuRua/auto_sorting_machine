@@ -9,18 +9,29 @@
 namespace ranges = std::ranges;
 using namespace QinBuRua::auto_sorting_machine::details::model_header;
 
-ParseHeaderHelper::ParseHeaderHelper(std::span<const uint8_t> data) {
-   load(data);
+ParseHeaderHelper::ParseHeaderHelper() {
 }
 
-void ParseHeaderHelper::load(std::span<const uint8_t> data) {
+ParseHeaderHelper::ParseHeaderHelper(const std::vector<uint8_t>::const_iterator& begin) {
+   load(begin);
+}
+
+void ParseHeaderHelper::load(const std::vector<uint8_t>::const_iterator& begin) {
    m_Header.clear();
-   m_RawData = data;
-   m_Iter    = m_RawData.begin();
+   m_Iter = begin;
 }
 
 void ParseHeaderHelper::run() {
+   f_parse_sha256();
+   f_parse_name();
+   f_parse_version();
+   f_parse_train_time();
+   f_parse_dependency();
+   f_parse_description();
+}
 
+QinBuRua::auto_sorting_machine::ModelHeader& ParseHeaderHelper::get_header_ref() {
+   return m_Header;
 }
 
 void ParseHeaderHelper::f_parse_sha256() {
@@ -28,6 +39,53 @@ void ParseHeaderHelper::f_parse_sha256() {
 }
 
 void ParseHeaderHelper::f_parse_name() {
-   size_t size;
+   uint32_t size;
+   m_Iter = ranges::copy_n(m_Iter, sizeof(uint32_t), reinterpret_cast<uint8_t*>(&size)).in;
+   if (size == 0) {
+      return;
+   }
+   m_Header.m_Name.resize(size);
+   m_Iter = ranges::copy_n(m_Iter, size, m_Header.m_Name.begin()).in;
+}
 
+void ParseHeaderHelper::f_parse_version() {
+   uint32_t size;
+   m_Iter = ranges::copy_n(m_Iter, sizeof(uint32_t), reinterpret_cast<uint8_t*>(&size)).in;
+   if (size == 0) {
+      return;
+   }
+   m_Header.m_Version.resize(size);
+   m_Iter = ranges::copy_n(m_Iter, size, m_Header.m_Version.begin()).in;
+}
+
+void ParseHeaderHelper::f_parse_train_time() {
+   m_Iter = ranges::copy_n(m_Iter, sizeof(m_Header.m_TrainTime), reinterpret_cast<uint8_t*>(&m_Header.m_TrainTime)).in;
+}
+
+void ParseHeaderHelper::f_parse_dependency() {
+   ParseHeaderHelper helper;
+   uint32_t num;
+   m_Iter = ranges::copy_n(m_Iter, sizeof(uint32_t), reinterpret_cast<uint8_t*>(&num)).in;
+   if (num == 0) {
+      return;
+   }
+   auto& dependency = m_Header.m_Dependency;
+   dependency.resize(num);
+   for (uint32_t i = 0; i < num; ++i) {
+      dependency[i].first = *m_Iter;
+      ++m_Iter;
+      helper.load(m_Iter);
+      helper.run();
+      dependency[i].second = std::move(helper.get_header_ref());
+   }
+}
+
+void ParseHeaderHelper::f_parse_description() {
+   uint32_t size;
+   m_Iter = ranges::copy_n(m_Iter, sizeof(uint32_t), reinterpret_cast<uint8_t*>(&size)).in;
+   if (size == 0) {
+      return;
+   }
+   m_Header.m_Description.resize(size);
+   m_Iter = ranges::copy_n(m_Iter, size, m_Header.m_Description.begin()).in;
 }

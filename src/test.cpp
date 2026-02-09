@@ -1,8 +1,9 @@
-#include <iostream>
 #include <fstream>
+#include <iostream>
 
 #include "classes/CharTypeArray.h"
 #include "classes/Trainer.h"
+#include "details/ModelHeader/ParseHeaderHelper.h"
 #include "Logger/Logger.h"
 
 using std::cout;
@@ -10,17 +11,18 @@ using std::endl;
 using namespace QinBuRua::auto_sorting_machine;
 namespace slog = utils::log;
 using utils::LogLevel;
+using details::model_header::ParseHeaderHelper;
 
 int main() {
    slog::info("Begin training");
    Trainer trainer(std::string(R"(data\train\config.json)"));
    trainer.run();
-   trainer.get_tokenizer_trainer().write_to_file(R"(data\model\markov_chain_model.dat)");
+   auto& tokenizerTrainer = trainer.get_tokenizer_trainer();
 
-   slog::log_throw<std::runtime_error>(
-      slog::Tag{},
-      "Missing"
-   );
+   std::vector<uint8_t> rawData = tokenizerTrainer.get_model_data();
+   ParseHeaderHelper parseHelper{rawData.begin()};
+   parseHelper.run();
+   auto header = std::move(parseHelper.get_header_ref());
 
    return 0;
 }

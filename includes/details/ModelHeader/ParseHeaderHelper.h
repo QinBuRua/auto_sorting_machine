@@ -6,7 +6,7 @@
 #define AUTO_SORTING_MACHINE_PARSEHEADERHELPER_H
 
 #include <cstdint>
-#include <span>
+#include <vector>
 
 #include "classes/ModelHeader.h"
 
@@ -14,10 +14,12 @@ namespace QinBuRua::auto_sorting_machine::details::model_header {
 
 class ParseHeaderHelper {
 public:
-   ParseHeaderHelper(std::span<const uint8_t> data);
+   ParseHeaderHelper();
+   ParseHeaderHelper(const std::vector<uint8_t>::const_iterator& begin);
 
-   void load(std::span<const uint8_t> data);
+   void load(const std::vector<uint8_t>::const_iterator& begin);
    void run();
+   ModelHeader& get_header_ref();
 
    ParseHeaderHelper(ParseHeaderHelper&&)                 = delete;
    ParseHeaderHelper(const ParseHeaderHelper&)            = delete;
@@ -25,8 +27,7 @@ public:
    ParseHeaderHelper& operator=(const ParseHeaderHelper&) = delete;
 
 private:
-   std::span<const uint8_t> m_RawData;
-   std::span<const uint8_t>::const_iterator m_Iter;
+   std::vector<uint8_t>::const_iterator m_Iter;
    ModelHeader m_Header{};
 
    void f_parse_sha256();
