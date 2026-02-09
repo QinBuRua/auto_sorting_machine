@@ -5,6 +5,7 @@
 #ifndef AUTO_SORTING_MACHINE_BINARYMODELHELPER_H
 #define AUTO_SORTING_MACHINE_BINARYMODELHELPER_H
 
+#include <cstdint>
 #include <vector>
 
 #include "classes/MarkovChainModel.h"
@@ -29,10 +30,10 @@ private:
    std::vector<uint8_t> m_Data;
    std::vector<uint8_t>::iterator m_Iter;
 
-   size_t m_IsdReqSize;
-   size_t m_TpReqSize;
-   size_t m_EpReqSize;
-   size_t m_SumReqSize;
+   uint32_t m_IsdReqSize;
+   uint32_t m_TpReqSize;
+   uint32_t m_EpReqSize;
+   uint32_t m_SumReqSize;
 
    void f_initialize();
    void f_binary_isd();
