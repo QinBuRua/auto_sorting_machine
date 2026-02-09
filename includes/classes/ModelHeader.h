@@ -18,6 +18,7 @@
 namespace QinBuRua::auto_sorting_machine {
 namespace details::model_header {
 class BinaryHeaderHelper;
+class ParseHeaderHelper;
 }
 
 enum class ModelMatching:uint8_t {
@@ -69,6 +70,7 @@ private:
 private:
    [[nodiscard]] size_t f_calculate_dependency_require_capacity() const;
    friend class details::model_header::BinaryHeaderHelper;
+   friend class details::model_header::ParseHeaderHelper;
 };
 
 template<std::same_as<ModelMatching>... Matchings>
