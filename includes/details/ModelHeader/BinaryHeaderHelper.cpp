@@ -2,6 +2,7 @@
 // Created by QinBu_Rua on 2026/2/5.
 //
 
+#include <cstdint>
 #include <ranges>
 
 #include "BinaryHeaderHelper.h"
@@ -37,65 +38,65 @@ void BinaryHeaderHelper::f_binary_sha256() {
 }
 
 void BinaryHeaderHelper::f_binary_name() {
-   const auto len = m_Header.m_Name.length();
+   uint32_t len = m_Header.m_Name.length();
 
-   m_Iter = std::copy_n(
+   m_Iter = ranges::copy_n(
       reinterpret_cast<const uint8_t*>(&len),
       sizeof(len),
       m_Iter
-   );
-   m_Iter = ranges::copy(std::span{m_Header.m_Name}, m_Iter).out;
+   ).out;
+   m_Iter = ranges::copy_n(m_Header.m_Name.begin(), len, m_Iter).out;
 }
 
 void BinaryHeaderHelper::f_binary_version() {
-   const auto len = m_Header.m_Version.length();
+   const uint32_t len = m_Header.m_Version.length();
 
-   m_Iter = std::copy_n(
+   m_Iter = ranges::copy_n(
       reinterpret_cast<const uint8_t*>(&len),
       sizeof(len),
       m_Iter
-   );
+   ).out;
    m_Iter = ranges::copy(std::span{m_Header.m_Version}, m_Iter).out;
 }
 
 void BinaryHeaderHelper::f_binary_train_time() {
-   m_Iter = std::copy_n(
+   m_Iter = ranges::copy_n(
       reinterpret_cast<const uint8_t*>(&m_Header.m_TrainTime),
       sizeof(m_Header.m_TrainTime),
       m_Iter
-   );
+   ).out;
 }
 
 void BinaryHeaderHelper::f_binary_dependency() {
    const auto& dependency = m_Header.m_Dependency;
-   const auto size        = dependency.size();
-   m_Iter                 = std::copy_n(
+   const uint32_t size    = dependency.size();
+   m_Iter                 = ranges::copy_n(
       reinterpret_cast<const uint8_t*>(&size),
       sizeof(size),
       m_Iter
-   );
+   ).out;
    auto& iter = m_Iter;
    ranges::for_each(
       dependency, [&iter](const auto& dep) {
          const auto& [mtc, val] = dep;
 
-         iter = std::copy_n(
+         iter = ranges::copy_n(
             reinterpret_cast<const uint8_t*>(&mtc),
             sizeof(mtc),
             iter
-         );
+         ).out;
          iter = ranges::copy(val.get_binary_model_data(), iter).out;
       }
    );
 }
 
 void BinaryHeaderHelper::f_binary_description() {
-   const auto len = m_Header.m_Description.length();
+   uint32_t len = m_Header.m_Description.length();
 
-   m_Iter = std::copy_n(
+   m_Iter = ranges::copy_n(
       reinterpret_cast<const uint8_t*>(&len),
       sizeof(len),
       m_Iter
-   );
+   ).out;
    m_Iter = ranges::copy(m_Header.m_Description, m_Iter).out;
 }
