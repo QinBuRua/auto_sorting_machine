@@ -2,6 +2,8 @@
 // Created by QinBu_Rua on 2026/1/31.
 //
 
+#include <cstdint>
+
 #include "picosha2.h"
 
 #include "ModelHeader.h"
@@ -11,14 +13,13 @@ using namespace QinBuRua::auto_sorting_machine;
 
 using picosha2::hash256;
 
-size_t ModelHeader::get_need_capacity() const {
-   auto size_tNeed      = sizeof(m_Dependency.size());
+uint32_t ModelHeader::get_need_capacity() const {
    auto sha256Need      = 32;
-   auto nameNeed        = size_tNeed + m_Name.size();
-   auto versionNeed     = size_tNeed + m_Version.size();
+   auto nameNeed        = sizeof(uint32_t) + m_Name.size();
+   auto versionNeed     = sizeof(uint32_t) + m_Version.size();
    auto trainTimeNeed   = sizeof(m_TrainTime);
    auto dependenceNeed  = f_calculate_dependency_require_capacity();
-   auto descriptionNeed = size_tNeed + m_Description.size();
+   auto descriptionNeed = sizeof(uint32_t) + m_Description.size();
    auto allNeed         = sha256Need + nameNeed + versionNeed + trainTimeNeed + dependenceNeed + descriptionNeed;
    return allNeed;
 }
@@ -35,7 +36,7 @@ std::string ModelHeader::get_version() const {
    return m_Version;
 }
 
-time_t ModelHeader::get_train_time() const {
+uint64_t ModelHeader::get_train_time() const {
    return m_TrainTime;
 }
 
@@ -66,7 +67,7 @@ void ModelHeader::set_version(const std::string& version) {
    m_Version = version;
 }
 
-void ModelHeader::set_train_time(const time_t& train_time) {
+void ModelHeader::set_train_time(const uint64_t& train_time) {
    m_TrainTime = train_time;
 }
 
@@ -99,8 +100,7 @@ void ModelHeader::clear() {
    m_Description.clear();
 }
 
-size_t ModelHeader::f_calculate_dependency_require_capacity() const {
-   auto size_tNeed     = sizeof(m_Dependency.size());
+uint32_t ModelHeader::f_calculate_dependency_require_capacity() const {
    auto dependenceNeed = 0;
    std::ranges::for_each(
       m_Dependency,
@@ -108,5 +108,5 @@ size_t ModelHeader::f_calculate_dependency_require_capacity() const {
          dependenceNeed += sizeof(uint8_t) + header.second.get_need_capacity();
       }
    );
-   return size_tNeed + dependenceNeed;
+   return sizeof(uint32_t) + dependenceNeed;
 }

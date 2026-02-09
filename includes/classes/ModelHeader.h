@@ -35,19 +35,19 @@ public:
    using DependencyType = std::pair<uint8_t/*匹配方式*/, ModelHeader>;
 
 public:
-   [[nodiscard]] size_t get_need_capacity() const;
+   [[nodiscard]] uint32_t get_need_capacity() const;
 
    [[nodiscard]] std::array<uint8_t, 32> get_sha256() const;
    [[nodiscard]] std::string get_name() const;
    [[nodiscard]] std::string get_version() const;
-   [[nodiscard]] time_t get_train_time() const;
+   [[nodiscard]] uint64_t get_train_time() const;
    [[nodiscard]] std::string get_description() const;
    [[nodiscard]] std::optional<const DependencyType> find_dependency(const std::string& name) const;
 
    void set_sha256(const std::array<uint8_t, 32>& arr);
    void set_name(const std::string& name);
    void set_version(const std::string& version);
-   void set_train_time(const time_t& train_time);
+   void set_train_time(const uint64_t& train_time);
    void set_description(const std::string& description);
    void add_dependency(uint8_t matching_method, const ModelHeader& header);
    template<std::input_iterator Iter>
@@ -63,12 +63,12 @@ private:
    std::array<uint8_t, 32> m_Sha256{};
    std::string m_Name;
    std::string m_Version;
-   time_t m_TrainTime = 0;
+   uint64_t m_TrainTime = 0;
    std::vector<DependencyType> m_Dependency{};
    std::string m_Description;
 
 private:
-   [[nodiscard]] size_t f_calculate_dependency_require_capacity() const;
+   [[nodiscard]] uint32_t f_calculate_dependency_require_capacity() const;
    friend class details::model_header::BinaryHeaderHelper;
    friend class details::model_header::ParseHeaderHelper;
 };
