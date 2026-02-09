@@ -6,6 +6,7 @@
 #define AUTO_SORTING_MACHINE_LOGGER_H
 
 #include <cstdint>
+#include <fstream>
 #include <source_location>
 #include <string>
 
@@ -21,40 +22,43 @@ enum class LogLevel:uint8_t {
 
 class Logger {
 public:
-   static void set_log_file(
+   static Logger& instance();
+
+   void set_log_file(
       const std::string& filename,
       const std::source_location& sl = std::source_location::current()
    );
-   static void set_log_level(LogLevel level) noexcept; //只有debug等级会包含源码信息
+   void set_log_level(LogLevel level) noexcept; //只有debug等级会包含源码信息
 
-   static std::string get_log_file();
-   static LogLevel get_log_level();
+   std::string get_log_file() const;
+   LogLevel get_log_level() const;
 
-   static void auto_initialize(
+   void auto_initialize(
       LogLevel level                 = LogLevel::INFO,
       const std::source_location& sl = std::source_location::current()
    );
 
-   static std::string log(
+   std::string log(
       LogLevel level,
       const std::string& message,
       const std::source_location& sl = std::source_location::current()
    );
 
-   Logger()                         = delete;
    Logger(const Logger&)            = delete;
    Logger(Logger&&)                 = delete;
    Logger& operator=(const Logger&) = delete;
    Logger& operator=(Logger&&)      = delete;
 
 private:
-   static std::string m_FileName;
-   static std::ofstream m_Fout;
-   static LogLevel m_LogLevel;
+   std::string m_FileName;
+   std::ofstream m_Fout;
+   LogLevel m_LogLevel;
 
 private:
-   static std::string f_make_message(LogLevel level, const std::string& message, const std::source_location& sl);
-   static std::string f_get_time();
+   Logger();
+
+   std::string f_make_message(LogLevel level, const std::string& message, const std::source_location& sl);
+   static std::string f_get_time_str();
 };
 
 namespace log {

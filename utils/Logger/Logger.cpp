@@ -14,6 +14,11 @@ static const std::string LOGLEVEL_TO_STRING[5] = {
    "DEBUG", "INFO", "WARN", "ERROR", "FATAL"
 };
 
+Logger& Logger::instance() {
+   static Logger loggerInstance{};
+   return loggerInstance;
+}
+
 void Logger::set_log_file(const std::string& filename, const std::source_location& sl) {
    m_FileName = filename;
    m_Fout.open(filename);
@@ -32,11 +37,12 @@ void Logger::set_log_level(LogLevel level) noexcept {
    m_LogLevel = level;
 }
 
-std::string Logger::get_log_file() {
+std::string Logger::get_log_file() const{
    return m_FileName;
 }
 
-LogLevel Logger::get_log_level() {
+LogLevel Logger::get_log_level() const
+{
    return m_LogLevel;
 }
 
@@ -74,17 +80,15 @@ std::string Logger::log(LogLevel level, const std::string& message, const std::s
    return std::move(result);
 }
 
-std::string Logger::m_FileName{};
-
-std::ofstream Logger::m_Fout{};
-
-LogLevel Logger::m_LogLevel;
+Logger::Logger() {
+   auto_initialize();
+}
 
 std::string Logger::f_make_message(LogLevel level, const std::string& message, const std::source_location& sl) {
    if (m_LogLevel == LogLevel::DEBUG) {
       return std::format(
          "[{}][{}][{}][l{}:c{}] {}",
-         f_get_time(),
+         f_get_time_str(),
          LOGLEVEL_TO_STRING[std::to_underlying(level)],
          sl.file_name(),
          sl.line(),
@@ -94,11 +98,11 @@ std::string Logger::f_make_message(LogLevel level, const std::string& message, c
    }
    return std::format(
       "[{}][{}] {}",
-      f_get_time(), LOGLEVEL_TO_STRING[std::to_underlying(level)], message
+      f_get_time_str(), LOGLEVEL_TO_STRING[std::to_underlying(level)], message
    );
 }
 
-std::string Logger::f_get_time() {
+std::string Logger::f_get_time_str() {
    auto now = std::chrono::floor<std::chrono::seconds>(std::chrono::system_clock::now());
    return std::format("{:%Y-%m-%d %H:%M:%S}", now);
 }
@@ -114,36 +118,21 @@ log::Tag::Tag(LogLevel lvl, const std::source_location& sl) {
 }
 
 void log::debug(const std::string& message, const std::source_location& sl) {
-   if (Logger::get_log_file().empty()) {
-      Logger::auto_initialize();
-   }
-   Logger::log(LogLevel::DEBUG, message, sl);
+   Logger::instance().log(LogLevel::DEBUG, message, sl);
 }
 
 void log::info(const std::string& message, const std::source_location& sl) {
-   if (Logger::get_log_file().empty()) {
-      Logger::auto_initialize();
-   }
-   Logger::log(LogLevel::INFO, message, sl);
+   Logger::instance().log(LogLevel::INFO, message, sl);
 }
 
 void log::warn(const std::string& message, const std::source_location& sl) {
-   if (Logger::get_log_file().empty()) {
-      Logger::auto_initialize();
-   }
-   Logger::log(LogLevel::WARN, message, sl);
+   Logger::instance().log(LogLevel::WARN, message, sl);
 }
 
 void log::error(const std::string& message, const std::source_location& sl) {
-   if (Logger::get_log_file().empty()) {
-      Logger::auto_initialize();
-   }
-   Logger::log(LogLevel::ERROR, message, sl);
+   Logger::instance().log(LogLevel::ERROR, message, sl);
 }
 
 void log::fatal(const std::string& message, const std::source_location& sl) {
-   if (Logger::get_log_file().empty()) {
-      Logger::auto_initialize();
-   }
-   Logger::log(LogLevel::FATAL, message, sl);
+   Logger::instance().log(LogLevel::FATAL, message, sl);
 }

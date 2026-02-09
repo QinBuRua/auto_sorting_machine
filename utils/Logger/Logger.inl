@@ -7,11 +7,8 @@ void log::log_throw(Tag tag, Args&&... args) {
       std::is_base_of_v<std::exception, T>,
       "T must base on std::exception"
    );
-   if (Logger::get_log_file().empty()) {
-      Logger::auto_initialize();
-   }
    T exc{std::forward<Args>(args)...};
-   Logger::log(tag.level, exc.what(), tag.location);
+   Logger::instance().log(tag.level, exc.what(), tag.location);
    throw exc;
 }
 
