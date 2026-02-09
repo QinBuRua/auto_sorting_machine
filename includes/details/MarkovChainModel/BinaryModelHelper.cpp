@@ -3,11 +3,13 @@
 //
 
 #include <ranges>
+#include <stdfloat>
 
 #include "BinaryModelHelper.h"
 
 #include "json.hpp"
 
+using std::float64_t;
 namespace ranges = std::ranges;
 using namespace QinBuRua::auto_sorting_machine::details::markov_chain_model;
 
@@ -26,9 +28,9 @@ std::vector<uint8_t>& BinaryModelHelper::get_data_ref() {
 }
 
 void BinaryModelHelper::f_initialize() {
-   m_IsdReqSize = sizeof(double) * 2;
-   m_TpReqSize  = sizeof(double) * 4 * 4;
-   m_EpReqSize  = m_Model.m_EmissionProbability.size() * (sizeof(wchar_t) + sizeof(double) * 4);
+   m_IsdReqSize = sizeof(float64_t) * 2;
+   m_TpReqSize  = sizeof(float64_t) * 4 * 4;
+   m_EpReqSize  = m_Model.m_EmissionProbability.size() * (sizeof(wchar_t) + sizeof(float64_t) * 4);
    m_SumReqSize = m_IsdReqSize + m_TpReqSize + m_EpReqSize + sizeof(decltype(m_Model.m_EmissionProbability.size()));
 
    m_Data.resize(m_SumReqSize);
@@ -51,7 +53,7 @@ void BinaryModelHelper::f_binary_tp() {
       [&iter](const auto& arr)-> void {
          iter = std::copy_n(
             reinterpret_cast<const uint8_t*>(arr.data()),
-            sizeof(double) * 4,
+            sizeof(float64_t) * 4,
             iter
          );
       }
@@ -60,7 +62,7 @@ void BinaryModelHelper::f_binary_tp() {
 
 void BinaryModelHelper::f_binary_ep() {
    auto pairs = m_Model.m_EmissionProbability
-      | ranges::to<std::vector<std::pair<wchar_t, std::array<double, 4>>>>();
+      | ranges::to<std::vector<std::pair<wchar_t, std::array<float64_t, 4>>>>();
    ranges::sort(pairs);
 
    auto& iter = m_Iter;
@@ -74,7 +76,7 @@ void BinaryModelHelper::f_binary_ep() {
          );
          iter = std::copy_n(
             reinterpret_cast<const uint8_t*>(pair.second.data()),
-            sizeof(double) * 4,
+            sizeof(float64_t) * 4,
             iter
          );
       }

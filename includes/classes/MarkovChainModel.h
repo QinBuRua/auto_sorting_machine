@@ -6,6 +6,7 @@
 #define AUTO_SORTING_MACHINE_MARKOVCHAINMODEL_H
 
 #include <array>
+#include <stdfloat>
 #include <unordered_map>
 #include <vector>
 
@@ -24,13 +25,13 @@ public:
    bool has_ep(wchar_t charType) const;
    void clear();
 
-   double get_isd(CharType charType) const;
-   double get_tp(CharType from, CharType to) const;
-   double get_ep(wchar_t wch, CharType tp) const;
+   std::float64_t get_isd(CharType charType) const;
+   std::float64_t get_tp(CharType from, CharType to) const;
+   std::float64_t get_ep(wchar_t wch, CharType tp) const;
 
-   void set_isd(CharType charType, double probability);
-   void set_tp(CharType from, CharType to, double probability);
-   void set_ep(wchar_t wch, CharType tp, double probability);
+   void set_isd(CharType charType, std::float64_t probability);
+   void set_tp(CharType from, CharType to, std::float64_t probability);
+   void set_ep(wchar_t wch, CharType tp, std::float64_t probability);
    void set_isd_s(unsigned int single_times, unsigned int begin_times);
 
    ModelHeader& header();
@@ -39,9 +40,9 @@ public:
 
 private:
    ModelHeader m_ModelHeader{};
-   std::array<double, 2> m_InitialStateDistribution{};
-   std::array<std::array<double, 4>, 4> m_TransitionProbability{};
-   std::unordered_map<wchar_t, std::array<double, 4>> m_EmissionProbability;
+   std::array<std::float64_t, 2> m_InitialStateDistribution{};
+   std::array<std::array<std::float64_t, 4>, 4> m_TransitionProbability{};
+   std::unordered_map<wchar_t, std::array<std::float64_t, 4>> m_EmissionProbability;
 
    friend class details::markov_chain_model::BinaryModelHelper;
 
