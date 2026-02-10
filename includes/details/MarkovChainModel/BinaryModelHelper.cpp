@@ -30,7 +30,7 @@ std::vector<uint8_t>& BinaryModelHelper::get_data_ref() {
 void BinaryModelHelper::f_initialize() {
    m_IsdReqSize = sizeof(float64_t) * 2;
    m_TpReqSize  = sizeof(float64_t) * 4 * 4;
-   m_EpReqSize  = m_Model.m_EmissionProbability.size() * (sizeof(wchar_t) + sizeof(float64_t) * 4);
+   m_EpReqSize  = sizeof(uint32_t) + m_Model.m_EmissionProbability.size() * (sizeof(wchar_t) + sizeof(float64_t) * 4);
    m_SumReqSize = m_IsdReqSize + m_TpReqSize + m_EpReqSize + sizeof(decltype(m_Model.m_EmissionProbability.size()));
 
    m_Data.resize(m_SumReqSize);
@@ -65,6 +65,12 @@ void BinaryModelHelper::f_binary_ep() {
       | ranges::to<std::vector<std::pair<wchar_t, std::array<float64_t, 4>>>>();
    ranges::sort(pairs);
 
+   const uint32_t size = pairs.size();
+   m_Iter              = ranges::copy_n(
+      reinterpret_cast<const uint8_t*>(&size),
+      sizeof(size),
+      m_Iter
+   ).out;
    auto& iter = m_Iter;
    ranges::for_each(
       pairs,
