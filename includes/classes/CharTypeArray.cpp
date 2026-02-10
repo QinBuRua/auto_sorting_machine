@@ -131,7 +131,7 @@ CharType CharTypeArray::get_back() const {
 
 void CharTypeArray::set(size_t index, CharType value) {
    m_Data[index / 4] &= ~(0b11 << (index % 4 * 2));
-   m_Data[index / 4] |= static_cast<uint8_t>(value) << (index % 4 * 2);
+   m_Data[index / 4] |= std::to_underlying(value) << (index % 4 * 2);
 }
 
 void CharTypeArray::set_front(CharType value) {
@@ -147,7 +147,7 @@ void CharTypeArray::push_back(CharType value) {
       m_Size         = 1;
       m_ByteCapacity = 1;
       m_Data         = std::make_unique<uint8_t[]>(m_ByteCapacity);
-      m_Data[0]      = static_cast<uint8_t>(value);
+      m_Data[0]      = std::to_underlying(value);
       return;
    }
    if (m_Size >= m_ByteCapacity * 4) {
@@ -156,7 +156,7 @@ void CharTypeArray::push_back(CharType value) {
       m_Data         = std::move(tmp);
       m_ByteCapacity *= 2;
    }
-   m_Data[m_Size / 4] |= static_cast<uint8_t>(value) << (m_Size % 4 * 2);
+   m_Data[m_Size / 4] |= std::to_underlying(value) << (m_Size % 4 * 2);
    ++m_Size;
 }
 
