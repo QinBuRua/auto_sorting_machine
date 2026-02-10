@@ -38,6 +38,10 @@ private:
    void f_initialize(); //todo
 };
 
+inline ReadModelHelper::ReadModelHelper(const std::string& filename) {
+
+}
+
 }
 
 

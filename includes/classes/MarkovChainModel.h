@@ -16,6 +16,7 @@
 namespace QinBuRua::auto_sorting_machine {
 namespace details::markov_chain_model {
 class BinaryModelHelper;
+class ParseModelHelper;
 }
 
 class MarkovChainModel {
@@ -45,6 +46,7 @@ private:
    std::unordered_map<wchar_t, std::array<std::float64_t, 4>> m_EmissionProbability;
 
    friend class details::markov_chain_model::BinaryModelHelper;
+   friend class details::markov_chain_model::ParseModelHelper;
 
 private:
    void f_initialize_header();
