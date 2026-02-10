@@ -20,7 +20,7 @@ void BinaryModelHelper::run() {
    f_initialize();
    f_binary_isd();
    f_binary_tp();
-   f_binary_isd();
+   f_binary_ep();
 }
 
 std::vector<uint8_t>& BinaryModelHelper::get_data_ref() {
