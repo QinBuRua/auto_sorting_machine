@@ -34,6 +34,10 @@ QinBuRua::auto_sorting_machine::ModelHeader& ParseHeaderHelper::get_header_ref()
    return m_Header;
 }
 
+std::vector<uint8_t>::const_iterator ParseHeaderHelper::get_iter() const{
+   return m_Iter;
+}
+
 void ParseHeaderHelper::f_parse_sha256() {
    m_Iter = ranges::copy_n(m_Iter, 32, m_Header.m_Sha256.begin()).in;
 }

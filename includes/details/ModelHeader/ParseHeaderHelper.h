@@ -20,6 +20,7 @@ public:
    void load(const std::vector<uint8_t>::const_iterator& begin);
    void run();
    ModelHeader& get_header_ref();
+   [[nodiscard]] std::vector<uint8_t>::const_iterator get_iter() const;
 
    ParseHeaderHelper(ParseHeaderHelper&&)                 = delete;
    ParseHeaderHelper(const ParseHeaderHelper&)            = delete;
