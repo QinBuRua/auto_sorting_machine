@@ -19,8 +19,6 @@ const std::string QinBuRua::auto_sorting_machine::CHARTYPE_TO_STR[4] = {
    "END"
 };
 
-const char CharTypeArray::m_CHARTYPE_TO_SINGLE_CHAR[4] = {'S', 'B', 'M', 'E'};
-
 CharTypeArray::CharTypeArray() {
    m_ByteCapacity = 0;
    m_Size         = 0;
@@ -230,3 +228,5 @@ std::string CharTypeArray::dump_sc() const {
    }
    return result;
 }
+
+const char CharTypeArray::m_CHARTYPE_TO_SINGLE_CHAR[4] = {'S', 'B', 'M', 'E'};
