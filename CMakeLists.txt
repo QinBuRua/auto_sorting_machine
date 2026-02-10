@@ -1,16 +1,8 @@
 cmake_minimum_required(VERSION 4.0)
 project(auto_sorting_machine)
-include(FetchContent)
 
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-
-FetchContent_Declare(
-        utfcpp
-        GIT_REPOSITORY https://github.com/nemtrif/utfcpp.git
-        GIT_TAG v4.0.9
-)
-FetchContent_MakeAvailable(utfcpp)
 
 aux_source_directory(utils/Logger UTILS_Logger_SRC)
 
@@ -30,7 +22,6 @@ target_include_directories(CommonCore PUBLIC
         includes
         utils
 )
-target_link_libraries(CommonCore PRIVATE utfcpp)
 
 add_executable(auto_sorting_machine
         src/main.cpp
