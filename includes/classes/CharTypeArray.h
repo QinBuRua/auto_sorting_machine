@@ -5,7 +5,7 @@
 #ifndef AUTO_SORTING_MACHINE_CHARTYPEARRAY_H
 #define AUTO_SORTING_MACHINE_CHARTYPEARRAY_H
 
-#include <charconv>
+#include <cstdint>
 #include <memory>
 #include <string>
 
@@ -23,7 +23,7 @@ extern const std::string CHARTYPE_TO_STR[4];
 class CharTypeArray {
 public:
    CharTypeArray();
-   CharTypeArray(size_t size);
+   CharTypeArray(uint32_t size);
    CharTypeArray(const CharTypeArray& other);
    CharTypeArray(CharTypeArray&& other) noexcept;
 
@@ -31,27 +31,27 @@ public:
    CharTypeArray& operator=(CharTypeArray&& other) noexcept;
 
    [[nodiscard]] bool empty() const;
-   [[nodiscard]] size_t size() const;
-   [[nodiscard]] size_t capacity() const;
+   [[nodiscard]] uint32_t size() const;
+   [[nodiscard]] uint32_t capacity() const;
 
-   [[nodiscard]] CharType get(size_t index) const;
+   [[nodiscard]] CharType get(uint32_t index) const;
    CharType get_front() const;
    CharType get_back() const;
-   void set(size_t index, CharType value);
+   void set(uint32_t index, CharType value);
    void set_front(CharType value);
    void set_back(CharType value);
    void push_back(CharType value);
 
    void clear();
    void destroy();
-   void reserve(size_t elements_capacity);
-   void resize(size_t size);
+   void reserve(uint32_t elements_capacity);
+   void resize(uint32_t size);
    void shrink_to_fit();
    std::string dump_sc() const;
 
 private:
-   size_t m_Size;
-   size_t m_ByteCapacity;
+   uint32_t m_Size;
+   uint32_t m_ByteCapacity;
    std::unique_ptr<uint8_t[]> m_Data;
 
 private:
