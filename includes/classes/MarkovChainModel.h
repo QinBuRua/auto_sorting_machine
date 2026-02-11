@@ -23,16 +23,16 @@ class MarkovChainModel {
 public:
    MarkovChainModel();
 
-   bool has_ep(wchar_t charType) const;
+   bool has_ep(char16_t charType) const;
    void clear();
 
    std::float64_t get_isd(CharType charType) const;
    std::float64_t get_tp(CharType from, CharType to) const;
-   std::float64_t get_ep(wchar_t wch, CharType tp) const;
+   std::float64_t get_ep(char16_t wch, CharType tp) const;
 
    void set_isd(CharType charType, std::float64_t probability);
    void set_tp(CharType from, CharType to, std::float64_t probability);
-   void set_ep(wchar_t wch, CharType tp, std::float64_t probability);
+   void set_ep(char16_t wch, CharType tp, std::float64_t probability);
    void set_isd_s(unsigned int single_times, unsigned int begin_times);
 
    ModelHeader& header();
@@ -43,7 +43,7 @@ private:
    ModelHeader m_ModelHeader{};
    std::array<std::float64_t, 2> m_InitialStateDistribution{};
    std::array<std::array<std::float64_t, 4>, 4> m_TransitionProbability{};
-   std::unordered_map<wchar_t, std::array<std::float64_t, 4>> m_EmissionProbability;
+   std::unordered_map<char16_t, std::array<std::float64_t, 4>> m_EmissionProbability;
 
    friend class details::markov_chain_model::BinaryModelHelper;
    friend class details::markov_chain_model::ParseModelHelper;

@@ -17,7 +17,7 @@ MarkovChainModel::MarkovChainModel() {
    f_initialize_header();
 }
 
-bool MarkovChainModel::has_ep(wchar_t charType) const {
+bool MarkovChainModel::has_ep(char16_t charType) const {
    return m_EmissionProbability.contains(charType);
 }
 
@@ -36,7 +36,7 @@ float64_t MarkovChainModel::get_tp(CharType from, CharType to) const {
    return m_TransitionProbability[std::to_underlying(from)][std::to_underlying(to)];
 }
 
-float64_t MarkovChainModel::get_ep(const wchar_t wch, CharType tp) const {
+float64_t MarkovChainModel::get_ep(const char16_t wch, CharType tp) const {
    auto arr = m_EmissionProbability.find(wch);
    if (arr != m_EmissionProbability.end()) {
       return arr->second[std::to_underlying(tp)];
@@ -53,7 +53,7 @@ void MarkovChainModel::set_tp(CharType from, CharType to, const float64_t probab
    m_TransitionProbability[std::to_underlying(from)][std::to_underlying(to)] = probability;
 }
 
-void MarkovChainModel::set_ep(const wchar_t wch, CharType tp, const float64_t probability) {
+void MarkovChainModel::set_ep(const char16_t wch, CharType tp, const float64_t probability) {
    m_EmissionProbability[wch][std::to_underlying(tp)] = probability;
 }
 
