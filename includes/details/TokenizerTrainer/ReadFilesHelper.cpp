@@ -66,11 +66,11 @@ void ReadFilesHelper::f_read_file(const std::filesystem::path& file_path, const 
          );
       }
    }
-   if (file_stream.fail()) {
+   if (file_stream.eof()) {
+      slog::info(std::format("Complete reading file \"{}\"", file_path.string()));
+   } else if (file_stream.fail()) {
       slog::warn(std::format("Fail to read line {} in file \"{}\"", line_number, file_path.string()), sl);
       slog::info(std::format("Close file \"{}\"", file_path.string()));
-   } else if (file_stream.eof()) {
-      slog::info(std::format("Complete reading file \"{}\"", file_path.string()));
    } else {
       slog::error_throw<std::runtime_error>(
          slog::Tag{sl},
