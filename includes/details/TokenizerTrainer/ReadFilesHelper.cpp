@@ -39,6 +39,10 @@ void ReadFilesHelper::run(const std::source_location& sl) {
    f_read_files(sl);
 }
 
+std::vector<std::u16string>& ReadFilesHelper::get_data_ref() {
+   return m_TrainData;
+}
+
 void ReadFilesHelper::f_read_file(const std::filesystem::path& file_path, const std::source_location& sl) {
    std::ifstream file_stream{file_path};
    if (file_stream.fail()) {

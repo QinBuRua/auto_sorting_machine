@@ -20,6 +20,7 @@ public:
    void clear();
    void load(const std::string& path, const std::source_location& sl = std::source_location::current());
    void run(const std::source_location& sl = std::source_location::current());
+   std::vector<std::u16string>& get_data_ref();
 
    ReadFilesHelper(ReadFilesHelper&&)                 = delete;
    ReadFilesHelper(const ReadFilesHelper&)            = delete;
