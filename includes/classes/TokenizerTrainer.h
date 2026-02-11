@@ -5,6 +5,7 @@
 #ifndef AUTO_SORTING_MACHINE_TOKENIZER_H
 #define AUTO_SORTING_MACHINE_TOKENIZER_H
 
+#include <string>
 #include <source_location>
 #include <unordered_map>
 
@@ -33,7 +34,7 @@ public:
 
 private:
    nlohmann::json m_Config;
-   std::vector<std::wstring> m_Sentences;
+   std::vector<std::u16string> m_Sentences;
    std::vector<CharTypeArray> m_CharTypeArrays;
 
    bool m_IsDone = false;

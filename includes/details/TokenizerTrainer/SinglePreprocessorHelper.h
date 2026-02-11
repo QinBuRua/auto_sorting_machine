@@ -9,28 +9,26 @@
 
 #include "classes/CharTypeArray.h"
 
-
-
 namespace QinBuRua::auto_sorting_machine::details::tokenizer_trainer {
 
 class SinglePreprocessorHelper {
 public:
    SinglePreprocessorHelper();
-   SinglePreprocessorHelper(const std::wstring& sentence);
+   SinglePreprocessorHelper(const std::u16string& sentence);
 
    void clear();
-   void load(const std::wstring& sentence);
+   void load(const std::u16string& sentence);
    void run();
    CharTypeArray& get_result_ref();
 
 private:
-   const std::wstring* m_Sentence;
+   const std::u16string* m_Sentence;
    CharTypeArray m_CharTypes;
    size_t m_Index;
-   wchar_t m_Char;
+   char16_t m_Char;
 
-   wchar_t f_read_token_char();
-   [[nodiscard]] wchar_t f_peek_char() const;
+   char16_t f_read_token_char();
+   [[nodiscard]] char16_t f_peek_char() const;
    void f_parse_word();
 };
 

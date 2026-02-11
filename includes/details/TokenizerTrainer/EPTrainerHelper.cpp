@@ -16,7 +16,7 @@ EPTrainerHelper::EPTrainerHelper() : m_MarkovModel(nullptr),
 }
 
 void EPTrainerHelper::load(
-   const std::vector<std::wstring>& sentences,
+   const std::vector<std::u16string>& sentences,
    const std::vector<CharTypeArray>& char_type_arrays,
    MarkovChainModel& markov_chain
 ) {

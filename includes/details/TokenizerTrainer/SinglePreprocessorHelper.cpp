@@ -14,7 +14,7 @@ SinglePreprocessorHelper::SinglePreprocessorHelper() {
    m_Char     = '\0';
 }
 
-SinglePreprocessorHelper::SinglePreprocessorHelper(const std::wstring& sentence) {
+SinglePreprocessorHelper::SinglePreprocessorHelper(const std::u16string& sentence) {
    m_Sentence = &sentence;
    m_Index    = 0;
    while (m_Index < m_Sentence->size()) {
@@ -30,7 +30,7 @@ void SinglePreprocessorHelper::clear() {
    m_CharTypes.destroy();
 }
 
-void SinglePreprocessorHelper::load(const std::wstring& sentence) {
+void SinglePreprocessorHelper::load(const std::u16string& sentence) {
    clear();
    m_Sentence = &sentence;
    m_Index    = 0;
@@ -54,7 +54,7 @@ CharTypeArray& SinglePreprocessorHelper::get_result_ref() {
    return m_CharTypes;
 }
 
-wchar_t SinglePreprocessorHelper::f_read_token_char() {
+char16_t SinglePreprocessorHelper::f_read_token_char() {
    m_Index++;
    while (m_Index < m_Sentence->size()) {
       if (!std::iswspace((*m_Sentence)[m_Index])) {
@@ -66,7 +66,7 @@ wchar_t SinglePreprocessorHelper::f_read_token_char() {
    return m_Char;
 }
 
-wchar_t SinglePreprocessorHelper::f_peek_char() const {
+char16_t SinglePreprocessorHelper::f_peek_char() const {
    return (*m_Sentence)[m_Index + 1];
 }
 

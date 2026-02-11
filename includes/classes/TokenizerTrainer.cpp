@@ -11,11 +11,12 @@
 #include <utility>
 #include <vector>
 
-#include "Logger/Logger.h"
-
 #include "TokenizerTrainer.h"
+
 #include "details/TokenizerTrainer/EPTrainerHelper.h"
+#include "details/TokenizerTrainer/ReadFilesHelper.h"
 #include "details/TokenizerTrainer/SinglePreprocessorHelper.h"
+#include "Logger/Logger.h"
 
 using nlohmann::json;
 
@@ -24,6 +25,7 @@ namespace ranges = std::ranges;
 using namespace QinBuRua::auto_sorting_machine;
 namespace slog = utils::log;
 using details::tokenizer_trainer::EPTrainerHelper;
+using details::tokenizer_trainer::ReadFilesHelper;
 using details::tokenizer_trainer::SinglePreprocessorHelper;
 
 TokenizerTrainer::TokenizerTrainer(const json& config_json) {
@@ -98,36 +100,13 @@ void TokenizerTrainer::write_to_file(const std::string& filename, const std::sou
 }
 
 void TokenizerTrainer::f_read_files(const std::string& path, const std::string& code) {
-   if (!(fs::exists(path) && fs::is_directory(path))) {
-      slog::error_throw<std::runtime_error>(slog::Tag{}, "The direction of training files does NOT exist!");
+   ReadFilesHelper helper;
+   if (code != "utf-8") {
+      slog::error_throw<std::runtime_error>(slog::Tag{}, "Only support utf-8");
    }
-   fs::path trainingFilesPath(path);
-   std::vector<fs::path> files;
-   for (const auto& entry: fs::directory_iterator(trainingFilesPath)) {
-      if (entry.is_regular_file() && entry.path().extension() == ".txt") {
-         files.push_back(entry.path());
-      }
-   }
-   if (files.empty()) {
-      slog::error_throw<std::runtime_error>(slog::Tag{}, "No training files found!");
-   }
-   std::locale localeCode;
-   if (code == "utf-8") {
-      localeCode = std::locale(std::locale(), new std::codecvt_utf8<wchar_t>);
-   }
-   for (const auto& file: files) {
-      std::wifstream fin(file);
-      if (fin.fail()) {
-         slog::error_throw<std::runtime_error>(slog::Tag{}, "Error opening file \"!" + file.string() + "\"!");
-      }
-      fin.imbue(localeCode);
-      do {
-         m_Sentences.emplace_back();
-      } while (std::getline(fin, m_Sentences.back()));
-      if (m_Sentences.back().empty()) {
-         m_Sentences.pop_back();
-      }
-   }
+   helper.load(path);
+   helper.run();
+   m_Sentences = std::move(helper.get_data_ref());
 }
 
 void TokenizerTrainer::f_initialize() {
