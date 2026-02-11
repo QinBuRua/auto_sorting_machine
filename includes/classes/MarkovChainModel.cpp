@@ -3,12 +3,17 @@
 //
 
 #include <algorithm>
+#include <ranges>
 #include <stdfloat>
 #include <utility>
 
 #include "MarkovChainModel.h"
+
+#include <numeric>
+
 #include "details/MarkovChainModel/BinaryModelHelper.h"
 
+namespace ranges = std::ranges;
 using std::float64_t;
 using namespace QinBuRua::auto_sorting_machine;
 using namespace details::markov_chain_model;
@@ -65,6 +70,28 @@ void MarkovChainModel::set_isd_s(
 
    m_InitialStateDistribution[0] = single_times / allTimes;
    m_InitialStateDistribution[1] = begin_times / allTimes;
+}
+
+std::array<std::float64_t, 4> MarkovChainModel::calculate_default_probabilities() const {
+   std::array<std::float64_t, 4> defaultProbabilities{};
+   ranges::for_each(
+      m_EmissionProbability, [&defaultProbabilities](const auto& pair) {
+         for (uint32_t i = 0; i < 4; ++i) {
+            defaultProbabilities[i] += pair.second[i];
+         }
+      }
+   );
+   std::float64_t sum = ranges::fold_left(
+      defaultProbabilities,
+      0,
+      std::plus<std::float64_t>()
+   );
+   ranges::transform(
+      defaultProbabilities,
+      defaultProbabilities.begin(),
+      [&sum](auto x) { return x / sum; }
+   );
+   return defaultProbabilities;
 }
 
 ModelHeader& MarkovChainModel::header() {
