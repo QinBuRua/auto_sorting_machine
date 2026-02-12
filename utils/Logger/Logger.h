@@ -2,8 +2,8 @@
 // Created by QinBu_Rua on 2026/2/6.
 //
 
-#ifndef AUTO_SORTING_MACHINE_LOGGER_H
-#define AUTO_SORTING_MACHINE_LOGGER_H
+#ifndef AUTO_SORTING_MACHINE_UTILS_LOGGER_LOGGER_H
+#define AUTO_SORTING_MACHINE_UTILS_LOGGER_LOGGER_H
 
 #include <cstdint>
 #include <fstream>
@@ -112,4 +112,4 @@ void fatal_throw_sl(Tag tag, Args&&... args);
 
 
 
-#endif //AUTO_SORTING_MACHINE_LOGGER_H
+#endif //AUTO_SORTING_MACHINE_UTILS_LOGGER_LOGGER_H

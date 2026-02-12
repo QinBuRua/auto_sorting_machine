@@ -1,5 +1,5 @@
-#ifndef AUTO_SORTING_MACHINE_LOGGER_INL
-#define AUTO_SORTING_MACHINE_LOGGER_INL
+#ifndef AUTO_SORTING_MACHINE_UTILS_LOGGER_LOGGER_INL
+#define AUTO_SORTING_MACHINE_UTILS_LOGGER_LOGGER_INL
 
 template<typename T, typename... Args>
 void log::log_throw_sl(Tag tag, Args&&... args) {
@@ -37,4 +37,4 @@ void log::fatal_throw_sl(Tag tag, Args&&... args) {
    log_throw_sl<T>(Tag{LogLevel::FATAL, tag.location}, std::forward<Args>(args)...);
 }
 
-#endif // AUTO_SORTING_MACHINE_LOGGER_INL
+#endif // AUTO_SORTING_MACHINE_UTILS_LOGGER_LOGGER_INL

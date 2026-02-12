@@ -2,8 +2,8 @@
 // Created by QinBu_Rua on 2026/1/31.
 //
 
-#ifndef AUTO_SORTING_MACHINE_MODELHEADER_H
-#define AUTO_SORTING_MACHINE_MODELHEADER_H
+#ifndef AUTO_SORTING_MACHINE_INCLUDES_CLASSES_MODELHEADER_H
+#define AUTO_SORTING_MACHINE_INCLUDES_CLASSES_MODELHEADER_H
 
 #include <array>
 #include <cstdint>
@@ -80,4 +80,4 @@ uint8_t model_match(Matchings... matchings);
 
 } // QinBuRua::auto_sorting_machine
 
-#endif //AUTO_SORTING_MACHINE_MODELHEADER_H
+#endif //AUTO_SORTING_MACHINE_INCLUDES_CLASSES_MODELHEADER_H

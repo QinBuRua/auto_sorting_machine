@@ -1,5 +1,5 @@
-#ifndef MODELHEADER_INL
-#define MODELHEADER_INL
+#ifndef AUTO_SORTING_MACHINE_INCLUDES_CLASSES_MODELHEADER_INL
+#define AUTO_SORTING_MACHINE_INCLUDES_CLASSES_MODELHEADER_INL
 
 template<std::input_iterator Iter>
 void ModelHeader::set_sha256_from(Iter begin, Iter end) {
@@ -18,4 +18,4 @@ uint8_t model_match(Matchings... matchings) {
    return (std::to_underlying(matchings) | ...);
 }
 
-#endif // MODELHEADER_INL
+#endif // AUTO_SORTING_MACHINE_INCLUDES_CLASSES_MODELHEADER_INL
