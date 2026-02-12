@@ -2,8 +2,8 @@
 // Created by QinBu_Rua on 2026/2/7.
 //
 
-#ifndef AUTO_SORTING_MACHINE_TOKENIZER_H
-#define AUTO_SORTING_MACHINE_TOKENIZER_H
+#ifndef AUTO_SORTING_MACHINE_TOKENIZERTRAINER_H
+#define AUTO_SORTING_MACHINE_TOKENIZERTRAINER_H
 
 #include <string>
 #include <vector>
