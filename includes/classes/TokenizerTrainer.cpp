@@ -49,7 +49,7 @@ ModelHeader& TokenizerTrainer::header() {
 
 void TokenizerTrainer::run() {
    if (m_IsDone) {
-      slog::warn_throw<std::runtime_error>(
+      slog::warn_throw_sl<std::runtime_error>(
          slog::Tag{},
          "You can't train this model again!"
       );
@@ -77,7 +77,7 @@ std::vector<uint8_t> TokenizerTrainer::get_model_data() {
 void TokenizerTrainer::write_to_file(const std::string& filename, const std::source_location& sl) const {
    std::ofstream fout(filename, std::ios::binary);
    if (fout.fail()) {
-      slog::error_throw<std::runtime_error>(
+      slog::error_throw_sl<std::runtime_error>(
          slog::Tag{sl},
          std::format(
             "Fail to open file \"{}\"",
@@ -88,7 +88,7 @@ void TokenizerTrainer::write_to_file(const std::string& filename, const std::sou
    fout.write(reinterpret_cast<const char*>(m_RawHeaderData.data()), m_RawHeaderData.size());
    fout.write(reinterpret_cast<const char*>(m_RawModelData.data()), m_RawModelData.size());
    if (fout.fail()) {
-      slog::error_throw<std::runtime_error>(
+      slog::error_throw_sl<std::runtime_error>(
          slog::Tag{sl},
          std::format(
             "Fail to write file \"{}\"",
@@ -102,7 +102,7 @@ void TokenizerTrainer::write_to_file(const std::string& filename, const std::sou
 void TokenizerTrainer::f_read_files(const std::string& path, const std::string& code) {
    ReadFilesHelper helper;
    if (code != "utf-8") {
-      slog::error_throw<std::runtime_error>(slog::Tag{}, "Only support utf-8");
+      slog::error_throw_sl<std::runtime_error>(slog::Tag{}, "Only support utf-8");
    }
    helper.load(path);
    helper.run();
@@ -111,14 +111,14 @@ void TokenizerTrainer::f_read_files(const std::string& path, const std::string& 
 
 void TokenizerTrainer::f_initialize() {
    if (m_Config["direction"].is_null()) {
-      slog::error_throw<std::runtime_error>(slog::Tag{}, "Training config is MISSING!");
+      slog::error_throw_sl<std::runtime_error>(slog::Tag{}, "Training config is MISSING!");
    }
    f_read_files(
       m_Config["direction"],
       m_Config["code"].is_null() ? "utf-8" : m_Config["code"]
    );
    if (m_Sentences.empty()) {
-      slog::error_throw<std::runtime_error>(slog::Tag{}, "No training sentences found!");
+      slog::error_throw_sl<std::runtime_error>(slog::Tag{}, "No training sentences found!");
    }
 }
 

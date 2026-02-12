@@ -46,8 +46,8 @@ std::vector<std::u16string>& ReadFilesHelper::get_data_ref() {
 void ReadFilesHelper::f_read_file(const std::filesystem::path& file_path, const std::source_location& sl) {
    std::ifstream file_stream{file_path};
    if (file_stream.fail()) {
-      slog::warn(std::format("Fail to open file \"{}\"", file_path.string()), sl);
-      slog::info(std::format("Close file \"{}\"", file_path.string()), sl);
+      slog::warn_sl(std::format("Fail to open file \"{}\"", file_path.string()), sl);
+      slog::info_sl(std::format("Close file \"{}\"", file_path.string()), sl);
       return;
    }
 
@@ -61,18 +61,18 @@ void ReadFilesHelper::f_read_file(const std::filesystem::path& file_path, const 
       if (utf8::is_valid(line)) {
          m_TrainData.push_back(std::move(utf8::utf8to16(line)));
       } else {
-         slog::warn(
+         slog::warn_sl(
             std::format("The code of line {} in file \"{}\"  is NOT utf-8", line_number, file_path.string()), sl
          );
       }
    }
    if (file_stream.eof()) {
-      slog::info(std::format("Complete reading file \"{}\"", file_path.string()));
+      slog::info_sl(std::format("Complete reading file \"{}\"", file_path.string()));
    } else if (file_stream.fail()) {
-      slog::warn(std::format("Fail to read line {} in file \"{}\"", line_number, file_path.string()), sl);
-      slog::info(std::format("Close file \"{}\"", file_path.string()));
+      slog::warn_sl(std::format("Fail to read line {} in file \"{}\"", line_number, file_path.string()), sl);
+      slog::info_sl(std::format("Close file \"{}\"", file_path.string()));
    } else {
-      slog::error_throw<std::runtime_error>(
+      slog::error_throw_sl<std::runtime_error>(
          slog::Tag{sl},
          std::format(
             "Unknow Error while reading line {} in file \"{}\"",
@@ -84,7 +84,7 @@ void ReadFilesHelper::f_read_file(const std::filesystem::path& file_path, const 
 
 void ReadFilesHelper::f_initialize(const std::source_location& sl) {
    if (!fs::exists(m_Path) || !fs::is_directory(m_Path)) {
-      slog::error_throw<std::runtime_error>(slog::Tag{sl}, "The direction of training files does NOT exist!");
+      slog::error_throw_sl<std::runtime_error>(slog::Tag{sl}, "The direction of training files does NOT exist!");
    }
    fs::path path{m_Path};
    for (const auto& entry: fs::directory_iterator(path)) {
@@ -93,7 +93,7 @@ void ReadFilesHelper::f_initialize(const std::source_location& sl) {
       }
    }
    if (m_Files.empty()) {
-      slog::error_throw<std::runtime_error>(slog::Tag{sl}, "No training files found!");
+      slog::error_throw_sl<std::runtime_error>(slog::Tag{sl}, "No training files found!");
    }
 }
 

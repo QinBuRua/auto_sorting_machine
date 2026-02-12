@@ -21,7 +21,7 @@ using details::markov_chain_model::ParseModelHelper;
 
 
 int main() {
-   slog::info("Begin training");
+   slog::info_sl("Begin training");
    Trainer trainer(std::string(R"(data\train\config.json)"));
    trainer.run();
    auto& tokenizerTrainer = trainer.get_tokenizer_trainer();

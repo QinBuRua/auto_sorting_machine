@@ -24,7 +24,7 @@ void Logger::set_log_file(const std::string& filename, const std::source_locatio
    m_Fout.open(filename);
    if (m_Fout.fail()) {
       throw std::runtime_error{
-         f_make_message(
+         f_make_message_sl(
             LogLevel::ERROR,
             std::format("Fail to open log file \"{}\"", filename),
             sl
@@ -37,13 +37,20 @@ void Logger::set_log_level(LogLevel level) noexcept {
    m_LogLevel = level;
 }
 
-std::string Logger::get_log_file() const{
+void Logger::set_sl_level(LogLevel level) noexcept {
+   m_WithSl = level;
+}
+
+std::string Logger::get_log_file() const {
    return m_FileName;
 }
 
-LogLevel Logger::get_log_level() const
-{
+LogLevel Logger::get_log_level() const {
    return m_LogLevel;
+}
+
+LogLevel Logger::get_sl_level() const {
+   return m_WithSl;
 }
 
 void Logger::auto_initialize(LogLevel level, const std::source_location& sl) {
@@ -53,7 +60,7 @@ void Logger::auto_initialize(LogLevel level, const std::source_location& sl) {
    m_Fout.open(m_FileName);
    if (m_Fout.fail()) {
       throw std::runtime_error{
-         f_make_message(
+         f_make_message_sl(
             LogLevel::ERROR,
             std::format("Fail to open log file \"{}\"", m_FileName),
             sl
@@ -62,15 +69,15 @@ void Logger::auto_initialize(LogLevel level, const std::source_location& sl) {
    }
 }
 
-std::string Logger::log(LogLevel level, const std::string& message, const std::source_location& sl) {
+std::string Logger::log_sl(LogLevel level, const std::string& message, const std::source_location& sl) {
    if (level < m_LogLevel) {
       return {};
    }
-   std::string result = f_make_message(level, message, sl);
+   std::string result = f_make_message_sl(level, message, sl);
    m_Fout << result << std::endl;
    if (m_Fout.fail()) {
       throw std::runtime_error{
-         f_make_message(
+         f_make_message_sl(
             LogLevel::ERROR,
             std::format("Fail to log to file \"{}\"", m_FileName),
             sl
@@ -80,11 +87,35 @@ std::string Logger::log(LogLevel level, const std::string& message, const std::s
    return std::move(result);
 }
 
+std::string Logger::log(LogLevel level, const std::string& message) {
+   if (level < m_LogLevel) {
+      return {};
+   }
+   std::string result = f_make_message(level, message);
+   m_Fout << result;
+   if (m_Fout.fail()) {
+      throw std::runtime_error{
+         f_make_message(
+            LogLevel::ERROR,
+            std::format("Fail to log to file \"{}\"", m_FileName)
+         )
+      };
+   }
+   return result;
+}
+
 Logger::Logger() {
    auto_initialize();
 }
 
-std::string Logger::f_make_message(LogLevel level, const std::string& message, const std::source_location& sl) {
+std::string Logger::f_make_message(LogLevel level, const std::string& message) {
+   return std::format(
+      "[{}][{}] {}",
+      f_get_time_str(), LOGLEVEL_TO_STRING[std::to_underlying(level)], message
+   );
+}
+
+std::string Logger::f_make_message_sl(LogLevel level, const std::string& message, const std::source_location& sl) {
    if (m_LogLevel == LogLevel::DEBUG) {
       return std::format(
          "[{}][{}][{}][l{}:c{}] {}",
@@ -117,22 +148,22 @@ log::Tag::Tag(LogLevel lvl, const std::source_location& sl) {
    location = sl;
 }
 
-void log::debug(const std::string& message, const std::source_location& sl) {
-   Logger::instance().log(LogLevel::DEBUG, message, sl);
+void log::debug_sl(const std::string& message, const std::source_location& sl) {
+   Logger::instance().log_sl(LogLevel::DEBUG, message, sl);
 }
 
-void log::info(const std::string& message, const std::source_location& sl) {
-   Logger::instance().log(LogLevel::INFO, message, sl);
+void log::info_sl(const std::string& message, const std::source_location& sl) {
+   Logger::instance().log_sl(LogLevel::INFO, message, sl);
 }
 
-void log::warn(const std::string& message, const std::source_location& sl) {
-   Logger::instance().log(LogLevel::WARN, message, sl);
+void log::warn_sl(const std::string& message, const std::source_location& sl) {
+   Logger::instance().log_sl(LogLevel::WARN, message, sl);
 }
 
-void log::error(const std::string& message, const std::source_location& sl) {
-   Logger::instance().log(LogLevel::ERROR, message, sl);
+void log::error_sl(const std::string& message, const std::source_location& sl) {
+   Logger::instance().log_sl(LogLevel::ERROR, message, sl);
 }
 
-void log::fatal(const std::string& message, const std::source_location& sl) {
-   Logger::instance().log(LogLevel::FATAL, message, sl);
+void log::fatal_sl(const std::string& message, const std::source_location& sl) {
+   Logger::instance().log_sl(LogLevel::FATAL, message, sl);
 }

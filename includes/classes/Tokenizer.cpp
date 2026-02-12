@@ -30,7 +30,7 @@ void Tokenizer::initialize() {
 
 void Tokenizer::set_min_probability(std::float64_t probability) {
    if (probability >= 1) {
-      slog::error_throw<std::logic_error>(slog::Tag{}, "The min probability must less than 1");
+      slog::error_throw_sl<std::logic_error>(slog::Tag{}, "The min probability must less than 1");
    }
    m_MinPro = probability;
 }

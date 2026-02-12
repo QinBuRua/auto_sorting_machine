@@ -28,20 +28,26 @@ public:
       const std::string& filename,
       const std::source_location& sl = std::source_location::current()
    );
-   void set_log_level(LogLevel level) noexcept; //只有debug等级会包含源码信息
+   void set_log_level(LogLevel level) noexcept;
+   void set_sl_level(LogLevel level) noexcept; //当调用log_with_sl，且m_WithSl等级大于等于m_LogLevel时会添加源码信息
 
    std::string get_log_file() const;
    LogLevel get_log_level() const;
+   LogLevel get_sl_level() const;
 
    void auto_initialize(
       LogLevel level                 = LogLevel::INFO,
       const std::source_location& sl = std::source_location::current()
    );
 
-   std::string log(
+   std::string log_sl(
       LogLevel level,
       const std::string& message,
       const std::source_location& sl = std::source_location::current()
+   );
+   std::string log(
+      LogLevel level,
+      const std::string& message
    );
 
    Logger(const Logger&)            = delete;
@@ -53,11 +59,13 @@ private:
    std::string m_FileName;
    std::ofstream m_Fout;
    LogLevel m_LogLevel;
+   LogLevel m_WithSl = LogLevel::DEBUG;
 
 private:
    Logger();
 
-   std::string f_make_message(LogLevel level, const std::string& message, const std::source_location& sl);
+   static std::string f_make_message(LogLevel level, const std::string& message);
+   std::string f_make_message_sl(LogLevel level, const std::string& message, const std::source_location& sl);
    static std::string f_get_time_str();
 };
 
@@ -76,23 +84,24 @@ struct Tag {
    Tag& operator=(const Tag&) = delete;
 };
 
-void debug(const std::string& message, const std::source_location& sl = std::source_location::current());
-void info(const std::string& message, const std::source_location& sl = std::source_location::current());
-void warn(const std::string& message, const std::source_location& sl = std::source_location::current());
-void error(const std::string& message, const std::source_location& sl = std::source_location::current());
-void fatal(const std::string& message, const std::source_location& sl = std::source_location::current());
+void debug_sl(const std::string& message, const std::source_location& sl = std::source_location::current());
+void info_sl(const std::string& message, const std::source_location& sl = std::source_location::current());
+void warn_sl(const std::string& message, const std::source_location& sl = std::source_location::current());
+void error_sl(const std::string& message, const std::source_location& sl = std::source_location::current());
+void fatal_sl(const std::string& message, const std::source_location& sl = std::source_location::current());
 template<typename T, typename... Args>
-void log_throw(Tag tag, Args&&... args);
+void log_throw_sl(Tag tag, Args&&... args);
 template<typename T, typename... Args>
-void debug_throw(Tag tag, Args&&... args);
+void debug_throw_sl(Tag tag, Args&&... args);
 template<typename T, typename... Args>
-void info_throw(Tag tag, Args&&... args);
+void info_throw_sl(Tag tag, Args&&... args);
 template<typename T, typename... Args>
-void warn_throw(Tag tag, Args&&... args);
+void warn_throw_sl(Tag tag, Args&&... args);
 template<typename T, typename... Args>
-void error_throw(Tag tag, Args&&... args);
+void error_throw_sl(Tag tag, Args&&... args);
 template<typename T, typename... Args>
-void fatal_throw(Tag tag, Args&&... args);
+void fatal_throw_sl(Tag tag, Args&&... args);
+
 
 
 }
