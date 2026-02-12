@@ -35,7 +35,7 @@ public:
    void set_ep(char16_t wch, CharType tp, std::float64_t probability);
    void set_isd_s(unsigned int single_times, unsigned int begin_times);
 
-   std::array<std::float64_t,4> calculate_default_probabilities() const;
+   std::array<std::float64_t, 4> calculate_default_ep_probabilities() const;
 
    ModelHeader& header();
    ModelHeader header() const;

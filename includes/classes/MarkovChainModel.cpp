@@ -72,7 +72,7 @@ void MarkovChainModel::set_isd_s(
    m_InitialStateDistribution[1] = begin_times / allTimes;
 }
 
-std::array<std::float64_t, 4> MarkovChainModel::calculate_default_probabilities() const {
+std::array<std::float64_t, 4> MarkovChainModel::calculate_default_ep_probabilities() const {
    std::array<std::float64_t, 4> defaultProbabilities{};
    ranges::for_each(
       m_EmissionProbability, [&defaultProbabilities](const auto& pair) {
