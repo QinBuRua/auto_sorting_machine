@@ -5,8 +5,8 @@
 #ifndef AUTO_SORTING_MACHINE_TOKENIZER_H
 #define AUTO_SORTING_MACHINE_TOKENIZER_H
 
-#include <string>
 #include <source_location>
+#include <string>
 #include <unordered_map>
 
 #include "json.hpp"

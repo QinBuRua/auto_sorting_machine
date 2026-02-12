@@ -6,7 +6,9 @@
 #define AUTO_SORTING_MACHINE_TRAINER_H
 
 #include <iostream>
+
 #include "json.hpp"
+
 #include "TokenizerTrainer.h"
 
 namespace QinBuRua::auto_sorting_machine {
@@ -28,7 +30,6 @@ public:
 private:
    nlohmann::json m_Config;
    TokenizerTrainer m_Tokenizer;
-
 
 };
 
