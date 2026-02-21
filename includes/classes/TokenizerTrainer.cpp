@@ -21,7 +21,7 @@
 using nlohmann::json;
 
 namespace fs = std::filesystem;
-namespace ranges = std::ranges;
+namespace stdr = std::ranges;
 using namespace QinBuRua::auto_sorting_machine;
 namespace slog = utils::log;
 using details::tokenizer_trainer::EPTrainerHelper;
@@ -69,8 +69,8 @@ MarkovChainModel& TokenizerTrainer::get_model_ref() {
 std::vector<std::byte> TokenizerTrainer::get_model_data() {
    std::vector<std::byte> result(m_RawModelData.size() + m_RawHeaderData.size());
    auto iter = result.begin();
-   iter      = ranges::copy(m_RawHeaderData, iter).out;
-   ranges::copy(m_RawModelData, iter);
+   iter      = stdr::copy(m_RawHeaderData, iter).out;
+   stdr::copy(m_RawModelData, iter);
    return result;
 }
 
