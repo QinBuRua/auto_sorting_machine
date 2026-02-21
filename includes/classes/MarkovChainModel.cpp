@@ -13,7 +13,7 @@
 
 #include "details/MarkovChainModel/BinaryModelHelper.h"
 
-namespace ranges = std::ranges;
+namespace stdr = std::ranges;
 using std::float64_t;
 using namespace QinBuRua::auto_sorting_machine;
 using namespace details::markov_chain_model;
@@ -74,19 +74,19 @@ void MarkovChainModel::set_isd_s(
 
 std::array<std::float64_t, 4> MarkovChainModel::calculate_default_ep_probabilities() const {
    std::array<std::float64_t, 4> defaultProbabilities{};
-   ranges::for_each(
+   stdr::for_each(
       m_EmissionProbability, [&defaultProbabilities](const auto& pair) {
          for (uint32_t i = 0; i < 4; ++i) {
             defaultProbabilities[i] += pair.second[i];
          }
       }
    );
-   std::float64_t sum = ranges::fold_left(
+   std::float64_t sum = stdr::fold_left(
       defaultProbabilities,
       0,
       std::plus<std::float64_t>()
    );
-   ranges::transform(
+   stdr::transform(
       defaultProbabilities,
       defaultProbabilities.begin(),
       [&sum](auto x) { return x / sum; }
