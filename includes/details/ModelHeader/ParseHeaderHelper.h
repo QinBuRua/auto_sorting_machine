@@ -15,12 +15,12 @@ namespace QinBuRua::auto_sorting_machine::details::model_header {
 class ParseHeaderHelper {
 public:
    ParseHeaderHelper();
-   ParseHeaderHelper(const std::vector<uint8_t>::const_iterator& begin);
+   ParseHeaderHelper(const std::vector<std::byte>::const_iterator& begin);
 
-   void load(const std::vector<uint8_t>::const_iterator& begin);
+   void load(const std::vector<std::byte>::const_iterator& begin);
    void run();
    ModelHeader& get_header_ref();
-   [[nodiscard]] std::vector<uint8_t>::const_iterator get_iter() const;
+   [[nodiscard]] std::vector<std::byte>::const_iterator get_iter() const;
 
    ParseHeaderHelper(ParseHeaderHelper&&)                 = delete;
    ParseHeaderHelper(const ParseHeaderHelper&)            = delete;
@@ -28,7 +28,7 @@ public:
    ParseHeaderHelper& operator=(const ParseHeaderHelper&) = delete;
 
 private:
-   std::vector<uint8_t>::const_iterator m_Iter;
+   std::vector<std::byte>::const_iterator m_Iter;
    ModelHeader m_Header{};
 
    void f_parse_sha256();

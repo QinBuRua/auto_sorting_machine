@@ -29,7 +29,7 @@ public:
    ModelHeader& header();
    MarkovChainModel& get_model_ref();
 
-   std::vector<uint8_t> get_model_data(); //包括模型头
+   std::vector<std::byte> get_model_data(); //包括模型头
    void write_to_file(const std::string& filename, const std::source_location& sl = std::source_location::current()) const;
 
 private:
@@ -39,8 +39,8 @@ private:
 
    bool m_IsDone = false;
    MarkovChainModel m_MarkovModel;
-   std::vector<uint8_t> m_RawModelData{};
-   std::vector<uint8_t> m_RawHeaderData{};
+   std::vector<std::byte> m_RawModelData{};
+   std::vector<std::byte> m_RawHeaderData{};
 
 private:
    void f_read_files(const std::string& path, const std::string& code = "utf-8");

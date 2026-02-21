@@ -66,8 +66,8 @@ MarkovChainModel& TokenizerTrainer::get_model_ref() {
    return m_MarkovModel;
 }
 
-std::vector<uint8_t> TokenizerTrainer::get_model_data() {
-   std::vector<uint8_t> result(m_RawModelData.size() + m_RawHeaderData.size());
+std::vector<std::byte> TokenizerTrainer::get_model_data() {
+   std::vector<std::byte> result(m_RawModelData.size() + m_RawHeaderData.size());
    auto iter = result.begin();
    iter      = ranges::copy(m_RawHeaderData, iter).out;
    ranges::copy(m_RawModelData, iter);
@@ -181,6 +181,9 @@ void TokenizerTrainer::f_done() {
    m_Config.clear();
 
    m_RawModelData = std::move(m_MarkovModel.get_binary_data());
-   m_MarkovModel.header().set_sha256_from(m_RawModelData);
+   m_MarkovModel.header().set_sha256_from(
+      reinterpret_cast<const unsigned char*>(m_RawModelData.data()),
+      reinterpret_cast<const unsigned char*>(m_RawModelData.data() + m_RawModelData.size())
+   );
    m_RawHeaderData = std::move(m_MarkovModel.header().get_binary_model_data());
 }

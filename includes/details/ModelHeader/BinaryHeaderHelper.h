@@ -16,7 +16,7 @@ public:
    explicit BinaryHeaderHelper(const ModelHeader& header);
 
    void run();
-   std::vector<uint8_t>& get_data_ref();
+   std::vector<std::byte>& get_data_ref();
 
    BinaryHeaderHelper()                                     = delete;
    BinaryHeaderHelper(const BinaryHeaderHelper&)            = delete;
@@ -26,8 +26,8 @@ public:
 
 private:
    const ModelHeader& m_Header;
-   std::vector<uint8_t> m_Data;
-   std::vector<uint8_t>::iterator m_Iter;
+   std::vector<std::byte> m_Data;
+   std::vector<std::byte>::iterator m_Iter;
 
 private:
    void f_initialize();

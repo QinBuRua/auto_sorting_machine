@@ -23,7 +23,7 @@ void BinaryModelHelper::run() {
    f_binary_ep();
 }
 
-std::vector<uint8_t>& BinaryModelHelper::get_data_ref() {
+std::vector<std::byte>& BinaryModelHelper::get_data_ref() {
    return m_Data;
 }
 
@@ -40,7 +40,7 @@ void BinaryModelHelper::f_initialize() {
 
 void BinaryModelHelper::f_binary_isd() {
    m_Iter = std::copy_n(
-      reinterpret_cast<const uint8_t*>(m_Model.m_InitialStateDistribution.data()),
+      reinterpret_cast<const std::byte*>(m_Model.m_InitialStateDistribution.data()),
       m_IsdReqSize,
       m_Iter
    );
@@ -52,7 +52,7 @@ void BinaryModelHelper::f_binary_tp() {
       m_Model.m_TransitionProbability,
       [&iter](const auto& arr)-> void {
          iter = std::copy_n(
-            reinterpret_cast<const uint8_t*>(arr.data()),
+            reinterpret_cast<const std::byte*>(arr.data()),
             sizeof(float64_t) * 4,
             iter
          );
@@ -67,7 +67,7 @@ void BinaryModelHelper::f_binary_ep() {
 
    const uint32_t size = pairs.size();
    m_Iter              = ranges::copy_n(
-      reinterpret_cast<const uint8_t*>(&size),
+      reinterpret_cast<const std::byte*>(&size),
       sizeof(size),
       m_Iter
    ).out;
@@ -76,12 +76,12 @@ void BinaryModelHelper::f_binary_ep() {
       pairs,
       [&iter](const auto& pair)-> void {
          iter = std::copy_n(
-            reinterpret_cast<const uint8_t*>(&pair.first),
+            reinterpret_cast<const std::byte*>(&pair.first),
             sizeof(wchar_t),
             iter
          );
          iter = std::copy_n(
-            reinterpret_cast<const uint8_t*>(pair.second.data()),
+            reinterpret_cast<const std::byte*>(pair.second.data()),
             sizeof(float64_t) * 4,
             iter
          );

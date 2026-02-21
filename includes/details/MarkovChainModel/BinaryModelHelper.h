@@ -17,7 +17,7 @@ public:
    explicit BinaryModelHelper(const MarkovChainModel& model);
 
    void run();
-   std::vector<uint8_t>& get_data_ref();
+   std::vector<std::byte>& get_data_ref();
 
    BinaryModelHelper()                                    = delete;
    BinaryModelHelper(const BinaryModelHelper&)            = delete;
@@ -27,8 +27,8 @@ public:
 
 private:
    const MarkovChainModel& m_Model;
-   std::vector<uint8_t> m_Data;
-   std::vector<uint8_t>::iterator m_Iter;
+   std::vector<std::byte> m_Data;
+   std::vector<std::byte>::iterator m_Iter;
 
    uint32_t m_IsdReqSize;
    uint32_t m_TpReqSize;

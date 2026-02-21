@@ -26,7 +26,7 @@ int main() {
    trainer.run();
    auto& tokenizerTrainer = trainer.get_tokenizer_trainer();
 
-   std::vector<uint8_t> rawData = tokenizerTrainer.get_model_data();
+   std::vector<std::byte> rawData = tokenizerTrainer.get_model_data();
    ParseHeaderHelper parseHeaderHelper{rawData.begin()};
    parseHeaderHelper.run();
    auto header = std::move(parseHeaderHelper.get_header_ref());

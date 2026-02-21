@@ -15,9 +15,9 @@ namespace QinBuRua::auto_sorting_machine::details::markov_chain_model {
 class ParseModelHelper {
 public:
    ParseModelHelper() = default;
-   explicit ParseModelHelper(const std::vector<uint8_t>::const_iterator& begin);
+   explicit ParseModelHelper(const std::vector<std::byte>::const_iterator& begin);
 
-   void load(const std::vector<uint8_t>::const_iterator& begin);
+   void load(const std::vector<std::byte>::const_iterator& begin);
    void run();
    MarkovChainModel& get_model_ref();
 
@@ -27,7 +27,7 @@ public:
    ParseModelHelper& operator=(const ParseModelHelper&) = delete;
 
 private:
-   std::vector<uint8_t>::const_iterator m_Iter;
+   std::vector<std::byte>::const_iterator m_Iter;
    MarkovChainModel m_Model;
 
 private:

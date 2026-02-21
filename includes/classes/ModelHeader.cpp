@@ -57,8 +57,6 @@ void ModelHeader::set_sha256(const std::array<uint8_t, 32>& arr) {
    m_Sha256 = arr;
 }
 
-
-
 void ModelHeader::set_name(const std::string& name) {
    m_Name = name;
 }
@@ -85,7 +83,7 @@ const std::vector<ModelHeader::DependencyType>& ModelHeader::dependency() {
    return m_Dependency;
 }
 
-std::vector<uint8_t> ModelHeader::get_binary_model_data() const {
+std::vector<std::byte> ModelHeader::get_binary_model_data() const {
    details::model_header::BinaryHeaderHelper helper{*this};
    helper.run();
    return std::move(helper.get_data_ref());

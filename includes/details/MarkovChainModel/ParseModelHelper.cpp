@@ -12,11 +12,11 @@ using std::float64_t;
 namespace ranges = std::ranges;
 using namespace QinBuRua::auto_sorting_machine::details::markov_chain_model;
 
-ParseModelHelper::ParseModelHelper(const std::vector<uint8_t>::const_iterator& begin) {
+ParseModelHelper::ParseModelHelper(const std::vector<std::byte>::const_iterator& begin) {
    load(begin);
 }
 
-void ParseModelHelper::load(const std::vector<uint8_t>::const_iterator& begin) {
+void ParseModelHelper::load(const std::vector<std::byte>::const_iterator& begin) {
    m_Model.clear();
    m_Iter = begin;
 }
@@ -35,7 +35,7 @@ void ParseModelHelper::f_parse_isd() {
    m_Iter = ranges::copy_n(
       m_Iter,
       sizeof(float64_t) * 2,
-      reinterpret_cast<uint8_t*>(m_Model.m_InitialStateDistribution.data())
+      reinterpret_cast<std::byte*>(m_Model.m_InitialStateDistribution.data())
    ).in;
 }
 
@@ -46,7 +46,7 @@ void ParseModelHelper::f_parse_tp() {
          iter = ranges::copy_n(
             iter,
             sizeof(float64_t) * 4,
-            reinterpret_cast<uint8_t*>(arr.data())
+            reinterpret_cast<std::byte*>(arr.data())
          ).in;
       }
    );
@@ -54,15 +54,15 @@ void ParseModelHelper::f_parse_tp() {
 
 void ParseModelHelper::f_parse_ep() {
    uint32_t size;
-   m_Iter = ranges::copy_n(m_Iter, sizeof(size), reinterpret_cast<uint8_t*>(&size)).in;
+   m_Iter = ranges::copy_n(m_Iter, sizeof(size), reinterpret_cast<std::byte*>(&size)).in;
    m_Model.m_EmissionProbability.rehash(size);
    for (int i = 0; i < size; ++i) {
       wchar_t wch;
-      m_Iter = ranges::copy_n(m_Iter, sizeof(wch), reinterpret_cast<uint8_t*>(&wch)).in;
+      m_Iter = ranges::copy_n(m_Iter, sizeof(wch), reinterpret_cast<std::byte*>(&wch)).in;
       m_Iter = ranges::copy_n(
          m_Iter,
          sizeof(float64_t) * 4,
-         reinterpret_cast<uint8_t*>(m_Model.m_EmissionProbability[wch].data())
+         reinterpret_cast<std::byte*>(m_Model.m_EmissionProbability[wch].data())
       ).in;
    }
 }
