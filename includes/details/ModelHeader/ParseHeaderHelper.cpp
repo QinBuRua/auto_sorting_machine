@@ -6,7 +6,7 @@
 
 #include "ParseHeaderHelper.h"
 
-namespace ranges = std::ranges;
+namespace stdr = std::ranges;
 using namespace QinBuRua::auto_sorting_machine::details::model_header;
 
 ParseHeaderHelper::ParseHeaderHelper() {
@@ -39,7 +39,7 @@ std::vector<std::byte>::const_iterator ParseHeaderHelper::get_iter() const {
 }
 
 void ParseHeaderHelper::f_parse_sha256() {
-   m_Iter = ranges::copy_n(
+   m_Iter = stdr::copy_n(
       m_Iter,
       m_Header.m_Sha256.size(),
       reinterpret_cast<std::byte*>(m_Header.m_Sha256.data())
@@ -48,12 +48,12 @@ void ParseHeaderHelper::f_parse_sha256() {
 
 void ParseHeaderHelper::f_parse_name() {
    uint32_t size;
-   m_Iter = ranges::copy_n(m_Iter, sizeof(uint32_t), reinterpret_cast<std::byte*>(&size)).in;
+   m_Iter = stdr::copy_n(m_Iter, sizeof(uint32_t), reinterpret_cast<std::byte*>(&size)).in;
    if (size == 0) {
       return;
    }
    m_Header.m_Name.resize(size);
-   m_Iter = ranges::copy_n(
+   m_Iter = stdr::copy_n(
       m_Iter,
       size,
       reinterpret_cast<std::byte*>(m_Header.m_Name.data())
@@ -62,7 +62,7 @@ void ParseHeaderHelper::f_parse_name() {
 
 void ParseHeaderHelper::f_parse_version() {
    uint32_t size;
-   m_Iter = ranges::copy_n(
+   m_Iter = stdr::copy_n(
       m_Iter,
       sizeof(uint32_t),
       reinterpret_cast<std::byte*>(&size)
@@ -71,7 +71,7 @@ void ParseHeaderHelper::f_parse_version() {
       return;
    }
    m_Header.m_Version.resize(size);
-   m_Iter = ranges::copy_n(
+   m_Iter = stdr::copy_n(
       m_Iter,
       size,
       reinterpret_cast<std::byte*>(m_Header.m_Version.data())
@@ -79,7 +79,7 @@ void ParseHeaderHelper::f_parse_version() {
 }
 
 void ParseHeaderHelper::f_parse_train_time() {
-   m_Iter = ranges::copy_n(
+   m_Iter = stdr::copy_n(
       m_Iter,
       sizeof(m_Header.m_TrainTime),
       reinterpret_cast<std::byte*>(&m_Header.m_TrainTime)
@@ -89,7 +89,7 @@ void ParseHeaderHelper::f_parse_train_time() {
 void ParseHeaderHelper::f_parse_dependency() {
    ParseHeaderHelper helper;
    uint32_t num;
-   m_Iter = ranges::copy_n(
+   m_Iter = stdr::copy_n(
       m_Iter,
       sizeof(uint32_t),
       reinterpret_cast<std::byte*>(&num)
@@ -110,12 +110,12 @@ void ParseHeaderHelper::f_parse_dependency() {
 
 void ParseHeaderHelper::f_parse_description() {
    uint32_t size;
-   m_Iter = ranges::copy_n(m_Iter, sizeof(uint32_t), reinterpret_cast<std::byte*>(&size)).in;
+   m_Iter = stdr::copy_n(m_Iter, sizeof(uint32_t), reinterpret_cast<std::byte*>(&size)).in;
    if (size == 0) {
       return;
    }
    m_Header.m_Description.resize(size);
-   m_Iter = ranges::copy_n(
+   m_Iter = stdr::copy_n(
       m_Iter,
       size,
       reinterpret_cast<std::byte*>(m_Header.m_Description.data())
