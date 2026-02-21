@@ -2,6 +2,7 @@
 // Created by QinBu_Rua on 2026/2/10.
 //
 
+#include <algorithm>
 #include <filesystem>
 #include <format>
 #include <ranges>
@@ -9,13 +10,11 @@
 
 #include "ReadFilesHelper.h"
 
-#include <algorithm>
-
 #include "Logger/Logger.h"
 #include "utfcpp/utf8.h"
 
 namespace fs = std::filesystem;
-namespace ranges = std::ranges;
+namespace stdr = std::ranges;
 using namespace QinBuRua::auto_sorting_machine::details::tokenizer_trainer;
 namespace slog = QinBuRua::auto_sorting_machine::utils::log;
 
@@ -98,7 +97,7 @@ void ReadFilesHelper::f_initialize(const std::source_location& sl) {
 }
 
 void ReadFilesHelper::f_read_files(const std::source_location& sl) {
-   ranges::for_each(
+   stdr::for_each(
       m_Files, [this,&sl](const auto& file_path) {
          f_read_file(file_path, sl);
       }
