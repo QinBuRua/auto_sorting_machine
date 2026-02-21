@@ -10,7 +10,7 @@
 #include "json.hpp"
 
 using std::float64_t;
-namespace ranges = std::ranges;
+namespace stdr = std::ranges;
 using namespace QinBuRua::auto_sorting_machine::details::markov_chain_model;
 
 BinaryModelHelper::BinaryModelHelper(const MarkovChainModel& model) : m_Model(model) {
@@ -48,7 +48,7 @@ void BinaryModelHelper::f_binary_isd() {
 
 void BinaryModelHelper::f_binary_tp() {
    auto& iter = m_Iter;
-   std::ranges::for_each(
+   stdr::for_each(
       m_Model.m_TransitionProbability,
       [&iter](const auto& arr)-> void {
          iter = std::copy_n(
@@ -62,17 +62,17 @@ void BinaryModelHelper::f_binary_tp() {
 
 void BinaryModelHelper::f_binary_ep() {
    auto pairs = m_Model.m_EmissionProbability
-      | ranges::to<std::vector<std::pair<wchar_t, std::array<float64_t, 4>>>>();
-   ranges::sort(pairs);
+      | stdr::to<std::vector<std::pair<wchar_t, std::array<float64_t, 4>>>>();
+   stdr::sort(pairs);
 
    const uint32_t size = pairs.size();
-   m_Iter              = ranges::copy_n(
+   m_Iter              = stdr::copy_n(
       reinterpret_cast<const std::byte*>(&size),
       sizeof(size),
       m_Iter
    ).out;
    auto& iter = m_Iter;
-   ranges::for_each(
+   stdr::for_each(
       pairs,
       [&iter](const auto& pair)-> void {
          iter = std::copy_n(
