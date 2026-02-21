@@ -9,7 +9,7 @@
 
 #include "CharTypeArray.h"
 
-namespace ranges = std::ranges;
+namespace stdr = std::ranges;
 using namespace QinBuRua::auto_sorting_machine;
 
 const std::string QinBuRua::auto_sorting_machine::CHARTYPE_TO_STR[4] = {
@@ -45,7 +45,7 @@ CharTypeArray::CharTypeArray(const CharTypeArray& other) {
    m_Data         = std::move(
       std::unique_ptr<uint8_t[]>(new uint8_t[m_ByteCapacity])
    );
-   ranges::copy_n(other.m_Data.get(), m_ByteCapacity, m_Data.get());
+   stdr::copy_n(other.m_Data.get(), m_ByteCapacity, m_Data.get());
 }
 
 CharTypeArray::CharTypeArray(CharTypeArray&& other) noexcept {
@@ -72,11 +72,11 @@ CharTypeArray& CharTypeArray::operator=(const CharTypeArray& other) {
       m_Data         = std::move(
          std::unique_ptr<uint8_t[]>(new uint8_t[m_ByteCapacity])
       );
-      ranges::copy_n(other.m_Data.get(), m_ByteCapacity, m_Data.get());
+      stdr::copy_n(other.m_Data.get(), m_ByteCapacity, m_Data.get());
       return *this;
    }
    const auto usedBytes = (m_Size + 3) / 4;
-   ranges::copy_n(
+   stdr::copy_n(
       other.m_Data.get(),
       otherUsedBytes,
       m_Data.get()
@@ -152,7 +152,7 @@ void CharTypeArray::push_back(CharType value) {
    }
    if (m_Size >= m_ByteCapacity * 4) {
       auto tmp = std::make_unique<uint8_t[]>(m_ByteCapacity * 2);
-      ranges::copy_n(m_Data.get(), m_ByteCapacity, tmp.get());
+      stdr::copy_n(m_Data.get(), m_ByteCapacity, tmp.get());
       m_Data         = std::move(tmp);
       m_ByteCapacity *= 2;
    }
@@ -179,7 +179,7 @@ void CharTypeArray::reserve(uint32_t elements_capacity) {
       return;
    }
    auto tmp = std::unique_ptr<uint8_t[]>(new uint8_t[bytes]());
-   ranges::copy_n(m_Data.get(), (m_Size + 3) / 4, tmp.get());
+   stdr::copy_n(m_Data.get(), (m_Size + 3) / 4, tmp.get());
    m_Data         = std::move(tmp);
    m_ByteCapacity = bytes;
 }
@@ -199,7 +199,7 @@ void CharTypeArray::resize(uint32_t size) {
    auto reqBytes = (size + 3) / 4;
    if (reqBytes > m_ByteCapacity) {
       auto tmp = std::unique_ptr<uint8_t[]>(new uint8_t[reqBytes]());
-      ranges::copy_n(m_Data.get(), (m_Size + 3) / 4, tmp.get());
+      stdr::copy_n(m_Data.get(), (m_Size + 3) / 4, tmp.get());
       m_Data = std::move(tmp);
    }
    m_Size = size;
@@ -212,7 +212,7 @@ void CharTypeArray::shrink_to_fit() {
    }
    auto bytes = (m_Size + 3) / 4;
    auto tmp   = std::unique_ptr<uint8_t[]>(new uint8_t[bytes]);
-   ranges::copy_n(m_Data.get(), bytes, tmp.get());
+   stdr::copy_n(m_Data.get(), bytes, tmp.get());
    m_Data         = std::move(tmp);
    m_ByteCapacity = bytes;
 }
