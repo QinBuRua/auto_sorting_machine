@@ -25,7 +25,7 @@ Trainer::Trainer(const std::string& config_file) {
    m_Tokenizer.load_config(m_Config["train_files"]);
 }
 
-Trainer::Trainer(const Json& config_json) {
+Trainer::Trainer(const nlohmann::json& config_json) {
    m_Config = config_json;
 }
 

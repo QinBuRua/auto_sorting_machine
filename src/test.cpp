@@ -9,8 +9,9 @@
 #include "details/MarkovChainModel/ParseModelHelper.h"
 #include "details/ModelHeader/ParseHeaderHelper.h"
 #include "Logger/Logger.h"
+#include "utfcpp/utf8/checked.h"
 
-namespace ranges = std::ranges;
+namespace stdr = std::ranges;
 using std::cout;
 using std::endl;
 using namespace QinBuRua::auto_sorting_machine;
@@ -21,6 +22,7 @@ using details::markov_chain_model::ParseModelHelper;
 
 
 int main() {
+   utils::Logger::instance().set_log_level(LogLevel::DEBUG);
    slog::info_sl("Begin training");
    Trainer trainer(std::string(R"(data\train\config.json)"));
    trainer.run();
@@ -37,9 +39,9 @@ int main() {
 
    Tokenizer tokenizer{std::move(model)};
    tokenizer.initialize();
-   auto words = tokenizer.tokenize(u"今天天气真好");
-
-
+   auto words = tokenizer.tokenize(
+      u"关于 “AI” 的 讨论：有人说 它比人强 （例如在 围棋上，AlphaGo 4:1 战胜了 李世石），但也 有人说 它很 “蠢”。你 怎么看 呢？欢迎 在 评论区 留言！网址：https：//www. aisys. net/zh-cn/faq ？ q=test & page=1 邮箱： ai-talk @ futura. ai 电话： +86 (010) 1234 - 5678"
+   );
 
    return 0;
 }
