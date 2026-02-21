@@ -167,3 +167,23 @@ void log::error_sl(const std::string& message, const std::source_location& sl) {
 void log::fatal_sl(const std::string& message, const std::source_location& sl) {
    Logger::instance().log_sl(LogLevel::FATAL, message, sl);
 }
+
+void log::debug(const std::string& message) {
+   Logger::instance().log(LogLevel::DEBUG, message);
+}
+
+void log::info(const std::string& message) {
+   Logger::instance().log(LogLevel::INFO, message);
+}
+
+void log::warn(const std::string& message) {
+   Logger::instance().log(LogLevel::WARN, message);
+}
+
+void log::error(const std::string& message) {
+   Logger::instance().log(LogLevel::ERROR, message);
+}
+
+void log::fatal(const std::string& message) {
+   Logger::instance().log(LogLevel::FATAL, message);
+}

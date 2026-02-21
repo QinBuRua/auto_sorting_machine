@@ -89,6 +89,7 @@ void info_sl(const std::string& message, const std::source_location& sl = std::s
 void warn_sl(const std::string& message, const std::source_location& sl = std::source_location::current());
 void error_sl(const std::string& message, const std::source_location& sl = std::source_location::current());
 void fatal_sl(const std::string& message, const std::source_location& sl = std::source_location::current());
+
 template<typename T, typename... Args>
 void log_throw_sl(Tag tag, Args&&... args);
 template<typename T, typename... Args>
@@ -102,7 +103,24 @@ void error_throw_sl(Tag tag, Args&&... args);
 template<typename T, typename... Args>
 void fatal_throw_sl(Tag tag, Args&&... args);
 
+void debug(const std::string& message);
+void info(const std::string& message);
+void warn(const std::string& message);
+void error(const std::string& message);
+void fatal(const std::string& message);
 
+template<typename T, typename... Args>
+void log_throw(LogLevel level, Args&&... args);
+template<typename T, typename... Args>
+void debug_throw(Args&&... args);
+template<typename T, typename... Args>
+void info_throw(Args&&... args);
+template<typename T, typename... Args>
+void warn_throw(Args&&... args);
+template<typename T, typename... Args>
+void error_throw(Args&&... args);
+template<typename T, typename... Args>
+void fatal_throw(Args&&... args);
 
 }
 
