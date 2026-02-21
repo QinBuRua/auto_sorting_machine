@@ -15,9 +15,9 @@
 
 namespace QinBuRua::auto_sorting_machine::details::tokenizer_trainer {
 
-class EPTrainerHelper {
+class EpTrainerHelper {
 public:
-   EPTrainerHelper();
+   EpTrainerHelper();
 
    void load(
       const std::vector<std::u16string>& sentences,

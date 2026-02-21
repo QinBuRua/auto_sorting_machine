@@ -18,7 +18,7 @@ public:
    ReadFilesHelper(const std::string& path);
 
    void clear();
-   void load(const std::string& path, const std::source_location& sl = std::source_location::current());
+   void load(const std::string& path);
    void run(const std::source_location& sl = std::source_location::current());
    std::vector<std::u16string>& get_data_ref();
 

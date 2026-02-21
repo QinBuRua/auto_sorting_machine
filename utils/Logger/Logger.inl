@@ -7,9 +7,11 @@ void log::log_throw_sl(Tag tag, Args&&... args) {
       std::is_base_of_v<std::exception, T>,
       "T must base on std::exception"
    );
-   T exc{std::forward<Args>(args)...};
-   Logger::instance().log_sl(tag.level, exc.what(), tag.location);
-   throw exc;
+   throw [&]()-> T {
+      T exception{std::forward<Args>(args)...};
+      Logger::instance().log_sl(tag.level, exception.what(), tag.location);
+      return exception;
+   }();
 }
 
 template<typename T, typename... Args>
@@ -43,9 +45,11 @@ void log::log_throw(LogLevel level, Args&&... args) {
       std::is_base_of_v<std::exception, T>,
       "T must derive from std::exception"
    );
-   T exc{std::forward<Args>(args)...};
-   Logger::instance().log(level, exc.what());
-   throw exc;
+   throw [&]()-> T {
+      T exc{std::forward<Args>(args)...};
+      Logger::instance().log(level, exc.what());
+      return exc;
+   }();
 }
 
 template<typename T, typename... Args>

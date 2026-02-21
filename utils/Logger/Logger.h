@@ -65,7 +65,7 @@ private:
    Logger();
 
    static std::string f_make_message(LogLevel level, const std::string& message);
-   std::string f_make_message_sl(LogLevel level, const std::string& message, const std::source_location& sl);
+   std::string f_make_message_sl(LogLevel level, const std::string& message, const std::source_location& sl) const;
    static std::string f_get_time_str();
 };
 

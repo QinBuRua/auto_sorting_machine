@@ -2,14 +2,12 @@
 #include <iostream>
 #include <ranges>
 
-#include "classes/CharTypeArray.h"
 #include "classes/Tokenizer.h"
 #include "classes/TokenizerTrainer.h"
 #include "classes/Trainer.h"
 #include "details/MarkovChainModel/ParseModelHelper.h"
 #include "details/ModelHeader/ParseHeaderHelper.h"
 #include "Logger/Logger.h"
-#include "utfcpp/utf8/checked.h"
 
 namespace stdr = std::ranges;
 using std::cout;

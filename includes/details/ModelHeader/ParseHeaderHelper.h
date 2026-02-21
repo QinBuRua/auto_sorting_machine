@@ -5,7 +5,6 @@
 #ifndef AUTO_SORTING_MACHINE_INCLUDES_DETAILS_MODELHEADER_PARSEHEADERHELPER_H
 #define AUTO_SORTING_MACHINE_INCLUDES_DETAILS_MODELHEADER_PARSEHEADERHELPER_H
 
-#include <cstdint>
 #include <vector>
 
 #include "classes/ModelHeader.h"
@@ -14,7 +13,7 @@ namespace QinBuRua::auto_sorting_machine::details::model_header {
 
 class ParseHeaderHelper {
 public:
-   ParseHeaderHelper();
+   ParseHeaderHelper() = default;
    ParseHeaderHelper(const std::vector<std::byte>::const_iterator& begin);
 
    void load(const std::vector<std::byte>::const_iterator& begin);

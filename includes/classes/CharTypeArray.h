@@ -35,8 +35,8 @@ public:
    [[nodiscard]] uint32_t capacity() const;
 
    [[nodiscard]] CharType get(uint32_t index) const;
-   CharType get_front() const;
-   CharType get_back() const;
+   [[nodiscard]] CharType get_front() const;
+   [[nodiscard]] CharType get_back() const;
    void set(uint32_t index, CharType value);
    void set_front(CharType value);
    void set_back(CharType value);
@@ -47,7 +47,7 @@ public:
    void reserve(uint32_t elements_capacity);
    void resize(uint32_t size);
    void shrink_to_fit();
-   std::string dump_sc() const;
+   [[nodiscard]] std::string dump_sc() const;
 
 private:
    uint32_t m_Size;
@@ -55,7 +55,7 @@ private:
    std::unique_ptr<uint8_t[]> m_Data;
 
 private:
-   static const char m_CHARTYPE_TO_SINGLE_CHAR[4];
+   static const char CHARTYPE_TO_SINGLE_CHAR[4];
 };
 
 }

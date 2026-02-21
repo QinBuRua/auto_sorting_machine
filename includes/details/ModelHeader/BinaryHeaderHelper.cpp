@@ -34,15 +34,12 @@ void BinaryHeaderHelper::f_initialize() {
 }
 
 void BinaryHeaderHelper::f_binary_sha256() {
-   m_Iter = stdr::copy_n(
-      reinterpret_cast<const std::byte*>(m_Header.m_Sha256.data()),
-      m_Header.m_Sha256.size(),
-      m_Iter
-   ).out;
+   auto bData = std::as_bytes(std::span{m_Header.m_Sha256});
+   m_Iter    = stdr::copy(bData, m_Iter).out;
 }
 
 void BinaryHeaderHelper::f_binary_name() {
-   uint32_t len = m_Header.m_Name.length();
+   const uint32_t len = m_Header.m_Name.length();
 
    m_Iter = stdr::copy_n(
       reinterpret_cast<const std::byte*>(&len),
@@ -103,7 +100,7 @@ void BinaryHeaderHelper::f_binary_dependency() {
 }
 
 void BinaryHeaderHelper::f_binary_description() {
-   uint32_t len = m_Header.m_Description.length();
+   const uint32_t len = m_Header.m_Description.length();
 
    m_Iter = stdr::copy_n(
       reinterpret_cast<const std::byte*>(&len),

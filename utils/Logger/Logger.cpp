@@ -115,7 +115,7 @@ std::string Logger::f_make_message(LogLevel level, const std::string& message) {
    );
 }
 
-std::string Logger::f_make_message_sl(LogLevel level, const std::string& message, const std::source_location& sl) {
+std::string Logger::f_make_message_sl(LogLevel level, const std::string& message, const std::source_location& sl) const {
    if (m_LogLevel == LogLevel::DEBUG) {
       return std::format(
          "[{}][{}][{}][l{}:c{}] {}",

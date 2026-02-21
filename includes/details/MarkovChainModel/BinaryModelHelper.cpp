@@ -13,7 +13,9 @@ using std::float64_t;
 namespace stdr = std::ranges;
 using namespace QinBuRua::auto_sorting_machine::details::markov_chain_model;
 
-BinaryModelHelper::BinaryModelHelper(const MarkovChainModel& model) : m_Model(model) {
+BinaryModelHelper::BinaryModelHelper(const MarkovChainModel& model) : m_Model(model), m_IsdReqSize(0), m_TpReqSize(0),
+                                                                      m_EpReqSize(0),
+                                                                      m_SumReqSize(0) {
 }
 
 void BinaryModelHelper::run() {

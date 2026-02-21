@@ -14,13 +14,13 @@ using namespace QinBuRua::auto_sorting_machine;
 using picosha2::hash256;
 
 uint32_t ModelHeader::get_need_capacity() const {
-   auto sha256Need      = 32;
-   auto nameNeed        = sizeof(uint32_t) + m_Name.size();
-   auto versionNeed     = sizeof(uint32_t) + m_Version.size();
-   auto trainTimeNeed   = sizeof(m_TrainTime);
-   auto dependenceNeed  = f_calculate_dependency_require_capacity();
-   auto descriptionNeed = sizeof(uint32_t) + m_Description.size();
-   auto allNeed         = sha256Need + nameNeed + versionNeed + trainTimeNeed + dependenceNeed + descriptionNeed;
+   constexpr auto sha256Need = 32;
+   const auto nameNeed = sizeof(uint32_t) + m_Name.size();
+   const auto versionNeed = sizeof(uint32_t) + m_Version.size();
+   constexpr auto trainTimeNeed = sizeof(m_TrainTime);
+   const auto dependenceNeed = f_calculate_dependency_require_capacity();
+   const auto descriptionNeed = sizeof(uint32_t) + m_Description.size();
+   const auto allNeed = sha256Need + nameNeed + versionNeed + trainTimeNeed + dependenceNeed + descriptionNeed;
    return allNeed;
 }
 

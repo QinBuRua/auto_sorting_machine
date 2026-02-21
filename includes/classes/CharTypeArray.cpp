@@ -123,7 +123,7 @@ CharType CharTypeArray::get_front() const {
 }
 
 CharType CharTypeArray::get_back() const {
-   auto backIndex = m_Size - 1;
+   const auto backIndex = m_Size - 1;
    return static_cast<CharType>(
       m_Data[backIndex / 4] >> (backIndex % 4 * 2) & 0b11
    );
@@ -174,7 +174,7 @@ void CharTypeArray::destroy() {
 }
 
 void CharTypeArray::reserve(uint32_t elements_capacity) {
-   uint32_t bytes = (elements_capacity + 3) / 4;
+   const uint32_t bytes = (elements_capacity + 3) / 4;
    if (bytes <= m_ByteCapacity) {
       return;
    }
@@ -186,7 +186,7 @@ void CharTypeArray::reserve(uint32_t elements_capacity) {
 
 void CharTypeArray::resize(uint32_t size) {
    if (size < m_Size) {
-      auto end = (m_Size + 3) / 4;
+      const auto end = (m_Size + 3) / 4;
       for (uint32_t i = (size + 3) / 4; i <= end; ++i) {
          m_Data[i] = 0;
       }
@@ -196,7 +196,7 @@ void CharTypeArray::resize(uint32_t size) {
       m_Size = size;
       return;
    }
-   auto reqBytes = (size + 3) / 4;
+   const auto reqBytes = (size + 3) / 4;
    if (reqBytes > m_ByteCapacity) {
       auto tmp = std::unique_ptr<uint8_t[]>(new uint8_t[reqBytes]());
       stdr::copy_n(m_Data.get(), (m_Size + 3) / 4, tmp.get());
@@ -210,7 +210,7 @@ void CharTypeArray::shrink_to_fit() {
       m_Data = nullptr;
       return;
    }
-   auto bytes = (m_Size + 3) / 4;
+   const auto bytes = (m_Size + 3) / 4;
    auto tmp   = std::unique_ptr<uint8_t[]>(new uint8_t[bytes]);
    stdr::copy_n(m_Data.get(), bytes, tmp.get());
    m_Data         = std::move(tmp);
@@ -224,9 +224,9 @@ std::string CharTypeArray::dump_sc() const {
    std::string result;
    result.reserve(m_Size);
    for (uint32_t i = 0; i < m_Size; ++i) {
-      result.push_back(m_CHARTYPE_TO_SINGLE_CHAR[std::to_underlying(get(i))]);
+      result.push_back(CHARTYPE_TO_SINGLE_CHAR[std::to_underlying(get(i))]);
    }
    return result;
 }
 
-const char CharTypeArray::m_CHARTYPE_TO_SINGLE_CHAR[4] = {'S', 'B', 'M', 'E'};
+const char CharTypeArray::CHARTYPE_TO_SINGLE_CHAR[4] = {'S', 'B', 'M', 'E'};

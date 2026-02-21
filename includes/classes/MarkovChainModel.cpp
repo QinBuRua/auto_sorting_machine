@@ -22,8 +22,8 @@ MarkovChainModel::MarkovChainModel() {
    f_initialize_header();
 }
 
-bool MarkovChainModel::has_ep(char16_t charType) const {
-   return m_EmissionProbability.contains(charType);
+bool MarkovChainModel::has_ep(char16_t char_type) const {
+   return m_EmissionProbability.contains(char_type);
 }
 
 void MarkovChainModel::clear() {
@@ -33,8 +33,8 @@ void MarkovChainModel::clear() {
    m_EmissionProbability.clear();
 }
 
-float64_t MarkovChainModel::get_isd(CharType charType) const {
-   return m_InitialStateDistribution[std::to_underlying(charType)];
+float64_t MarkovChainModel::get_isd(CharType char_type) const {
+   return m_InitialStateDistribution[std::to_underlying(char_type)];
 }
 
 float64_t MarkovChainModel::get_tp(CharType from, CharType to) const {
@@ -42,16 +42,14 @@ float64_t MarkovChainModel::get_tp(CharType from, CharType to) const {
 }
 
 float64_t MarkovChainModel::get_ep(const char16_t wch, CharType tp) const {
-   auto arr = m_EmissionProbability.find(wch);
-   if (arr != m_EmissionProbability.end()) {
-      return arr->second[std::to_underlying(tp)];
-   } else {
-      return 0.0;
-   }
+   const auto arr = m_EmissionProbability.find(wch);
+   return arr != m_EmissionProbability.end()
+             ? arr->second[std::to_underlying(tp)]
+             : 0.0;
 }
 
-void MarkovChainModel::set_isd(CharType charType, const float64_t probability) {
-   m_InitialStateDistribution[std::to_underlying(charType)] = probability;
+void MarkovChainModel::set_isd(CharType char_type, const float64_t probability) {
+   m_InitialStateDistribution[std::to_underlying(char_type)] = probability;
 }
 
 void MarkovChainModel::set_tp(CharType from, CharType to, const float64_t probability) {
@@ -84,7 +82,7 @@ std::array<std::float64_t, 4> MarkovChainModel::calculate_default_ep_probabiliti
    std::float64_t sum = stdr::fold_left(
       defaultProbabilities,
       0,
-      std::plus<std::float64_t>()
+      std::plus<>()
    );
    stdr::transform(
       defaultProbabilities,

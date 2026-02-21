@@ -23,14 +23,14 @@ class MarkovChainModel {
 public:
    MarkovChainModel();
 
-   bool has_ep(char16_t charType) const;
+   bool has_ep(char16_t char_type) const;
    void clear();
 
-   std::float64_t get_isd(CharType charType) const;
+   std::float64_t get_isd(CharType char_type) const;
    std::float64_t get_tp(CharType from, CharType to) const;
    std::float64_t get_ep(char16_t wch, CharType tp) const;
 
-   void set_isd(CharType charType, std::float64_t probability);
+   void set_isd(CharType char_type, std::float64_t probability);
    void set_tp(CharType from, CharType to, std::float64_t probability);
    void set_ep(char16_t wch, CharType tp, std::float64_t probability);
    void set_isd_s(unsigned int single_times, unsigned int begin_times);

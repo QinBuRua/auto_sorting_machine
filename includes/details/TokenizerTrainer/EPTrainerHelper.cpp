@@ -10,12 +10,12 @@
 
 using namespace QinBuRua::auto_sorting_machine::details::tokenizer_trainer;
 
-EPTrainerHelper::EPTrainerHelper() : m_MarkovModel(nullptr),
+EpTrainerHelper::EpTrainerHelper() : m_MarkovModel(nullptr),
                                      m_ChIndex({}),
                                      m_ChtIndex({}) {
 }
 
-void EPTrainerHelper::load(
+void EpTrainerHelper::load(
    const std::vector<std::u16string>& sentences,
    const std::vector<CharTypeArray>& char_type_arrays,
    MarkovChainModel& markov_chain
@@ -31,7 +31,7 @@ void EPTrainerHelper::load(
    );
 }
 
-void EPTrainerHelper::run() {
+void EpTrainerHelper::run() {
    do {
       m_CharToTypeTimes[m_Ch.first][std::to_underlying(m_Ch.second)]++;
    } while (f_read_token_char());
@@ -63,7 +63,7 @@ void EPTrainerHelper::run() {
    }
 }
 
-bool EPTrainerHelper::f_read_token_char() {
+bool EpTrainerHelper::f_read_token_char() {
    do {
       m_ChIndex[1]++;
    } while (m_Sentences[m_ChIndex[0]][m_ChIndex[1]] == L' '

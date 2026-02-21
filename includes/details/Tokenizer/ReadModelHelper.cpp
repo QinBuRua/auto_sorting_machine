@@ -3,7 +3,6 @@
 //
 
 #include <filesystem>
-#include <format>
 
 #include "Logger/Logger.h"
 

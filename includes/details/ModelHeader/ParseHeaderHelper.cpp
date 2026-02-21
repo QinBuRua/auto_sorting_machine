@@ -9,9 +9,6 @@
 namespace stdr = std::ranges;
 using namespace QinBuRua::auto_sorting_machine::details::model_header;
 
-ParseHeaderHelper::ParseHeaderHelper() {
-}
-
 ParseHeaderHelper::ParseHeaderHelper(const std::vector<std::byte>::const_iterator& begin) {
    load(begin);
 }

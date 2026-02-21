@@ -24,7 +24,7 @@ public:
    explicit Tokenizer(MarkovChainModel&& model) noexcept;
 
    void set_min_probability(std::float64_t probability);
-   std::float64_t get_min_probability();
+   std::float64_t get_min_probability() const;
 
    void load(MarkovChainModel&& model) noexcept;
    void initialize();
@@ -44,8 +44,8 @@ private:
    [[nodiscard]] static bool is_all_english_or_number(const Sentence& text);
    [[nodiscard]] static std::vector<Word> single_english_or_number_tokenize(const Sentence& text);
 
-   [[nodiscard]] std::float64_t f_get_char_prob(char16_t ch, CharType type);
-   [[nodiscard]] std::vector<Sentence> f_preprocess(const Sentence& text);
+   [[nodiscard]] std::float64_t f_get_char_prob(char16_t ch, CharType type) const;
+   [[nodiscard]] static std::vector<Sentence> f_preprocess(const Sentence& text);
    [[nodiscard]] std::vector<Word> f_single_chinese_tokenize(const Sentence& text);
 
 };

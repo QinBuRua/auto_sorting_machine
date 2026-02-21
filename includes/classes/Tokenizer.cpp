@@ -13,20 +13,12 @@ namespace stdr = std::ranges;
 using namespace QinBuRua::auto_sorting_machine;
 namespace slog = utils::log;
 
-Tokenizer::Tokenizer(const MarkovChainModel& model) {
+Tokenizer::Tokenizer(const MarkovChainModel& model) : m_DefaultPro(), m_MinPro(0.05) {
    m_MarkovModel = model;
 }
 
-Tokenizer::Tokenizer(MarkovChainModel&& model) noexcept {
+Tokenizer::Tokenizer(MarkovChainModel&& model) noexcept : m_DefaultPro(), m_MinPro(0.05) {
    m_MarkovModel = std::move(model);
-}
-
-void Tokenizer::load(MarkovChainModel&& model) noexcept {
-   m_MarkovModel = std::move(model);
-}
-
-void Tokenizer::initialize() {
-   m_DefaultPro = m_MarkovModel.calculate_default_ep_probabilities();
 }
 
 void Tokenizer::set_min_probability(std::float64_t probability) {
@@ -36,8 +28,16 @@ void Tokenizer::set_min_probability(std::float64_t probability) {
    m_MinPro = probability;
 }
 
-std::float64_t Tokenizer::get_min_probability() {
+std::float64_t Tokenizer::get_min_probability() const {
    return m_MinPro;
+}
+
+void Tokenizer::load(MarkovChainModel&& model) noexcept {
+   m_MarkovModel = std::move(model);
+}
+
+void Tokenizer::initialize() {
+   m_DefaultPro = m_MarkovModel.calculate_default_ep_probabilities();
 }
 
 std::vector<std::u16string> Tokenizer::tokenize(const std::u16string& text) {
@@ -59,7 +59,7 @@ std::vector<std::u16string> Tokenizer::tokenize(const std::u16string& text) {
 }
 
 bool Tokenizer::is_punctuation(char16_t ch) {
-   static const std::unordered_set punctuations = {
+   static const std::unordered_set PUNCTUATIONS = {
       // 英文/ASCII 标点 (32-47范围的部分常用符号)
       u'.', u',', u'!', u'?', u';', u':', u'-', u'\'', u'\"',
       u'(', u')', u'[', u']', u'{', u'}',
@@ -68,11 +68,11 @@ bool Tokenizer::is_punctuation(char16_t ch) {
       u'‘', u'’', u'（', u'）', u'【', u'】', u'《', u'》',
       u'、', u'—', u'…', u'·'
    };
-   return punctuations.contains(ch);
+   return PUNCTUATIONS.contains(ch);
 }
 
 bool Tokenizer::is_space(char16_t ch) {
-   static const std::unordered_set space = {
+   static const std::unordered_set SPACE = {
       u' ',      // 空格 (U+0020)
       u'\t',     // 制表符 (U+0009)
       u'\n',     // 换行 (U+000A)
@@ -98,7 +98,7 @@ bool Tokenizer::is_space(char16_t ch) {
       u'\u205F', // 中等数学空格
       u'\u3000', // 表意文字空格
    };
-   return space.contains(ch);
+   return SPACE.contains(ch);
 }
 
 bool Tokenizer::is_all_space_or_punctuation(const Sentence& text) {
@@ -126,7 +126,23 @@ bool Tokenizer::is_all_english_or_number(const Sentence& text) {
    );
 }
 
-std::float64_t Tokenizer::f_get_char_prob(char16_t ch, CharType type) {
+std::vector<Tokenizer::Word> Tokenizer::single_english_or_number_tokenize(const Sentence& text) {
+   std::vector<Word> words(1);
+   stdr::for_each(
+      text, [&words](const auto& ch)-> void {
+         if (is_space(ch)) {
+            if (!words.back().empty()) {
+               words.emplace_back();
+            }
+            return;
+         }
+         words.back().push_back(ch);
+      }
+   );
+   return words;
+}
+
+std::float64_t Tokenizer::f_get_char_prob(char16_t ch, CharType type) const {
    if (!m_MarkovModel.has_ep(ch)) {
       return m_DefaultPro[std::to_underlying(type)];
    }
@@ -221,21 +237,5 @@ std::vector<Tokenizer::Word> Tokenizer::f_single_chinese_tokenize(const std::u16
       }
    );
 
-   return words;
-}
-
-std::vector<Tokenizer::Word> Tokenizer::single_english_or_number_tokenize(const Sentence& text) {
-   std::vector<Word> words(1);
-   stdr::for_each(
-      text, [&words](const auto& ch)-> void {
-         if (is_space(ch)) {
-            if (!words.back().empty()) {
-               words.emplace_back();
-            }
-            return;
-         }
-         words.back().push_back(ch);
-      }
-   );
    return words;
 }

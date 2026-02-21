@@ -24,7 +24,7 @@ namespace fs = std::filesystem;
 namespace stdr = std::ranges;
 using namespace QinBuRua::auto_sorting_machine;
 namespace slog = utils::log;
-using details::tokenizer_trainer::EPTrainerHelper;
+using details::tokenizer_trainer::EpTrainerHelper;
 using details::tokenizer_trainer::ReadFilesHelper;
 using details::tokenizer_trainer::SinglePreprocessorHelper;
 
@@ -38,13 +38,9 @@ void TokenizerTrainer::destroy() {
    m_CharTypeArrays.clear();
 }
 
-void TokenizerTrainer::load_config(const nlohmann::json& config_json) {
+void TokenizerTrainer::load_config(const json& config_json) {
    destroy();
    m_Config = config_json;
-}
-
-ModelHeader& TokenizerTrainer::header() {
-   return m_MarkovModel.header();
 }
 
 void TokenizerTrainer::run() {
@@ -60,6 +56,10 @@ void TokenizerTrainer::run() {
    f_train_tp();
    f_train_ep();
    f_done();
+}
+
+ModelHeader& TokenizerTrainer::header() {
+   return m_MarkovModel.header();
 }
 
 MarkovChainModel& TokenizerTrainer::get_model_ref() {
@@ -170,7 +170,7 @@ void TokenizerTrainer::f_train_tp() {
 }
 
 void TokenizerTrainer::f_train_ep() {
-   EPTrainerHelper epTrainer;
+   EpTrainerHelper epTrainer;
    epTrainer.load(m_Sentences, m_CharTypeArrays, m_MarkovModel);
    epTrainer.run();
 }
