@@ -91,5 +91,4 @@ void ReadModelHelper::f_parse_model() {
 
 void ReadModelHelper::f_complete() {
    m_RawData.clear();
-   m_MarkovModel.clear();
 }
