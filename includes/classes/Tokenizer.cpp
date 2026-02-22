@@ -32,6 +32,12 @@ std::float64_t Tokenizer::get_min_probability() const {
    return m_MinPro;
 }
 
+void Tokenizer::clear() {
+   m_MarkovModel.clear();
+   m_MinPro = 0;
+   m_DefaultPro.fill(0);
+}
+
 void Tokenizer::load(MarkovChainModel&& model) noexcept {
    m_MarkovModel = std::move(model);
 }

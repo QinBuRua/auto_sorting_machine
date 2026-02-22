@@ -26,6 +26,7 @@ public:
    void set_min_probability(std::float64_t probability);
    std::float64_t get_min_probability() const;
 
+   void clear();
    void load(MarkovChainModel&& model) noexcept;
    void initialize();
    std::vector<Word> tokenize(const Sentence& text);
