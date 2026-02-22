@@ -44,12 +44,23 @@ MarkovChainModel& ReadModelHelper::get_model_ref() {
    return m_MarkovModel;
 }
 
+const uint32_t ReadModelHelper::MODEL_MIN_SIZE
+   = sizeof(std::float64_t) * 2 + sizeof(std::float64_t) * 4 * 4 + sizeof(uint32_t) //除去模型头，马尔科夫模型的最小大小
+   + sizeof(uint8_t) * 32 + sizeof(uint32_t) + sizeof(uint32_t) + sizeof(uint32_t) + sizeof(uint64_t) + sizeof(uint32_t)
+   + sizeof(uint32_t); //模型头最小大小
+
 void ReadModelHelper::f_initialize() {
    m_RawData.clear();
    m_MarkovModel.clear();
 
    const auto filePath = stdf::path(m_FileName);
    const auto fileSize = stdf::file_size(filePath);
+   if (fileSize < MODEL_MIN_SIZE) {
+      slog::error_throw<std::runtime_error>(std::format("Model file \"{}\" is incomplete", filePath.string()));
+   } else if (fileSize == MODEL_MIN_SIZE) {
+      slog::warn(std::format("Model file \"{}\" is valid, but contains no data", filePath.string()));
+   }
+
    std::ifstream fileStream{m_FileName, std::ios::binary};
    if (fileStream.fail()) {
       slog::error_throw<std::runtime_error>(std::format("Fail to open model file \"{}\"", filePath.string()));

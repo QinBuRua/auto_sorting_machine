@@ -28,6 +28,8 @@ public:
    ReadModelHelper& operator=(ReadModelHelper&&)      = delete;
 
 private:
+   static const uint32_t MODEL_MIN_SIZE;
+
    std::string m_FileName;
    std::vector<std::byte> m_RawData;
    std::vector<std::byte>::const_iterator m_Iterator;
