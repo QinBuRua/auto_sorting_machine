@@ -39,6 +39,7 @@ void Tokenizer::clear() {
 }
 
 void Tokenizer::load(MarkovChainModel&& model) noexcept {
+   clear();
    m_MarkovModel = std::move(model);
 }
 
