@@ -18,8 +18,9 @@ public:
    explicit ReadModelHelper(const std::string& filename);
 
    void clear();
-   void set_model_file(const std::string& filename);//todo
-   void run(); //todo
+   void set_model_file(const std::string& filename);
+   void run();
+   MarkovChainModel& get_model_ref();
 
    ReadModelHelper(const ReadModelHelper&)            = delete;
    ReadModelHelper(ReadModelHelper&&)                 = delete;
@@ -28,12 +29,17 @@ public:
 
 private:
    std::string m_FileName;
-   uint32_t m_FileSize;
-   std::vector<uint8_t> m_RawData;
+   std::vector<std::byte> m_RawData;
+   std::vector<std::byte>::const_iterator m_Iterator;
+   ModelHeader m_Header;
    MarkovChainModel m_MarkovModel;
 
 private:
-   void f_initialize(); //todo
+   void f_initialize();
+   void f_parse_header();
+   void f_parse_model();
+   void f_complete();
+
 };
 
 }

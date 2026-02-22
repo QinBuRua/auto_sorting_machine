@@ -27,6 +27,7 @@ int main() {
    auto& tokenizerTrainer = trainer.get_tokenizer_trainer();
 
    std::vector<std::byte> rawData = tokenizerTrainer.get_model_data();
+   std::ofstream outFile{R"(data\model\MCM.dat)"};
    ParseHeaderHelper parseHeaderHelper{rawData.begin()};
    parseHeaderHelper.run();
    auto header = std::move(parseHeaderHelper.get_header_ref());
@@ -40,6 +41,7 @@ int main() {
    auto words = tokenizer.tokenize(
       u"关于 “AI” 的 讨论：有人说 它比人强 （例如在 围棋上，AlphaGo 4:1 战胜了 李世石），但也 有人说 它很 “蠢”。你 怎么看 呢？欢迎 在 评论区 留言！网址：https：//www. aisys. net/zh-cn/faq ？ q=test & page=1 邮箱： ai-talk @ futura. ai 电话： +86 (010) 1234 - 5678"
    );
+   tokenizer.load_from_file(R"(data\model\MCM.dat)");
 
    return 0;
 }

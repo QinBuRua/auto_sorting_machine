@@ -21,6 +21,10 @@ Tokenizer::Tokenizer(MarkovChainModel&& model) noexcept : m_DefaultPro(), m_MinP
    m_MarkovModel = std::move(model);
 }
 
+Tokenizer::Tokenizer(const std::string& filename) {
+   load_from_file(filename);
+}
+
 void Tokenizer::set_min_probability(std::float64_t probability) {
    if (probability >= 1) {
       slog::error_throw_sl<std::logic_error>(slog::Tag{}, "The min probability must less than 1");
@@ -41,6 +45,14 @@ void Tokenizer::clear() {
 void Tokenizer::load(MarkovChainModel&& model) noexcept {
    clear();
    m_MarkovModel = std::move(model);
+}
+
+void Tokenizer::load_from_file(const std::string& filename) {
+   clear();
+   details::tokenizer::ReadModelHelper readHelper{};
+   readHelper.set_model_file(filename);
+   readHelper.run();
+   m_MarkovModel = std::move(readHelper.get_model_ref());
 }
 
 void Tokenizer::initialize() {

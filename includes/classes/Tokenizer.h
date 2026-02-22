@@ -22,12 +22,14 @@ public:
 public:
    explicit Tokenizer(const MarkovChainModel& model);
    explicit Tokenizer(MarkovChainModel&& model) noexcept;
+   explicit Tokenizer(const std::string& filename);
 
    void set_min_probability(std::float64_t probability);
    std::float64_t get_min_probability() const;
 
    void clear();
    void load(MarkovChainModel&& model) noexcept;
+   void load_from_file(const std::string& filename);
    void initialize();
    std::vector<Word> tokenize(const Sentence& text);
 
