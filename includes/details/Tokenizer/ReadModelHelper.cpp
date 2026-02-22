@@ -52,13 +52,13 @@ void ReadModelHelper::f_initialize() {
    const auto fileSize = stdf::file_size(filePath);
    std::ifstream fileStream{m_FileName, std::ios::binary};
    if (fileStream.fail()) {
-      slog::error_throw<std::runtime_error>(std::format("Fail to open file \"{}\"", filePath.string()));
+      slog::error_throw<std::runtime_error>(std::format("Fail to open model file \"{}\"", filePath.string()));
    }
 
    m_RawData.resize(fileSize);
    fileStream.read(reinterpret_cast<char*>(m_RawData.data()), fileSize);
    if (fileStream.fail()) {
-      slog::error_throw<std::runtime_error>(std::format("Fail to read file \"{}\"", filePath.string()));
+      slog::error_throw<std::runtime_error>(std::format("Fail to read model file \"{}\"", filePath.string()));
    }
 
    m_Iterator = m_RawData.begin();
