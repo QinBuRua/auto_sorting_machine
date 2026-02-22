@@ -59,6 +59,12 @@ public:
    [[nodiscard]] std::vector<std::byte> get_binary_model_data() const;
    void clear();
 
+   ModelHeader()                              = default;
+   ModelHeader(ModelHeader&&)                 = default;
+   ModelHeader(ModelHeader const&)            = default;
+   ModelHeader& operator=(ModelHeader&&)      = default;
+   ModelHeader& operator=(ModelHeader const&) = default;
+
 private:
    std::array<uint8_t, 32> m_Sha256{};
    std::string m_Name;

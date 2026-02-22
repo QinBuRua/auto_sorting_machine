@@ -41,6 +41,11 @@ public:
    ModelHeader header() const;
    std::vector<std::byte> get_binary_data() const;
 
+   MarkovChainModel(MarkovChainModel&&)                 = default;
+   MarkovChainModel(const MarkovChainModel&)            = default;
+   MarkovChainModel& operator=(MarkovChainModel&&)      = default;
+   MarkovChainModel& operator=(const MarkovChainModel&) = default;
+
 private:
    ModelHeader m_ModelHeader{};
    std::array<std::float64_t, 2> m_InitialStateDistribution{};

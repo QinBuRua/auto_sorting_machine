@@ -27,7 +27,8 @@ int main() {
    auto& tokenizerTrainer = trainer.get_tokenizer_trainer();
 
    std::vector<std::byte> rawData = tokenizerTrainer.get_model_data();
-   std::ofstream outFile{R"(data\model\MCM.dat)"};
+   std::ofstream outFile{R"(data\model\MCM.dat)", std::ios::binary};
+   outFile.write(reinterpret_cast<const char*>(rawData.data()), rawData.size());
    ParseHeaderHelper parseHeaderHelper{rawData.begin()};
    parseHeaderHelper.run();
    auto header = std::move(parseHeaderHelper.get_header_ref());
