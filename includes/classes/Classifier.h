@@ -1,0 +1,17 @@
+//
+// Created by QinBu_Rua on 2026/2/23.
+//
+
+#ifndef AUTO_SORTING_MACHINE_INCLUDES_CLASSES_CLASSIFIER_H
+#define AUTO_SORTING_MACHINE_INCLUDES_CLASSES_CLASSIFIER_H
+
+namespace QinBuRua::auto_sorting_machine {
+
+class Classifier {
+
+};
+
+}
+
+
+#endif //AUTO_SORTING_MACHINE_INCLUDES_CLASSES_CLASSIFIER_H
