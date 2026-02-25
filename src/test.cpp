@@ -8,6 +8,7 @@
 #include "details/MarkovChainModel/ParseModelHelper.h"
 #include "details/ModelHeader/ParseHeaderHelper.h"
 #include "Logger/Logger.h"
+#include "Vector/Vector.h"
 
 namespace stdr = std::ranges;
 using std::cout;
@@ -20,6 +21,8 @@ using details::markov_chain_model::ParseModelHelper;
 
 
 int main() {
+   utils::Vector<int> vec = utils::Vector<int>::of_size(3);
+
    utils::Logger::instance().set_log_level(LogLevel::DEBUG);
    slog::info_sl("Begin training");
    Trainer trainer(std::string(R"(data\train\config.json)"));
