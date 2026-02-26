@@ -34,8 +34,22 @@ public:
    using DocumentsVectors = std::unordered_set<Category, TfidfVectors>;
 
 public:
+   TfidfVectorizer() = default;
+   explicit TfidfVectorizer(std::shared_ptr<ClassifiedDocuments> documents);
+
+   void clear();
+   void load(std::shared_ptr<ClassifiedDocuments> documents);
+   void run();
 
 private:
+   uint32_t m_MinTf = 3;
+
+   std::shared_ptr<const ClassifiedDocuments> m_ClassifiedDocuments;
+   Vocabulary m_Vocabulary;
+   DocumentsVectors m_DocumentsVectors;
+
+private:
+   Vocabulary f_extract_vocabulary() const;
 
 };
 
