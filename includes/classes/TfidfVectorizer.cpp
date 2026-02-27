@@ -60,7 +60,7 @@ TfidfVectorizer::Vocabulary TfidfVectorizer::f_filter_under_max_tf(const Vocabul
       | stdv::values
       | stdv::join
       | stdv::transform(
-         [&vocabulary](auto document) {
+         [&vocabulary](const auto& document) {
             return document
                | stdv::filter([&vocabulary](const Word& word) { return vocabulary.contains(word); });
          }
