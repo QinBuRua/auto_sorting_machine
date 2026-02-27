@@ -46,7 +46,7 @@ private:
    uint32_t m_MinTf        = 2;
    std::float32_t m_MaxTf  = 0.9f;
 
-   std::shared_ptr<ClassifiedDocuments> m_ClassifiedDocuments;
+   std::shared_ptr<const ClassifiedDocuments> m_ClassifiedDocuments;
    Vocabulary m_Vocabulary;
    DocumentsVectors m_DocumentsVectors;
 
