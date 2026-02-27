@@ -26,7 +26,7 @@ public:
 
    using Vocabulary       = std::unordered_set<Word>;
    using RawVector        = std::valarray<uint32_t>;
-   using WordFrequency    = std::unordered_map<Word, uint32_t>;
+   using WordCount        = std::unordered_map<Word, uint32_t>;
    using TfVector         = std::valarray<std::float32_t>;
    using IdfVector        = std::valarray<std::float32_t>;
    using TfidfVector      = std::valarray<std::float32_t>;
@@ -42,7 +42,8 @@ public:
    void run();
 
 private:
-   uint32_t m_MinTf = 3;
+   uint32_t m_MinTf       = 3;
+   std::float32_t m_MaxTf = 0.9;
 
    std::shared_ptr<const ClassifiedDocuments> m_ClassifiedDocuments;
    Vocabulary m_Vocabulary;
@@ -50,6 +51,8 @@ private:
 
 private:
    Vocabulary f_extract_vocabulary() const;
+   Vocabulary f_filter_above_min_tf() const;
+   Vocabulary f_filter_under_max_tf(const Vocabulary& vocabulary) const;
 
 };
 

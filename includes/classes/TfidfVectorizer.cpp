@@ -32,22 +32,60 @@ void TfidfVectorizer::run() {
 }
 
 TfidfVectorizer::Vocabulary TfidfVectorizer::f_extract_vocabulary() const {
-   WordFrequency wordFrequency;
+   const Vocabulary vocabulary = f_filter_above_min_tf();
+   return f_filter_under_max_tf(vocabulary);
+}
+
+TfidfVectorizer::Vocabulary TfidfVectorizer::f_filter_above_min_tf() const {
+   WordCount wordCount;
    auto words = *m_ClassifiedDocuments
       | stdv::values
       | stdv::join
       | stdv::join;
    stdr::for_each(
-      words, [&wordFrequency](const Word& word) {
-         ++wordFrequency[word];
+      words, [&wordCount](const Word& word) {
+         ++wordCount[word];
       }
    );
-
    const auto& minTf = m_MinTf;
-   auto vocabulary   = wordFrequency
+   return wordCount
       | stdv::filter([minTf](const auto& pair) { return pair.second >= minTf; })
       | stdv::keys
       | stdr::to<Vocabulary>();
+}
 
-   return vocabulary;
+TfidfVectorizer::Vocabulary TfidfVectorizer::f_filter_under_max_tf(const Vocabulary& vocabulary) const {
+   WordCount wordCount;
+   const auto filteredDocuments = *m_ClassifiedDocuments
+      | stdv::values
+      | stdv::join
+      | stdv::transform(
+         [&vocabulary](auto document) {
+            return document
+               | stdv::filter([&vocabulary](const Word& word) { return vocabulary.contains(word); });
+         }
+      );
+   uint32_t documentsCount{0};
+   for (auto document: filteredDocuments) {
+      ++documentsCount;
+      Vocabulary tmpVocabulary;
+      for (const auto& word: document) {
+         if (tmpVocabulary.contains(word)) {
+            continue;
+         }
+         tmpVocabulary.insert(word);
+         ++wordCount[word];
+      }
+   }
+   const auto& maxTf = m_MaxTf;
+   return wordCount
+      | stdv::filter(
+         [maxTf,documentsCount](const auto& pair)-> bool {
+            const std::float32_t wordFrequency
+               = static_cast<std::float32_t>(pair.second) / static_cast<std::float32_t>(documentsCount);
+            return wordFrequency <= maxTf;
+         }
+      )
+      | stdv::keys
+      | stdr::to<Vocabulary>();
 }
