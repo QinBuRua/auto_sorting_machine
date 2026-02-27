@@ -5,12 +5,28 @@
 #include <ranges>
 
 #include "TfidfVectorizer.h"
+#include "Logger/Logger.h"
 
 namespace stdr = std::ranges;
 namespace stdv = std::views;
 using namespace QinBuRua::auto_sorting_machine;
+namespace slog = utils::log;
 
 TfidfVectorizer::TfidfVectorizer(std::shared_ptr<ClassifiedDocuments> documents) {
+   uint32_t wordCounts = stdr::distance(
+      *documents
+      | stdv::values
+      | stdv::join
+      | stdv::join
+   );
+   if (wordCounts < m_MinWordCount) {
+      slog::warn(
+         std::format(
+            "From TfidfVectorizer: Dataset is too small, totally {} words less than {} words", wordCounts,
+            m_MinWordCount
+         )
+      );
+   }
    m_ClassifiedDocuments = std::move(documents);
 }
 
@@ -23,6 +39,20 @@ void TfidfVectorizer::clear() {
 }
 
 void TfidfVectorizer::load(std::shared_ptr<ClassifiedDocuments> documents) {
+   uint32_t wordCounts = stdr::distance(
+      *documents
+      | stdv::values
+      | stdv::join
+      | stdv::join
+   );
+   if (wordCounts < m_MinWordCount) {
+      slog::warn(
+         std::format(
+            "From TfidfVectorizer: Dataset is too small, totally {} words less than {} words", wordCounts,
+            m_MinWordCount
+         )
+      );
+   }
    clear();
    m_ClassifiedDocuments = std::move(documents);
 }

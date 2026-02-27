@@ -5,6 +5,7 @@
       <w>chartype</w>
       <w>chptr</w>
       <w>qinburua</w>
+      <w>tfidfvectorizer</w>
     </words>
   </dictionary>
 </component>
