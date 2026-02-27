@@ -58,6 +58,8 @@ private:
    WordToNumTable f_make_word_to_num_table(const Vocabulary& vocabulary) const;
    Vocabulary f_filter_above_min_tf() const;
    Vocabulary f_filter_under_max_tf(const Vocabulary& vocabulary) const;
+   RawVector f_calculate_raw_vector(const Document& document) const;
+   static TfVector f_calculate_tf_vector(const RawVector& raw_vector);
 
 };
 

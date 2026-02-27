@@ -2,6 +2,7 @@
 // Created by QinBu_Rua on 2026/2/25.
 //
 
+#include <algorithm>
 #include <ranges>
 
 #include "TfidfVectorizer.h"
@@ -60,11 +61,23 @@ void TfidfVectorizer::load(std::shared_ptr<ClassifiedDocuments> documents) {
 void TfidfVectorizer::run() {
    m_Vocabulary     = f_extract_vocabulary();
    m_WordToNumTable = f_make_word_to_num_table(m_Vocabulary);
+
 }
 
 TfidfVectorizer::Vocabulary TfidfVectorizer::f_extract_vocabulary() const {
    const Vocabulary vocabulary = f_filter_above_min_tf();
    return f_filter_under_max_tf(vocabulary);
+}
+
+TfidfVectorizer::WordToNumTable TfidfVectorizer::f_make_word_to_num_table(const Vocabulary& vocabulary) const {
+   WordToNumTable table{vocabulary.size()};
+   auto sortedVocabulary = vocabulary
+      | stdr::to<std::vector<Word>>();
+   stdr::sort(sortedVocabulary);
+   for (uint32_t i = 0; i < sortedVocabulary.size(); ++i) {
+      table[sortedVocabulary[i]] = i;
+   }
+   return table;
 }
 
 TfidfVectorizer::Vocabulary TfidfVectorizer::f_filter_above_min_tf() const {
@@ -117,4 +130,23 @@ TfidfVectorizer::Vocabulary TfidfVectorizer::f_filter_under_max_tf(const Vocabul
       })
       | stdv::keys
       | stdr::to<Vocabulary>();
+}
+
+TfidfVectorizer::RawVector TfidfVectorizer::f_calculate_raw_vector(const Document& document) const {
+   RawVector rawVector(m_WordToNumTable.size());
+   for (const auto& word: document) {
+      auto indexIter = m_WordToNumTable.find(word);
+      if (indexIter == m_WordToNumTable.end()) {
+         continue;
+      }
+      ++rawVector[indexIter->second];
+   }
+   return rawVector;
+}
+
+TfidfVectorizer::TfVector TfidfVectorizer::f_calculate_tf_vector(const RawVector& raw_vector) {
+   std::float32_t totalWordCount = stdr::fold_left(raw_vector, 0, std::plus());
+   return raw_vector
+      | stdv::transform([totalWordCount](auto val)-> std::float32_t { return val / totalWordCount; })
+      | stdr::to<TfVector>();
 }
