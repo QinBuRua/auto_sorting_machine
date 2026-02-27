@@ -25,6 +25,7 @@ public:
    using ClassifiedDocuments = std::unordered_map<Category, Documents>;
 
    using Vocabulary       = std::unordered_set<Word>;
+   using WordToNumTable   = std::unordered_map<Word, uint32_t>;
    using RawVector        = std::valarray<uint32_t>;
    using WordCount        = std::unordered_map<Word, uint32_t>;
    using TfVector         = std::valarray<std::float32_t>;
@@ -48,10 +49,12 @@ private:
 
    std::shared_ptr<const ClassifiedDocuments> m_ClassifiedDocuments;
    Vocabulary m_Vocabulary;
+   WordToNumTable m_WordToNumTable;
    DocumentsVectors m_DocumentsVectors;
 
 private:
    Vocabulary f_extract_vocabulary() const;
+   WordToNumTable f_make_word_to_num_table(const Vocabulary& vocabulary) const;
    Vocabulary f_filter_above_min_tf() const;
    Vocabulary f_filter_under_max_tf(const Vocabulary& vocabulary) const;
 

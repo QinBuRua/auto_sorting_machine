@@ -58,7 +58,8 @@ void TfidfVectorizer::load(std::shared_ptr<ClassifiedDocuments> documents) {
 }
 
 void TfidfVectorizer::run() {
-   m_Vocabulary = f_extract_vocabulary();
+   m_Vocabulary     = f_extract_vocabulary();
+   m_WordToNumTable = f_make_word_to_num_table(m_Vocabulary);
 }
 
 TfidfVectorizer::Vocabulary TfidfVectorizer::f_extract_vocabulary() const {
@@ -79,7 +80,9 @@ TfidfVectorizer::Vocabulary TfidfVectorizer::f_filter_above_min_tf() const {
    );
    const auto& minTf = m_MinTf;
    return wordCount
-      | stdv::filter([minTf](const auto& pair) { return pair.second >= minTf; })
+      | stdv::filter([minTf](const auto& pair) {
+         return pair.second >= minTf;
+      })
       | stdv::keys
       | stdr::to<Vocabulary>();
 }
@@ -89,12 +92,10 @@ TfidfVectorizer::Vocabulary TfidfVectorizer::f_filter_under_max_tf(const Vocabul
    const auto filteredDocuments = *m_ClassifiedDocuments
       | stdv::values
       | stdv::join
-      | stdv::transform(
-         [&vocabulary](const auto& document) {
-            return document
-               | stdv::filter([&vocabulary](const Word& word) { return vocabulary.contains(word); });
-         }
-      );
+      | stdv::transform([&vocabulary](const auto& document) {
+         return document
+            | stdv::filter([&vocabulary](const Word& word) { return vocabulary.contains(word); });
+      });
    uint32_t documentsCount{0};
    for (auto document: filteredDocuments) {
       ++documentsCount;
@@ -109,13 +110,11 @@ TfidfVectorizer::Vocabulary TfidfVectorizer::f_filter_under_max_tf(const Vocabul
    }
    const auto& maxTf = m_MaxTf;
    return wordCount
-      | stdv::filter(
-         [maxTf,documentsCount](const auto& pair)-> bool {
-            const std::float32_t wordFrequency
-               = static_cast<std::float32_t>(pair.second) / static_cast<std::float32_t>(documentsCount);
-            return wordFrequency <= maxTf;
-         }
-      )
+      | stdv::filter([maxTf,documentsCount](const auto& pair)-> bool {
+         const std::float32_t wordFrequency
+            = static_cast<std::float32_t>(pair.second) / static_cast<std::float32_t>(documentsCount);
+         return wordFrequency <= maxTf;
+      })
       | stdv::keys
       | stdr::to<Vocabulary>();
 }
