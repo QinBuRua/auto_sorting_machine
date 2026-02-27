@@ -92,7 +92,7 @@ std::string Logger::log(LogLevel level, const std::string& message) {
       return {};
    }
    std::string result = f_make_message(level, message);
-   m_Fout << result;
+   m_Fout << result << std::flush;
    if (m_Fout.fail()) {
       throw std::runtime_error{
          f_make_message(
@@ -115,7 +115,9 @@ std::string Logger::f_make_message(LogLevel level, const std::string& message) {
    );
 }
 
-std::string Logger::f_make_message_sl(LogLevel level, const std::string& message, const std::source_location& sl) const {
+std::string Logger::f_make_message_sl(
+   LogLevel level, const std::string& message, const std::source_location& sl
+) const {
    if (m_LogLevel == LogLevel::DEBUG) {
       return std::format(
          "[{}][{}][{}][l{}:c{}] {}",
