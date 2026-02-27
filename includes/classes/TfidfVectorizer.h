@@ -10,7 +10,6 @@
 #include <string>
 #include <unordered_map>
 #include <unordered_set>
-#include <valarray>
 #include <vector>
 
 namespace QinBuRua::auto_sorting_machine {
@@ -24,15 +23,17 @@ public:
    using Category            = std::u16string;
    using ClassifiedDocuments = std::unordered_map<Category, Documents>;
 
-   using Vocabulary       = std::unordered_set<Word>;
-   using WordToNumTable   = std::unordered_map<Word, uint32_t>;
-   using RawVector        = std::valarray<uint32_t>;
-   using WordCount        = std::unordered_map<Word, uint32_t>;
-   using TfVector         = std::valarray<std::float32_t>;
-   using IdfVector        = std::valarray<std::float32_t>;
-   using TfidfVector      = std::valarray<std::float32_t>;
-   using TfidfVectors     = std::vector<TfidfVector>;
-   using DocumentsVectors = std::unordered_set<Category, TfidfVectors>;
+   using Vocabulary          = std::unordered_set<Word>;
+   using WordToNumTable      = std::unordered_map<Word, uint32_t>;
+   using RawVector           = std::vector<uint32_t>;
+   using WordCount           = std::unordered_map<Word, uint32_t>;
+   using TfVector            = std::vector<std::float32_t>;
+   using TfVectors           = std::vector<TfVector>;
+   using ClassifiedTfVectors = std::unordered_map<Category, TfVectors>;
+   using IdfVector           = std::vector<std::float32_t>;
+   using TfidfVector         = std::vector<std::float32_t>;
+   using TfidfVectors        = std::vector<TfidfVector>;
+   using DocumentsVectors    = std::unordered_set<Category, TfidfVectors>;
 
 public:
    TfidfVectorizer() = default;
