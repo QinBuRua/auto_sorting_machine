@@ -72,6 +72,7 @@ void TfidfVectorizer::run() {
    }
 
    m_WordToNumTable = f_make_word_to_num_table(m_Vocabulary);
+   f_calculate_tf_from_all_documents();
 
 }
 
@@ -160,4 +161,15 @@ TfidfVectorizer::TfVector TfidfVectorizer::f_calculate_tf_vector(const RawVector
    return raw_vector
       | stdv::transform([totalWordCount](auto val)-> std::float32_t { return val / totalWordCount; })
       | stdr::to<TfVector>();
+}
+
+void TfidfVectorizer::f_calculate_tf_from_all_documents() {
+   for (const auto& [category, documents]: *m_ClassifiedDocuments) {
+      TfidfVectors tmpTfVectors{};
+      for (const auto& document: documents) {
+         RawVector tmpRawVector = f_calculate_raw_vector(document);
+         tmpTfVectors.push_back(f_calculate_tf_vector(tmpRawVector));
+      }
+      m_ClassifiedTfVectors[category] = tmpTfVectors;
+   }
 }

@@ -58,6 +58,7 @@ private:
    std::shared_ptr<const ClassifiedDocuments> m_ClassifiedDocuments;
    Vocabulary m_Vocabulary;
    WordToNumTable m_WordToNumTable;
+   ClassifiedTfVectors m_ClassifiedTfVectors;
    std::shared_ptr<DocumentsVectors> m_DocumentsVectors;
 
 private:
@@ -67,6 +68,7 @@ private:
    Vocabulary f_filter_under_max_tf(const Vocabulary& vocabulary) const;
    RawVector f_calculate_raw_vector(const Document& document) const;
    static TfVector f_calculate_tf_vector(const RawVector& raw_vector);
+   void f_calculate_tf_from_all_documents();
 
 };
 
