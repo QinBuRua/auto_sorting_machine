@@ -81,6 +81,7 @@ void TfidfVectorizer::run() {
    }
 
    m_IdfVector = f_calculate_idf_from_all_tf();
+   f_calculate_tfidf_vectors();
 
 }
 
@@ -202,4 +203,17 @@ TfidfVectorizer::IdfVector TfidfVectorizer::f_calculate_idf_from_all_tf() {
    });
 
    return idfVector;
+}
+
+void TfidfVectorizer::f_calculate_tfidf_vectors() {
+   m_DocumentsVectors = std::make_shared<DocumentsVectors>(m_ClassifiedTfVectors.size());
+   for (const auto& [category, documents] : m_ClassifiedTfVectors) {
+      auto& tfidfVectors = (*m_DocumentsVectors)[category];
+      tfidfVectors.reserve(documents.size());
+      for (const auto& document : documents) {
+         auto tfidfVector = stdv::zip_transform(std::multiplies(), document, m_IdfVector)
+            | stdr::to<TfidfVector>();
+         tfidfVectors.push_back(std::move(tfidfVector));
+      }
+   }
 }

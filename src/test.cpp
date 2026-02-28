@@ -49,8 +49,6 @@ int main() {
    auto data = std::make_shared<TfidfVectorizer::ClassifiedDocuments>(test::create_classified_documents_test_set());
 
    TfidfVectorizer vectorizer{data};
-   vectorizer.arguments().min_tf = 0;
-   vectorizer.arguments().max_tf = 2;
    vectorizer.run();
 
    return 0;

@@ -33,7 +33,7 @@ public:
    using IdfVector           = std::vector<std::float32_t>;
    using TfidfVector         = std::vector<std::float32_t>;
    using TfidfVectors        = std::vector<TfidfVector>;
-   using DocumentsVectors    = std::unordered_set<Category, TfidfVectors>;
+   using DocumentsVectors    = std::unordered_map<Category, TfidfVectors>;
 
    struct Arguments {
       uint32_t& min_word_count;
@@ -71,6 +71,7 @@ private:
    static TfVector f_calculate_tf_vector(const RawVector& raw_vector);
    void f_calculate_tf_from_all_documents();
    IdfVector f_calculate_idf_from_all_tf();
+   void f_calculate_tfidf_vectors();
 
 };
 
