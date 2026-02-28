@@ -196,7 +196,7 @@ TfidfVectorizer::IdfVector TfidfVectorizer::f_calculate_idf_from_all_tf() {
       }
    }
 
-   std::float32_t totalDocumentsCount = stdr::distance(flattenedTfVectors);
+   auto totalDocumentsCount = static_cast<std::float32_t>(stdr::distance(flattenedTfVectors));
    stdr::transform(idfVector, idfVector.begin(), [&totalDocumentsCount](const auto& value) {
       return static_cast<std::float32_t>(std::log2(totalDocumentsCount / value));
    });
