@@ -83,6 +83,7 @@ void TfidfVectorizer::run() {
    m_IdfVector = f_calculate_idf_from_all_tf();
    f_calculate_tfidf_vectors();
 
+   f_release_memory();
 }
 
 TfidfVectorizer::Vocabulary TfidfVectorizer::f_extract_vocabulary() const {
@@ -216,4 +217,10 @@ void TfidfVectorizer::f_calculate_tfidf_vectors() {
          tfidfVectors.push_back(std::move(tfidfVector));
       }
    }
+}
+
+void TfidfVectorizer::f_release_memory() {
+   m_ClassifiedDocuments = nullptr;
+   m_WordToNumTable.clear();
+   m_ClassifiedTfVectors.clear();
 }

@@ -56,9 +56,10 @@ private:
    std::float32_t m_MaxTf  = 0.9f;
 
    std::shared_ptr<const ClassifiedDocuments> m_ClassifiedDocuments;
-   Vocabulary m_Vocabulary;
    WordToNumTable m_WordToNumTable;
    ClassifiedTfVectors m_ClassifiedTfVectors;
+
+   Vocabulary m_Vocabulary;
    IdfVector m_IdfVector;
    std::shared_ptr<DocumentsVectors> m_DocumentsVectors;
 
@@ -72,6 +73,7 @@ private:
    void f_calculate_tf_from_all_documents();
    IdfVector f_calculate_idf_from_all_tf();
    void f_calculate_tfidf_vectors();
+   void f_release_memory();
 
 };
 
