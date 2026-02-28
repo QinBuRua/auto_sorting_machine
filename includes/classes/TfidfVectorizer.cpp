@@ -32,7 +32,7 @@ TfidfVectorizer::TfidfVectorizer(std::shared_ptr<ClassifiedDocuments> documents)
 void TfidfVectorizer::clear() {
    m_MinWordCount = 1000;
    m_MinTf        = 3;
-   m_MaxTf        = 0.8;
+   m_MaxTf        = 0.8f;
 
    m_ClassifiedDocuments = nullptr;
    m_Vocabulary.clear();
