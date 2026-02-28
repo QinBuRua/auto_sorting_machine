@@ -27,6 +27,15 @@ target_include_directories(CommonCore PUBLIC
         utils
 )
 
+aux_source_directory(includes/test TEST_SRC)
+add_library(TestCore STATIC
+        ${TEST_SRC}
+)
+target_include_directories(TestCore PUBLIC
+        includes
+        utils
+)
+
 add_executable(auto_sorting_machine
         src/main.cpp
 )
@@ -35,4 +44,4 @@ target_link_libraries(auto_sorting_machine PUBLIC CommonCore)
 add_executable(app_test
         src/test.cpp
 )
-target_link_libraries(app_test PUBLIC CommonCore)
+target_link_libraries(app_test PUBLIC CommonCore TestCore)
