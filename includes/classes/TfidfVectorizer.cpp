@@ -21,22 +21,23 @@ TfidfVectorizer::TfidfVectorizer(std::shared_ptr<ClassifiedDocuments> documents)
       | stdv::join
    );
    if (wordCounts < m_MinWordCount) {
-      slog::warn(
-         std::format(
-            "From TfidfVectorizer: Dataset is too small, totally {} words less than {} words", wordCounts,
-            m_MinWordCount
-         )
-      );
+      slog::warn(std::format(
+         "From TfidfVectorizer: Dataset is too small, totally {} words less than {} words",
+         wordCounts, m_MinWordCount
+      ));
    }
    m_ClassifiedDocuments = std::move(documents);
 }
 
 void TfidfVectorizer::clear() {
-   m_MinTf = 3;
+   m_MinWordCount = 1000;
+   m_MinTf        = 3;
+   m_MaxTf        = 0.8;
 
    m_ClassifiedDocuments = nullptr;
    m_Vocabulary.clear();
-   m_DocumentsVectors.clear();
+   m_WordToNumTable.clear();
+   m_DocumentsVectors.swap(DocumentsVectors{});
 }
 
 void TfidfVectorizer::load(std::shared_ptr<ClassifiedDocuments> documents) {
