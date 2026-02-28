@@ -59,6 +59,7 @@ private:
    Vocabulary m_Vocabulary;
    WordToNumTable m_WordToNumTable;
    ClassifiedTfVectors m_ClassifiedTfVectors;
+   IdfVector m_IdfVector;
    std::shared_ptr<DocumentsVectors> m_DocumentsVectors;
 
 private:
@@ -69,6 +70,7 @@ private:
    RawVector f_calculate_raw_vector(const Document& document) const;
    static TfVector f_calculate_tf_vector(const RawVector& raw_vector);
    void f_calculate_tf_from_all_documents();
+   IdfVector f_calculate_idf_from_all_tf();
 
 };
 

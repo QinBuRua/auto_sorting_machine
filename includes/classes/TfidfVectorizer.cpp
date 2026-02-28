@@ -2,6 +2,7 @@
 // Created by QinBu_Rua on 2026/2/25.
 //
 
+#include <cmath>
 #include <algorithm>
 #include <ranges>
 
@@ -73,6 +74,13 @@ void TfidfVectorizer::run() {
 
    m_WordToNumTable = f_make_word_to_num_table(m_Vocabulary);
    f_calculate_tf_from_all_documents();
+   if (m_ClassifiedTfVectors.empty()) {
+      slog::warn_throw<std::runtime_error>(
+         "From TfidfVectorizer: Classified TfVectors is empty."
+      );
+   }
+
+   m_IdfVector = f_calculate_idf_from_all_tf();
 
 }
 
@@ -122,10 +130,10 @@ TfidfVectorizer::Vocabulary TfidfVectorizer::f_filter_under_max_tf(const Vocabul
             | stdv::filter([&vocabulary](const Word& word) { return vocabulary.contains(word); });
       });
    uint32_t documentsCount{0};
-   for (auto document: filteredDocuments) {
+   for (auto document : filteredDocuments) {
       ++documentsCount;
       Vocabulary tmpVocabulary;
-      for (const auto& word: document) {
+      for (const auto& word : document) {
          if (tmpVocabulary.contains(word)) {
             continue;
          }
@@ -146,7 +154,7 @@ TfidfVectorizer::Vocabulary TfidfVectorizer::f_filter_under_max_tf(const Vocabul
 
 TfidfVectorizer::RawVector TfidfVectorizer::f_calculate_raw_vector(const Document& document) const {
    RawVector rawVector(m_WordToNumTable.size());
-   for (const auto& word: document) {
+   for (const auto& word : document) {
       auto indexIter = m_WordToNumTable.find(word);
       if (indexIter == m_WordToNumTable.end()) {
          continue;
@@ -164,12 +172,34 @@ TfidfVectorizer::TfVector TfidfVectorizer::f_calculate_tf_vector(const RawVector
 }
 
 void TfidfVectorizer::f_calculate_tf_from_all_documents() {
-   for (const auto& [category, documents]: *m_ClassifiedDocuments) {
+   for (const auto& [category, documents] : *m_ClassifiedDocuments) {
       TfidfVectors tmpTfVectors{};
-      for (const auto& document: documents) {
+      for (const auto& document : documents) {
          RawVector tmpRawVector = f_calculate_raw_vector(document);
          tmpTfVectors.push_back(f_calculate_tf_vector(tmpRawVector));
       }
       m_ClassifiedTfVectors[category] = tmpTfVectors;
    }
+}
+
+TfidfVectorizer::IdfVector TfidfVectorizer::f_calculate_idf_from_all_tf() {
+   const auto flattenedTfVectors = m_ClassifiedTfVectors
+      | stdv::values
+      | stdv::join;
+
+   IdfVector idfVector(m_WordToNumTable.size());
+   for (const auto& tfVector : flattenedTfVectors) {
+      for (const auto& [index,value] : tfVector | stdv::enumerate) {
+         if (value > 0) {
+            ++idfVector[index];
+         }
+      }
+   }
+
+   std::float32_t totalDocumentsCount = stdr::distance(flattenedTfVectors);
+   stdr::transform(idfVector, idfVector.begin(), [&totalDocumentsCount](const auto& value) {
+      return static_cast<std::float32_t>(std::log2(totalDocumentsCount / value));
+   });
+
+   return idfVector;
 }
