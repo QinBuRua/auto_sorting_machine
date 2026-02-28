@@ -51,7 +51,7 @@ private:
    std::shared_ptr<const ClassifiedDocuments> m_ClassifiedDocuments;
    Vocabulary m_Vocabulary;
    WordToNumTable m_WordToNumTable;
-   DocumentsVectors m_DocumentsVectors;
+   std::shared_ptr<DocumentsVectors> m_DocumentsVectors;
 
 private:
    Vocabulary f_extract_vocabulary() const;

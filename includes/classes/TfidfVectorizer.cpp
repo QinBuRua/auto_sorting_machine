@@ -37,7 +37,7 @@ void TfidfVectorizer::clear() {
    m_ClassifiedDocuments = nullptr;
    m_Vocabulary.clear();
    m_WordToNumTable.clear();
-   m_DocumentsVectors.swap(DocumentsVectors{});
+   m_DocumentsVectors = nullptr;
 }
 
 void TfidfVectorizer::load(std::shared_ptr<ClassifiedDocuments> documents) {
