@@ -60,7 +60,13 @@ void TfidfVectorizer::load(std::shared_ptr<ClassifiedDocuments> documents) {
 }
 
 void TfidfVectorizer::run() {
-   m_Vocabulary     = f_extract_vocabulary();
+   m_Vocabulary = f_extract_vocabulary();
+   if (m_Vocabulary.empty()) {
+      slog::warn_throw<std::runtime_error>(
+         "From TfidfVectorizer: Vocabulary is empty. Please check the min/max tf and ths size of dataset."
+      );
+   }
+
    m_WordToNumTable = f_make_word_to_num_table(m_Vocabulary);
 
 }
