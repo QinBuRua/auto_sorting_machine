@@ -59,6 +59,10 @@ void TfidfVectorizer::load(std::shared_ptr<ClassifiedDocuments> documents) {
    m_ClassifiedDocuments = std::move(documents);
 }
 
+TfidfVectorizer::Arguments TfidfVectorizer::arguments() {
+   return Arguments{.min_word_count = m_MinWordCount, .min_tf = m_MinTf, .max_tf = m_MaxTf};
+}
+
 void TfidfVectorizer::run() {
    m_Vocabulary = f_extract_vocabulary();
    if (m_Vocabulary.empty()) {

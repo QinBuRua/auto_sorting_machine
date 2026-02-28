@@ -79,6 +79,8 @@ int main() {
    );
 
    TfidfVectorizer vectorizer{data};
+   vectorizer.arguments().min_tf = 0;
+   vectorizer.arguments().max_tf = 2;
    vectorizer.run();
 
    return 0;

@@ -35,12 +35,19 @@ public:
    using TfidfVectors        = std::vector<TfidfVector>;
    using DocumentsVectors    = std::unordered_set<Category, TfidfVectors>;
 
+   struct Arguments {
+      uint32_t& min_word_count;
+      uint32_t& min_tf;
+      std::float32_t& max_tf;
+   };
+
 public:
    TfidfVectorizer() = default;
    explicit TfidfVectorizer(std::shared_ptr<ClassifiedDocuments> documents);
 
    void clear();
    void load(std::shared_ptr<ClassifiedDocuments> documents);
+   Arguments arguments();
    void run();
 
 private:
