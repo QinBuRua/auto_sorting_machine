@@ -165,7 +165,7 @@ TfidfVectorizer::RawVector TfidfVectorizer::f_calculate_raw_vector(const Documen
 }
 
 TfidfVectorizer::TfVector TfidfVectorizer::f_calculate_tf_vector(const RawVector& raw_vector) {
-   std::float32_t totalWordCount = static_cast<std::float32_t>(stdr::fold_left(raw_vector, 0, std::plus()));
+   auto totalWordCount = static_cast<std::float32_t>(stdr::fold_left(raw_vector, 0, std::plus()));
    return raw_vector
       | stdv::transform([totalWordCount](auto val)-> std::float32_t { return val / totalWordCount; })
       | stdr::to<TfVector>();
