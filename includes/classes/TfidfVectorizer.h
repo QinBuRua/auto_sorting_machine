@@ -15,7 +15,7 @@
 namespace QinBuRua::auto_sorting_machine {
 
 class TfidfVectorizer {
-   //todo:未完成的类
+   //todo: 需重构,调整主要对外接口为fit,transform,fit_transform
 public:
    using Word                = std::u16string;
    using Document            = std::vector<Word>;
