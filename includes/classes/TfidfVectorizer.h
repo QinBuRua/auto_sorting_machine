@@ -64,7 +64,7 @@ private:
 
 private:
    Vocabulary f_extract_vocabulary() const;
-   WordToNumTable f_make_word_to_num_table(const Vocabulary& vocabulary) const;
+   static WordToNumTable f_make_word_to_num_table(const Vocabulary& vocabulary);
    Vocabulary f_filter_above_min_tf() const;
    Vocabulary f_filter_under_max_tf(const Vocabulary& vocabulary) const;
    RawVector f_calculate_raw_vector(const Document& document) const;

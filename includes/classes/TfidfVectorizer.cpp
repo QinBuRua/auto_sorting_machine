@@ -89,7 +89,7 @@ TfidfVectorizer::Vocabulary TfidfVectorizer::f_extract_vocabulary() const {
    return f_filter_under_max_tf(vocabulary);
 }
 
-TfidfVectorizer::WordToNumTable TfidfVectorizer::f_make_word_to_num_table(const Vocabulary& vocabulary) const {
+TfidfVectorizer::WordToNumTable TfidfVectorizer::f_make_word_to_num_table(const Vocabulary& vocabulary) {
    WordToNumTable table{vocabulary.size()};
    auto sortedVocabulary = vocabulary
       | stdr::to<std::vector<Word>>();
