@@ -106,8 +106,8 @@ TfidfVectorizer::WordToNumTable TfidfVectorizer::f_make_word_to_num_table(const 
       | stdr::to<std::vector<Word>>();
    stdr::sort(sortedVocabulary);
 
-   for (uint32_t i = 0; i < sortedVocabulary.size(); ++i) { //todo: 可使用stdv::enumerate优化
-      table[sortedVocabulary[i]] = i;
+   for (const auto& [index, word] : sortedVocabulary | stdv::enumerate) {
+      table[word] = index;
    }
    return table;
 }
