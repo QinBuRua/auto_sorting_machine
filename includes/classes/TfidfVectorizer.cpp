@@ -2,8 +2,8 @@
 // Created by QinBu_Rua on 2026/2/25.
 //
 
-#include <cmath>
 #include <algorithm>
+#include <cmath>
 #include <ranges>
 
 #include "TfidfVectorizer.h"
