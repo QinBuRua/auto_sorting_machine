@@ -15,6 +15,12 @@ using namespace QinBuRua::auto_sorting_machine;
 namespace slog = utils::log;
 
 TfidfVectorizer::TfidfVectorizer(std::shared_ptr<ClassifiedDocuments> documents) {
+   if (!documents) {
+      slog::error_throw<std::logic_error>(
+         "From TfidfVectorizer::load(): Input classified documents is empty!"
+      );
+   }
+
    uint32_t wordCounts = stdr::distance(
       *documents
       | stdv::values
@@ -42,6 +48,12 @@ void TfidfVectorizer::clear() {
 }
 
 void TfidfVectorizer::load(std::shared_ptr<ClassifiedDocuments> documents) {
+   if (!documents) {
+      slog::error_throw<std::logic_error>(
+         "From TfidfVectorizer::load(): Input classified documents is empty!"
+      );
+   }
+
    uint32_t wordCounts = stdr::distance(
       *documents
       | stdv::values
