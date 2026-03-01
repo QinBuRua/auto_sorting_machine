@@ -48,8 +48,11 @@ int main() {
 
    auto data = std::make_shared<TfidfVectorizer::ClassifiedDocuments>(test::create_classified_documents_test_set());
 
-   TfidfVectorizer vectorizer{};
-   vectorizer.fit(data);
+   TfidfVectorizer vectorizer1{data};
+   vectorizer1.run();
+
+   TfidfVectorizer vectorizer2;
+   vectorizer2.fit(data);
 
    return 0;
 }

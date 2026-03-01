@@ -54,7 +54,7 @@ public:
 
 private:
    uint32_t m_MinWordCount = 1000;
-   uint32_t m_MinTf        = 2;
+   uint32_t m_MinTf        = 3;
    std::float32_t m_MaxTf  = 0.9f;
 
    std::shared_ptr<const ClassifiedDocuments> m_ClassifiedDocuments;
