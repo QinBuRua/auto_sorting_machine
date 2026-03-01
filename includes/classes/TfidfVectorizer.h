@@ -50,6 +50,8 @@ public:
    Arguments arguments();
    void run();
 
+   void fit(std::shared_ptr<ClassifiedDocuments> classified_documents);
+
 private:
    uint32_t m_MinWordCount = 1000;
    uint32_t m_MinTf        = 2;
@@ -71,7 +73,8 @@ private:
    RawVector f_calculate_raw_vector(const Document& document) const;
    static TfVector f_calculate_tf_vector(const RawVector& raw_vector);
    void f_calculate_tf_from_all_documents();
-   IdfVector f_calculate_idf_from_all_tf();
+   IdfVector f_extract_idf_from_all_documents(const WordToNumTable&) const;
+   IdfVector f_calculate_idf_from_all_tf() const;
    void f_calculate_tfidf_vectors();
    void f_release_memory();
 
