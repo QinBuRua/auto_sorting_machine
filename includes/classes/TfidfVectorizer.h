@@ -23,17 +23,14 @@ public:
    using Category            = std::u16string;
    using ClassifiedDocuments = std::unordered_map<Category, Documents>;
 
-   using Vocabulary          = std::unordered_set<Word>;
-   using WordToNumTable      = std::unordered_map<Word, uint32_t>;
-   using RawVector           = std::vector<uint32_t>;
-   using WordCount           = std::unordered_map<Word, uint32_t>;
-   using TfVector            = std::vector<std::float32_t>;
-   using TfVectors           = std::vector<TfVector>;
-   using ClassifiedTfVectors = std::unordered_map<Category, TfVectors>;
-   using IdfVector           = std::vector<std::float32_t>;
-   using TfidfVector         = std::vector<std::float32_t>;
-   using TfidfVectors        = std::vector<TfidfVector>;
-   using DocumentsVectors    = std::unordered_map<Category, TfidfVectors>;
+   using Vocabulary        = std::unordered_set<Word>;
+   using WordToNumTable    = std::unordered_map<Word, uint32_t>;
+   using DocumentsWordInfo = std::unordered_map<Word, std::pair<uint32_t/*出现该词的文章数目*/, uint32_t/*该词出现的总数目*/>>;
+   using TfVector          = std::vector<std::float32_t>;
+   using IdfVector         = std::vector<std::float32_t>;
+   using TfidfVector       = std::vector<std::float32_t>;
+   using TfidfVectors      = std::vector<TfidfVector>;
+   using DocumentsVectors  = std::unordered_map<Category, TfidfVectors>;
 
    struct Arguments {
       uint32_t& min_word_count;
@@ -42,43 +39,26 @@ public:
    };
 
 public:
-   TfidfVectorizer() = default;
-   explicit TfidfVectorizer(std::shared_ptr<ClassifiedDocuments> documents);
-
    void clear();
-   void load(std::shared_ptr<ClassifiedDocuments> documents);
+   void clear_without_arguments();
    Arguments arguments();
-   void run();
 
-   void fit(std::shared_ptr<ClassifiedDocuments> classified_documents);
+   void fit(const ClassifiedDocuments& classified_documents);
    TfidfVector transform(const Document& document);
+   DocumentsVectors fit_transform(std::shared_ptr<ClassifiedDocuments> classified_documents);
 
 private:
    uint32_t m_MinWordCount = 1000;
    uint32_t m_MinTf        = 3;
    std::float32_t m_MaxTf  = 0.9f;
 
-   std::shared_ptr<const ClassifiedDocuments> m_ClassifiedDocuments;
-   WordToNumTable m_WordToNumTable;
-   ClassifiedTfVectors m_ClassifiedTfVectors;
-
    Vocabulary m_Vocabulary;
+   WordToNumTable m_WordToNumTable;
    IdfVector m_IdfVector;
-   std::shared_ptr<DocumentsVectors> m_DocumentsVectors;
 
 private:
-   Vocabulary f_extract_vocabulary() const;
+   static DocumentsWordInfo f_extract_documents_word_info(const ClassifiedDocuments& classified_documents);
    static WordToNumTable f_make_word_to_num_table(const Vocabulary& vocabulary);
-   Vocabulary f_filter_above_min_tf() const;
-   Vocabulary f_filter_under_max_tf(const Vocabulary& vocabulary) const;
-   RawVector f_calculate_raw_vector(const Document& document) const;
-   static TfVector f_calculate_tf_vector(const RawVector& raw_vector);
-   void f_calculate_tf_from_all_documents();
-   IdfVector f_extract_idf_from_all_documents(const WordToNumTable&) const;
-   IdfVector f_calculate_idf_from_all_tf() const;
-   void f_calculate_tfidf_vectors();
-   void f_release_memory();
-
 };
 
 }

@@ -15,285 +15,102 @@ namespace stdv = std::views;
 using namespace QinBuRua::auto_sorting_machine;
 namespace slog = utils::log;
 
-TfidfVectorizer::TfidfVectorizer(std::shared_ptr<ClassifiedDocuments> documents) {
-   if (!documents) {
-      slog::error_throw<std::logic_error>(
-         "From TfidfVectorizer::load(): Input classified documents is empty!"
-      );
-   }
-
-   uint32_t wordCounts = stdr::distance(
-      *documents
-      | stdv::values
-      | stdv::join
-      | stdv::join
-   );
-   if (wordCounts < m_MinWordCount) {
-      slog::warn(std::format(
-         "From TfidfVectorizer: Dataset is too small, totally {} words less than {} words",
-         wordCounts, m_MinWordCount
-      ));
-   }
-   m_ClassifiedDocuments = std::move(documents);
-}
-
 void TfidfVectorizer::clear() {
    m_MinWordCount = 1000;
    m_MinTf        = 3;
    m_MaxTf        = 0.9f;
 
-   m_ClassifiedDocuments = nullptr;
    m_Vocabulary.clear();
    m_WordToNumTable.clear();
-   m_DocumentsVectors = nullptr;
+   IdfVector{}.swap(m_IdfVector);
 }
 
-void TfidfVectorizer::load(std::shared_ptr<ClassifiedDocuments> documents) {
-   if (!documents) {
-      slog::error_throw<std::logic_error>(
-         "From TfidfVectorizer::load(): Input classified documents is empty!"
-      );
-   }
-
-   uint32_t wordCounts = stdr::distance(
-      *documents
-      | stdv::values
-      | stdv::join
-      | stdv::join
-   );
-   if (wordCounts < m_MinWordCount) {
-      slog::warn(std::format(
-         "From TfidfVectorizer: Dataset is too small, totally {} words less than {} words",
-         wordCounts, m_MinWordCount
-      ));
-   }
-   clear();
-   m_ClassifiedDocuments = std::move(documents);
+void TfidfVectorizer::clear_without_arguments() {
+   m_Vocabulary.clear();
+   m_WordToNumTable.clear();
+   IdfVector{}.swap(m_IdfVector);
 }
 
 TfidfVectorizer::Arguments TfidfVectorizer::arguments() {
    return Arguments{.min_word_count = m_MinWordCount, .min_tf = m_MinTf, .max_tf = m_MaxTf};
 }
 
-void TfidfVectorizer::run() {
-   m_Vocabulary = f_extract_vocabulary();
-   if (m_Vocabulary.empty()) {
-      slog::warn_throw<std::runtime_error>(
-         "From TfidfVectorizer: Vocabulary is empty. Please check the min/max tf and ths size of dataset."
-      );
+void TfidfVectorizer::fit(const ClassifiedDocuments& classified_documents) {
+   clear_without_arguments();
+
+   const auto flattenedDocuments = classified_documents
+      | stdv::values
+      | stdv::join;
+   const auto documentCount  = stdr::distance(flattenedDocuments);
+   const auto totalWordCount = stdr::distance(flattenedDocuments | stdv::join);
+   if (totalWordCount < m_MinWordCount) {
+      slog::warn(std::format("From TfidfVectorizer: The dataset is too small, only {} words, less than {} words",
+         totalWordCount, m_MinWordCount));
    }
 
+   const auto documentCountFloat = static_cast<std::float32_t>(documentCount);
+
+   DocumentsWordInfo documentsWordInfo = f_extract_documents_word_info(classified_documents);
+
+   const auto& minTf              = m_MinTf;
+   const auto& maxTf              = m_MaxTf;
+   auto filteredDocumentsWordInfo = documentsWordInfo
+      | stdv::filter([&documentCountFloat,&minTf,&maxTf](const auto& pair) {
+         if (pair.second.second < minTf) {
+            return false;
+         }
+         const auto wordFrequency
+            = static_cast<std::float32_t>(pair.second.first) / documentCountFloat;
+         return wordFrequency <= maxTf;
+      });
+
+   m_Vocabulary = filteredDocumentsWordInfo
+      | stdv::keys
+      | stdr::to<Vocabulary>();
    m_WordToNumTable = f_make_word_to_num_table(m_Vocabulary);
-   f_calculate_tf_from_all_documents();
-   if (m_ClassifiedTfVectors.empty()) {
-      slog::warn_throw<std::runtime_error>(
-         "From TfidfVectorizer: Classified TfVectors is empty."
-      );
+
+   m_IdfVector.resize(m_Vocabulary.size());
+   for (const auto& [word, info] : filteredDocumentsWordInfo) {
+      const auto frequency = documentCountFloat / static_cast<std::float32_t>(info.first);
+      m_IdfVector[m_WordToNumTable[word]]
+         = static_cast<std::float32_t>(std::log2(static_cast<double>(frequency)));
+   }
+}
+
+TfidfVectorizer::DocumentsWordInfo TfidfVectorizer::f_extract_documents_word_info(
+   const ClassifiedDocuments& classified_documents
+) {
+   const auto flattenedDocuments = classified_documents
+      | stdv::values
+      | stdv::join;
+
+   DocumentsWordInfo documentsWordInfo;
+   for (const auto& document : flattenedDocuments) {
+      Vocabulary tmpVocabulary;
+
+      for (const auto& word : document) {
+         auto& [documentCount, wordCount] = documentsWordInfo[word];
+         ++wordCount;
+
+         if (tmpVocabulary.contains(word)) {
+            continue;
+         }
+         tmpVocabulary.insert(word);
+         ++documentCount;
+      }
    }
 
-   m_IdfVector = f_calculate_idf_from_all_tf();
-   f_calculate_tfidf_vectors();
-
-   f_release_memory();
-}
-
-void TfidfVectorizer::fit(std::shared_ptr<ClassifiedDocuments> classified_documents) {
-   load(std::move(classified_documents));
-
-   m_Vocabulary     = f_extract_vocabulary();
-   m_WordToNumTable = f_make_word_to_num_table(m_Vocabulary);
-
-   m_IdfVector = f_extract_idf_from_all_documents(m_WordToNumTable);
-
-   f_release_memory();
-}
-
-TfidfVectorizer::TfidfVector TfidfVectorizer::transform(const Document& document) {
-   assert(!m_Vocabulary.empty());
-   assert(!m_IdfVector.empty());
-
-   if (m_WordToNumTable.empty()) {
-      m_WordToNumTable = f_make_word_to_num_table(m_Vocabulary);
-   }
-
-   const auto rawVector = f_calculate_raw_vector(document);
-   auto tfVector        = f_calculate_tf_vector(rawVector);
-
-   return stdv::zip_transform(std::multiplies(), tfVector, m_IdfVector)
-      | stdr::to<IdfVector>();
-}
-
-TfidfVectorizer::Vocabulary TfidfVectorizer::f_extract_vocabulary() const {
-   const Vocabulary vocabulary = f_filter_above_min_tf();
-   return f_filter_under_max_tf(vocabulary);
+   return documentsWordInfo;
 }
 
 TfidfVectorizer::WordToNumTable TfidfVectorizer::f_make_word_to_num_table(const Vocabulary& vocabulary) {
-   WordToNumTable table{vocabulary.size()};
-   auto sortedVocabulary = vocabulary
-      | stdr::to<std::vector<Word>>();
-   stdr::sort(sortedVocabulary);
+   auto words = vocabulary | stdr::to<std::vector<Word>>();
+   stdr::sort(words);
 
-   for (const auto& [index, word] : sortedVocabulary | stdv::enumerate) {
-      table[word] = index;
-   }
-   return table;
-}
-
-TfidfVectorizer::Vocabulary TfidfVectorizer::f_filter_above_min_tf() const {
-   WordCount wordCount;
-   auto words = *m_ClassifiedDocuments
-      | stdv::values
-      | stdv::join
-      | stdv::join;
-   stdr::for_each(
-      words, [&wordCount](const Word& word) {
-         ++wordCount[word];
-      }
-   );
-   const auto& minTf = m_MinTf;
-   return wordCount
-      | stdv::filter([minTf](const auto& pair) {
-         return pair.second >= minTf;
-      })
-      | stdv::keys
-      | stdr::to<Vocabulary>();
-}
-
-TfidfVectorizer::Vocabulary TfidfVectorizer::f_filter_under_max_tf(const Vocabulary& vocabulary) const {
-   WordCount wordCount;
-   const auto filteredDocuments = *m_ClassifiedDocuments
-      | stdv::values
-      | stdv::join
-      | stdv::transform([&vocabulary](const auto& document) {
-         return document
-            | stdv::filter([&vocabulary](const Word& word) { return vocabulary.contains(word); });
-      });
-   uint32_t documentsCount{0};
-   for (auto document : filteredDocuments) {
-      ++documentsCount;
-      Vocabulary tmpVocabulary;
-      for (const auto& word : document) {
-         if (tmpVocabulary.contains(word)) {
-            continue;
-         }
-         tmpVocabulary.insert(word);
-         ++wordCount[word];
-      }
-   }
-   const auto& maxTf = m_MaxTf;
-   return wordCount
-      | stdv::filter([maxTf,documentsCount](const auto& pair)-> bool {
-         const std::float32_t wordFrequency
-            = static_cast<std::float32_t>(pair.second) / static_cast<std::float32_t>(documentsCount);
-         return wordFrequency <= maxTf;
-      })
-      | stdv::keys
-      | stdr::to<Vocabulary>();
-}
-
-TfidfVectorizer::RawVector TfidfVectorizer::f_calculate_raw_vector(const Document& document) const {
-   RawVector rawVector(m_WordToNumTable.size());
-   for (const auto& word : document) {
-      auto indexIter = m_WordToNumTable.find(word);
-      if (indexIter == m_WordToNumTable.end()) {
-         continue;
-      }
-      ++rawVector[indexIter->second];
-   }
-   return rawVector;
-}
-
-TfidfVectorizer::TfVector TfidfVectorizer::f_calculate_tf_vector(const RawVector& raw_vector) {
-   auto totalWordCount = static_cast<std::float32_t>(stdr::fold_left(raw_vector, 0, std::plus()));
-   return raw_vector
-      | stdv::transform([totalWordCount](auto val)-> std::float32_t { return val / totalWordCount; })
-      | stdr::to<TfVector>();
-}
-
-void TfidfVectorizer::f_calculate_tf_from_all_documents() {
-   for (const auto& [category, documents] : *m_ClassifiedDocuments) {
-      TfidfVectors tmpTfVectors{};
-      for (const auto& document : documents) {
-         RawVector tmpRawVector = f_calculate_raw_vector(document);
-         tmpTfVectors.push_back(f_calculate_tf_vector(tmpRawVector));
-      }
-      m_ClassifiedTfVectors[category] = tmpTfVectors;
-   }
-}
-
-TfidfVectorizer::IdfVector TfidfVectorizer::f_extract_idf_from_all_documents(
-   const WordToNumTable& word_to_num_table
-) const {
-   const auto flattenedDocuments = *m_ClassifiedDocuments
-      | stdv::values
-      | stdv::join;
-   const auto documentCount = static_cast<std::float32_t>(stdr::distance(flattenedDocuments));
-
-   const auto filteredDocuments = flattenedDocuments
-      | stdv::transform([&](const auto& document) {
-         return document
-            | stdv::filter([&](const auto& word) { return word_to_num_table.contains(word); });
-      });
-
-   IdfVector idfVector(word_to_num_table.size());
-   for (auto&& document : filteredDocuments) {
-      Vocabulary tmpVocabulary(word_to_num_table.size());
-      for (const auto& word : document) {
-         if (tmpVocabulary.contains(word)) {
-            continue;
-         }
-         tmpVocabulary.insert(word);
-         ++idfVector[word_to_num_table.at(word)];
-      }
+   WordToNumTable wordToNumTable{words.size()};
+   for (const auto& [index, word] : words | stdv::enumerate) {
+      wordToNumTable[word] = index;
    }
 
-   stdr::transform(idfVector, idfVector.begin(), [&](const auto& value) {
-      return static_cast<std::float32_t>(std::log2(documentCount / value));
-   });
-
-   return idfVector;
-}
-
-TfidfVectorizer::IdfVector TfidfVectorizer::f_calculate_idf_from_all_tf() const {
-   const auto flattenedTfVectors = m_ClassifiedTfVectors
-      | stdv::values
-      | stdv::join;
-
-   IdfVector idfVector(m_WordToNumTable.size());
-   for (const auto& tfVector : flattenedTfVectors) {
-      for (const auto& [index,value] : tfVector | stdv::enumerate) {
-         if (value > 0) {
-            ++idfVector[index];
-         }
-      }
-   }
-
-   auto totalDocumentsCount = static_cast<std::float32_t>(stdr::distance(flattenedTfVectors));
-   stdr::transform(idfVector, idfVector.begin(), [&totalDocumentsCount](const auto& value) {
-      return static_cast<std::float32_t>(std::log2(totalDocumentsCount / value));
-   });
-
-   return idfVector;
-}
-
-void TfidfVectorizer::f_calculate_tfidf_vectors() {
-   m_DocumentsVectors = std::make_shared<DocumentsVectors>(m_ClassifiedTfVectors.size());
-   for (const auto& [category, documents] : m_ClassifiedTfVectors) {
-      auto& tfidfVectors = (*m_DocumentsVectors)[category];
-      tfidfVectors.reserve(documents.size());
-
-      for (const auto& document : documents) {
-         auto tfidfVector
-            = stdv::zip_transform(std::multiplies(), document, m_IdfVector)
-            | stdr::to<TfidfVector>();
-         tfidfVectors.push_back(std::move(tfidfVector));
-      }
-   }
-}
-
-void TfidfVectorizer::f_release_memory() {
-   m_ClassifiedDocuments = nullptr;
-   m_WordToNumTable.clear();
-   m_ClassifiedTfVectors.clear();
+   return wordToNumTable;
 }

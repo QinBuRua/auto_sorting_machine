@@ -46,15 +46,11 @@ int main() {
    // );
    // tokenizer.load_from_file(R"(data\model\MCM.dat)");
 
-   auto data = std::make_shared<TfidfVectorizer::ClassifiedDocuments>(test::create_classified_documents_test_set());
-
-   TfidfVectorizer vectorizer1{data};
-   vectorizer1.run();
+   const auto data = test::create_classified_documents_test_set();
 
    TfidfVectorizer vectorizer2;
    vectorizer2.fit(data);
 
-   auto tfidfVector = vectorizer2.transform(data->begin()->second.front());
 
    return 0;
 }
