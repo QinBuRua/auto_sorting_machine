@@ -51,6 +51,7 @@ public:
    void run();
 
    void fit(std::shared_ptr<ClassifiedDocuments> classified_documents);
+   TfidfVector transform(const Document& document);
 
 private:
    uint32_t m_MinWordCount = 1000;

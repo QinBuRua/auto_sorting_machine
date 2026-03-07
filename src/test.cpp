@@ -54,5 +54,7 @@ int main() {
    TfidfVectorizer vectorizer2;
    vectorizer2.fit(data);
 
+   auto tfidfVector = vectorizer2.transform(data->begin()->second.front());
+
    return 0;
 }

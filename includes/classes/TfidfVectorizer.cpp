@@ -3,6 +3,7 @@
 //
 
 #include <algorithm>
+#include <cassert>
 #include <cmath>
 #include <ranges>
 
@@ -105,6 +106,21 @@ void TfidfVectorizer::fit(std::shared_ptr<ClassifiedDocuments> classified_docume
    m_IdfVector = f_extract_idf_from_all_documents(m_WordToNumTable);
 
    f_release_memory();
+}
+
+TfidfVectorizer::TfidfVector TfidfVectorizer::transform(const Document& document) {
+   assert(!m_Vocabulary.empty());
+   assert(!m_IdfVector.empty());
+
+   if (m_WordToNumTable.empty()) {
+      m_WordToNumTable = f_make_word_to_num_table(m_Vocabulary);
+   }
+
+   const auto rawVector = f_calculate_raw_vector(document);
+   auto tfVector        = f_calculate_tf_vector(rawVector);
+
+   return stdv::zip_transform(std::multiplies(), tfVector, m_IdfVector)
+      | stdr::to<IdfVector>();
 }
 
 TfidfVectorizer::Vocabulary TfidfVectorizer::f_extract_vocabulary() const {
@@ -266,8 +282,10 @@ void TfidfVectorizer::f_calculate_tfidf_vectors() {
    for (const auto& [category, documents] : m_ClassifiedTfVectors) {
       auto& tfidfVectors = (*m_DocumentsVectors)[category];
       tfidfVectors.reserve(documents.size());
+
       for (const auto& document : documents) {
-         auto tfidfVector = stdv::zip_transform(std::multiplies(), document, m_IdfVector)
+         auto tfidfVector
+            = stdv::zip_transform(std::multiplies(), document, m_IdfVector)
             | stdr::to<TfidfVector>();
          tfidfVectors.push_back(std::move(tfidfVector));
       }
